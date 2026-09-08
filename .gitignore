@@ -1,0 +1,13 @@
+# Segredos — NUNCA commitar
+.env
+.tokens.json
+*.token
+*.lock
+
+# A OPERAÇÃO DO DONO DO REPO — nunca versionar.
+# O código e o método são genéricos e públicos; o que é do negócio de quem opera não é.
+# produtos/ guarda dossiês, imagens e perguntas REAIS de clientes (dado de terceiro).
+produtos/
+OPERACAO.md
+
+node_modules/

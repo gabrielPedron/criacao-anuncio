@@ -1,0 +1,32 @@
+{
+  "name": "criacao-anuncio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pipeline de criacao de anuncios do Mercado Livre, conduzido pelo Claude Code",
+  "scripts": {
+    "ml:url": "node scripts/ml/url-autorizacao.js",
+    "ml:token": "node scripts/ml/trocar-code.js",
+    "ml:teste": "node scripts/ml/testar-conexao.js",
+    "ml:categoria": "node scripts/ml/categoria.js",
+    "ml:concorrentes": "node scripts/ml/buscar-concorrentes.js",
+    "ml:semantica": "node scripts/ml/semantica.js",
+    "ml:produto": "node scripts/ml/produto.js",
+    "ml:fotos": "node scripts/ml/fotos.js",
+    "ml:demanda": "node scripts/ml/demanda.js",
+    "ml:buscar": "node scripts/ml/buscar.js",
+    "ml:autorizar": "node scripts/ml/autorizar.js",
+    "ml:apurar": "node scripts/ml/apurar.ts",
+    "apuracao:teste": "node scripts/apuracao/teste.ts",
+    "ml:publicar": "node scripts/ml/publicar-cli.ts",
+    "midia:chaves": "node scripts/midia/testar-chaves.ts",
+    "ml:meus-anuncios": "node scripts/ml/meus-anuncios.ts",
+    "midia:gerar": "node scripts/midia/gerar-imagens.ts",
+    "ml:descobrir": "node scripts/ml/descobrir.ts",
+    "ml:catalogo": "node scripts/ml/catalogo.ts",
+    "ml:referencia": "node scripts/ml/referencia.ts",
+    "ml:sugerir-catalogo": "node scripts/ml/sugerir-catalogo.ts",
+    "ml:recriar": "node scripts/ml/recriar.ts",
+    "test": "node --test scripts/ml/*.test.ts"
+  }
+}
