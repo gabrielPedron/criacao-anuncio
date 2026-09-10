@@ -11,3 +11,9 @@ produtos/
 OPERACAO.md
 
 node_modules/
+
+# Ferramenta do mantenedor, nao de quem clona
+scripts/publicar-repo.ts
+
+# Material do manual (prints com dados reais)
+manual/prints/
