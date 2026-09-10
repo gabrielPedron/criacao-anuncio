@@ -30,7 +30,7 @@ lendo os docs e rodando os scripts.
 | | |
 |---|---|
 | Branch de trabalho | **`master`**. O handoff foi integrado por fast-forward em 10/09 |
-| `master` | inclui `b112b3a`. **Não existe `main`** neste repo |
+| Branch principal | **`master`**. **Não existe `main`** neste repo |
 | Remote | **nenhum**. O repo só existe nesta máquina |
 
 Últimos commits antes do handoff, do mais novo para o mais antigo:
@@ -53,14 +53,16 @@ c38d2bb Adiciona npm run publicar, que regera o snapshot publico
 
 `manual/prints/` existe, vazia e ignorada: é onde os prints vão cair.
 
-**O repo público** fica em `../criacao-anuncio-publico`, branch `main`, com 1 commit (`2c1941b`) e
-sem remote. Tem `.gitignore` e `package.json` modificados e não commitados: é o snapshot
-rodado depois do `c38d2bb`, sem o `--enviar`.
+**O repo público** fica em `../criacao-anuncio-publico`, branch `main`, sem remote. O snapshot foi
+regenerado e commitado localmente em 10/09, depois da integração do handoff e da remoção do comando
+interno `publicar` do `package.json`. Nenhum push foi feito.
 
 ## 3. O que foi feito
 
-**Nesta sessão (10/09):** só o handoff. Levantei o estado do Git, rodei os testes e escrevi este
-arquivo. Nenhum código mudou e nenhuma chamada foi feita à API do ML.
+**Continuação no Codex (10/09):** o handoff foi integrado ao `master` por fast-forward. O comando
+interno `publicar` saiu do `package.json`, porque o script correspondente não faz parte do clone
+público. Os 14 testes passaram no repo de trabalho e no snapshot público. O snapshot foi commitado
+localmente, sem remote e sem push. Nenhuma chamada foi feita à API do ML nem à OpenAI.
 
 **Nas sessões anteriores (06–07/09)**, para contexto. O detalhe está em `docs/07-backlog.md` §RESOLVIDOS:
 - **Método separado do negócio.** `produtos/` e `OPERACAO.md` saíram do git. O README foi reescrito
@@ -102,20 +104,21 @@ Não rodei nada que chame a API do ML nem a OpenAI.
 
 ## 6. Pendências, bugs conhecidos e próximos passos (em ordem)
 
-1. **Publicar o repo** (backlog item 1). O comando de mantenedor saiu do `package.json` para não ficar
-   quebrado no clone público. Rode `node scripts/publicar-repo.ts`, revise a lista de mudanças e depois
-   rode `node scripts/publicar-repo.ts --enviar`. Adicionar o remote e fazer o push é com o operador.
-   O gerador exporta o `HEAD` e **recusa árvore suja**, então trabalhe sempre commitado.
-2. **Manual de instalação.** O operador captura os 16 prints de `manual/PRINTS-NECESSARIOS.md`. Depois
-   o manual é montado, e as telas de terminal (números 12, 14, 15, 18, 23, 25, 26, 29, 30) são geradas
-   como texto, sem print.
-3. **Backlog que continua aberto** (`docs/07-backlog.md`):
+1. **Estruturar a documentação genérica.** Separar instalação, operação do agente e referência
+   técnica, de modo que outra pessoa use as próprias contas e chaves. O checklist dos 16 prints está
+   em `manual/PRINTS-NECESSARIOS.md`; as telas de terminal (12, 14, 15, 18, 23, 25, 26, 29, 30) serão
+   geradas como texto.
+2. **Gravar o teste e o vídeo.** O operador pretende fazer isso na semana seguinte, quando tiver
+   crédito no Claude Code. A gravação deve seguir a mesma numeração do manual.
+3. **Compartilhar o repo.** O snapshot público já está commitado localmente. Adicionar o remote e
+   fazer o push continua sendo ação do operador, depois da revisão da documentação.
+4. **Backlog que continua aberto** (`docs/07-backlog.md`):
    - comando de setup guiado;
    - testar o método num nicho distante do atual;
    - item 9: sincronizar `scripts/apuracao/` com o skill canônico. **Espera decisão do operador** e
      mexe em outro repo;
    - item 10: trazer os prompts de vídeo do operador para `prompts/`.
-4. **A pendência da operação** (ficha incompleta de anúncios já publicados) é dado de produto, não
+5. **A pendência da operação** (ficha incompleta de anúncios já publicados) é dado de produto, não
    engenharia. Está descrita no `OPERACAO.md`.
 
 **Limitação conhecida, que não é tarefa:** um concorrente que nunca entrou em catálogo não aparece
