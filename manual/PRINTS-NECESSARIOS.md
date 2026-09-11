@@ -1,6 +1,7 @@
 # Prints que preciso — checklist de captura
 
-**Regra geral:** só telas de **navegador**. Saída de terminal eu gero como texto no PDF.
+**Regra geral:** são 21 capturas visuais: 19 telas de **navegador**, uma do Claude Code (24) e uma
+da pasta de imagens (27). As 9 saídas de terminal serão geradas como texto no PDF.
 
 **Salve como** `manual/prints/NN-nome.png`, com o número desta lista. O número é o que amarra o
 print ao lugar certo no manual.
@@ -35,7 +36,7 @@ Capturar: a página com a instrução de instalação visível.
 
 ---
 
-## Parte 2 — Criar o app no Mercado Livre (9 prints — a parte mais longa)
+## Parte 2 — Criar o app no Mercado Livre (10 prints — a parte mais longa)
 
 > Faça tudo logado na sua **conta ML principal**. Conta de colaborador dá erro 403 depois,
 > e isso só aparece lá na frente — é o erro mais caro de descobrir tarde.
@@ -124,6 +125,10 @@ Serve para mostrar que a pessoa **conversa em português**, não decora comando.
 **27 — As 5 imagens geradas**
 Capturar: a pasta `produtos/<slug>/imagens/` com as miniaturas visíveis.
 
+Entre esta captura e a 28, grave os passos 27A–27C do manual: escolha humana do catálogo, elevação
+das permissões de escrita e revisão final do anúncio. Eles são decisões narradas e não
+precisam de print separado.
+
 **28 — O anúncio no ar**
 Capturar: a página pública do anúncio no Mercado Livre.
 Use um anúncio que você não se importe de mostrar.
@@ -140,8 +145,8 @@ Use um anúncio que você não se importe de mostrar.
 | 4 — OpenAI | 19–22 | 5 min |
 | 5 — Resultado | 24, 27, 28 | 5 min |
 
-**16 prints.** Os números que faltam (12, 14, 15, 18, 23, 25, 26, 29, 30) são saídas de terminal —
-eu gero como texto, você não precisa capturar.
+**21 capturas visuais.** Os números que faltam (12, 14, 15, 18, 23, 25, 26, 29, 30) são saídas de
+terminal — eu gero como texto, você não precisa capturar. Os passos 27A–27C são narrados no vídeo.
 
 Grave o vídeo **fazendo exatamente esta sequência**. Aí o vídeo e o manual contam a mesma história
 na mesma ordem, e quem travar no passo 6 acha o trecho do passo 6.

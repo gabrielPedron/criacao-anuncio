@@ -70,7 +70,8 @@ posição. Foi a auditoria que pegou isso.
 - `.ts` roda direto (type stripping do Node 24), sem build. Imports precisam da **extensão explícita**.
 - `scripts/apuracao/` é cópia do skill `apuracao-de-api` — corrigiu bug ali? sincronizar de volta com o skill.
 - Scripts em `scripts/ml/`, um por tarefa, saída em JSON ou tabela markdown.
-- Um produto = uma pasta em `produtos/<slug>/`: `dossie.md`, `ficha.json`, `raw/`, `oferta.md`.
+- Um produto = uma pasta em `produtos/<slug>/`: `raw/`, `dossie.md`, `base/`,
+  `prompts-imagens.json`, `imagens/` e `oferta*.json`.
 - Mensagens de erro e comentários em português.
 
 ## Estado atual

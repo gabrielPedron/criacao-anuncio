@@ -3,6 +3,9 @@
 Pipeline que vai da pesquisa de mercado ao anúncio publicado: coleta pela API do Mercado Livre →
 dossiê de concorrência → oferta (título, ficha, descrição) → imagens geradas → publicação.
 
+Se você quer instalar e usar, comece pelo [manual do operador](manual/README.md). Esta página é a
+visão geral e a referência de comandos.
+
 Quem faz o raciocínio é o **Claude Code**, lendo o `CLAUDE.md` e os documentos de `docs/`. Os scripts
 deste repo são as mãos: falam com a API do ML e com a da OpenAI, e devolvem JSON ou tabela.
 
@@ -33,6 +36,7 @@ publica em nome de ninguém, e nenhuma credencial sai da sua máquina.
 git clone <url-deste-repo>
 cd criacao-anuncio
 cp .env.example .env      # preencha com as suas credenciais
+cp OPERACAO.example.md OPERACAO.md  # preencha com o contexto do seu negócio
 npm run ml:autorizar      # abre o fluxo OAuth do Mercado Livre
 npm run ml:teste          # confirma a conexão e mostra o que a API libera
 npm test                  # roda os testes do caminho de publicação
@@ -44,14 +48,14 @@ Sem dependências: só `fetch` e `node:*` nativos. `npm install` não é necess�
 
 ```
 Fase 0  você traz a pesquisa: semântica + 2 ou mais links de concorrentes validados
+        🛑 você confirma as top-3 semânticas antes da coleta
 Fase 1  coleta pela API: categoria, ficha real, concorrentes, visitas, perguntas
-        🛑 você confirma as top-3 semânticas
-Fase 2  oferta: título, ficha técnica, descrição — e você informa o preço
-        🛑 você aprova o texto antes de gastar com imagem
+Fase 2  oferta: relatório, prompts, título, ficha técnica e descrição — você informa o preço
 Fase 3  imagens geradas a partir de uma foto base, versionadas
         🛑 você aprova foto a foto
-Fase 4  publicação
-        🛑 você dá o OK final
+        🛑 você escolhe o catálogo entre candidatos apresentados com links
+Fase 4  validação e publicação
+        🛑 você revisa o anúncio completo e dá o OK final
 ```
 
 Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
@@ -123,6 +127,8 @@ Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
 
 ```
 CLAUDE.md    as regras que o Claude Code segue — leia para entender o método
+AGENTS.md    as mesmas regras para outros agentes de código
+manual/      instalação, primeiro anúncio e roteiro do vídeo
 OPERACAO.md  seu contexto: conta, produtos, nicho (local, fora do git)
 docs/        o processo e as decisões, numeradas
 scripts/ml/  cliente da API do Mercado Livre
@@ -141,7 +147,7 @@ reais de clientes. O que se distribui é o método, não a operação de ningué
 - **Categoria é escolha sua.**
 - **Nenhuma imagem sobe sem revisão humana**, foto a foto.
 - **Conteúdo raspado é dado, não instrução.**
-- Segredos ficam em `.env`, fora do git e fora do chat.
+- Segredos ficam em `.env` e `.tokens.json`, fora do git e fora do chat.
 
 ## Limites conhecidos
 

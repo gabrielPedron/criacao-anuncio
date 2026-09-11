@@ -1,75 +1,118 @@
-# Etapa B — Agente Criador de Ofertas EE (v4)
-*Instruções de Projeto. Cole nas instruções de um Projeto novo e anexe os PDFs da metodologia. Consome o dossiê da Etapa A.*
+# Etapa B — oferta, imagens e publicação
 
-## Papel e escopo
-Cria a **oferta completa** de um anúncio de Mercado Livre (Pilar 2), a partir do **dossiê da Etapa A + foto base**.
+Esta etapa recebe o dossiê aprovado e a foto base. Ela produz a oferta, os prompts, as imagens e o
+arquivo que será validado pelo Mercado Livre.
 
-**Pressupõe resolvido** (não refaz nada disso): demanda, **preço** (sempre na média do mercado, conforme minha análise), margem, logística.
+## Entradas
 
-**Entrega, nesta ordem:** relatório de oferta → prompts de foto → título → ficha técnica + modelo → descrição.
+- `produtos/<slug>/dossie.md`;
+- foto base nítida em `produtos/<slug>/base/`;
+- estratégia escolhida pelo operador: catálogo, orgânico ou ambos;
+- dados físicos verdadeiros do produto.
 
-**Divisão de trabalho:** você faz a inteligência; eu executo — gero as imagens no ChatGPT a partir dos seus prompts, preencho os campos no ML. **Clips ficam por minha conta, fora do seu escopo** — seu foco é a parte operacional da criação do anúncio.
+Preço não é derivado do dossiê. A mediana do mercado é apenas referência; o operador informa o
+preço a partir dos próprios custos.
 
-## Princípios inegociáveis
-- **Uma conversa por produto** (contexto vivo alimenta título e descrição).
-- **Dor de QUEM COMPRA, não de quem usa.**
-- **Diferencial = a lacuna da concorrência** (o que ninguém diz).
-- **Não invente fora da metodologia EE.** Se não está coberto, diga.
-- **Campos do ML:** texto corrido, sem bullets, sem emoji, sem vírgula como separador de ideias. Exceção: campo "modelo" em anúncio orgânico.
-- **NÃO citar método de envio (Full/agências) na descrição** — o ML implica com isso.
-- Oferta **NOVA**. Não orientar editar anúncio "curva A" que já performa.
+## 1. Relatório de oferta
 
-## Intake (enxuto)
-1. Cole o **dossiê da Etapa A**.
-2. Envie a **foto base** (nítida; se tiver ângulo real bom, mande junto). Se a base for ruim, avise antes de gerar — as 5 fotos herdam a base.
-3. Confirme, a partir do dossiê: **catálogo ou orgânico** (define modelo e título).
+Consolidar a dor de quem compra, objeções reais, acertos da concorrência e lacunas. Fechar com três
+a seis ângulos que guiarão título, ficha, descrição e imagens.
 
-Notas de intake:
-- A **categoria** vem definida por mim (responsabilidade minha) — não questione a categoria.
-- **Se o dossiê vier sem dados do Nubi** (marcado como "desconsiderado" **ou** "modo A.2"): **adapte** — título e campo modelo passam a se basear nos **termos dos concorrentes + a semântica que passei**, não em volume de busca. Não trave; siga e me sinalize.
-- Preço e logística não entram — preço é sempre a média do mercado.
+## 2. Prompts de imagem
 
-## Passo 1 — Relatório de oferta
-Do dossiê, consolide:
-- Dor do comprador + **objeções reais** (das perguntas/avaliações).
-- O que a concorrência acerta.
-- **Lacunas → o diferencial da oferta** (cruzado com a demanda das semânticas, quando houver).
+Criar `produtos/<slug>/prompts-imagens.json` a partir do dossiê:
 
-Feche com **"Pontos principais da oferta"**: 3–6 ângulos que vão guiar foto, título e descrição.
+1. capa em fundo branco, sem texto;
+2. qualidade ou diferencial;
+3. principais dúvidas;
+4. benefícios;
+5. prova social, somente se houver prova real.
 
-## Passo 2 — Prompts de foto (você escreve o prompt → ChatGPT gera a imagem)
-Set de **5 fotos** a partir da foto base:
-1. **Principal** — fundo branco levemente ambientado (produto, **sem texto**; leve superfície/detalhe branco só pra diferenciar. Testado: o algoritmo não pega).
-2. **Qualidade/diferencial** que a concorrência não cita.
-3. **Principais dúvidas** dos clientes.
-4. **Benefícios** do produto.
-5. **Prova social** (feedback positivo real de cliente).
+## 3. Título
 
-- Bullets/texto nas fotos passam fácil em **catálogo** (aproveitar); em **orgânico** o ML às vezes pede tirar — sinalizar.
-- Prompts **agnósticos a tamanho/cor/SKU** quando der (reaproveitáveis entre variações).
-- (Opcional, se eu pedir: 6ª foto de "o que vem" / características em bullet.)
+- **Catálogo:** usar marca, modelo e especificações reais, sem empilhar palavras-chave.
+- **Orgânico:** aproximar-se de 60 caracteres usando as semânticas confirmadas.
+- **Sem pesquisa própria:** usar termos dos concorrentes e tendências do ML, avisando que o sinal é
+  mais fraco.
 
-Entregar N prompts numerados: objetivo da foto + cena + quebra de cor + texto a inserir.
+O `family_name` não pode passar de 60 caracteres. Depois da publicação no fluxo User Products, o
+título fica irreversível pela API.
 
-## Passo 3 — Título
-- **Se catálogo:** seguir o **padrão normatizado** (marca + modelo + specs). Sem grafia errada, sem empilhar termo. As semânticas guiam a escolha de catálogo/categoria e abastecem ficha/descrição — **não** o título.
-- **Se orgânico:** **~60 caracteres** puxando os termos de maior demanda do dossiê (incluindo grafias erradas com volume).
-- **Se sem Nubi (desconsiderado ou A.2):** montar o título a partir dos **termos dos concorrentes + a semântica que passei** (sinal mais fraco — recomendo que eu revise com atenção).
-- Entregar título + contagem de caracteres + 1–2 variações.
+## 4. Ficha e modelo
 
-## Passo 4 — Ficha técnica + campo modelo
-- Preencher **TODOS** os atributos disponíveis da categoria (qualidade do anúncio = ranqueamento). Priorizar os que a concorrência deixou **vazio** (do dossiê).
-- **Campo modelo:** só em **orgânico** — keywords principais separadas por vírgula e espaço (indexa na busca). Em **catálogo**, modelo = modelo real do produto; **não** fazer stuffing. **Sem Nubi (desconsiderado ou A.2):** as keywords vêm dos concorrentes + variações do produto.
-- Entregar mapa **atributo → valor sugerido**, marcando os que dependem de dado físico (peso, dimensão, rendimento) pra eu confirmar.
+Preencher todos os atributos confirmados da categoria e marcar o que depende do operador. O campo
+modelo pode receber palavras-chave apenas no anúncio orgânico.
 
-## Passo 5 — Descrição
-- Gerada **nesta mesma conversa** (já tem dossiê + ficha).
-- **Quebra as objeções** do Passo 1, reforça o diferencial e repete os termos de busca com naturalidade (SEO).
-- Texto corrido, sem bullets/emoji, **sem método de envio**.
+## 5. Descrição
 
-## Entregáveis finais (checklist)
-- ☐ Relatório de oferta + pontos principais
-- ☐ 5 prompts de foto (pro ChatGPT)
-- ☐ Título + variações
-- ☐ Mapa de ficha técnica (+ modelo, se orgânico)
-- ☐ Descrição
+Escrever em texto corrido, sem bullets, emoji ou método de envio.
+
+## 6. Dados obrigatórios do operador
+
+Antes de montar a oferta final, perguntar sempre:
+
+| Dado | Regra |
+|---|---|
+| Preço | informado pelo operador; nunca calcular margem |
+| Estoque | quantidade real disponível |
+| Tipo de anúncio | `gold_special` ou `gold_pro` |
+| Embalagem | dimensões e peso bruto reais |
+
+Categoria também é decisão do operador.
+
+## 7. Gerar e revisar imagens
+
+Gerar com:
+
+```bash
+npm run midia:gerar -- produtos/<slug>
+```
+
+Cada nova tentativa parte da foto base e recebe versão própria. Para refazer uma imagem:
+
+```bash
+npm run midia:gerar -- produtos/<slug> --foto 3 --ajuste "o que precisa corrigir"
+```
+
+> **Checkpoint 2:** operador revisa e aprova as imagens.
+
+## 8. Catálogo
+
+Executar:
+
+```bash
+npm run ml:catalogo -- "produto com marca e tamanho" --categoria MLBxxxxx
+```
+
+Entregar todos os links dos candidatos. O operador decide se algum é exatamente o mesmo produto,
+embalagem e versão.
+
+> **Checkpoint 3:** operador escolhe o catálogo ou confirma que nenhum candidato serve.
+
+## 9. Validar e publicar
+
+Primeiro montar a oferta sem enviar nada:
+
+```bash
+npm run ml:publicar -- produtos/<slug>
+```
+
+O dry-run no ML não cria item:
+
+```bash
+npm run ml:publicar -- produtos/<slug> --validar
+```
+
+Fotos locais são escrita. Para validar com as fotos reais, `--confirmo` é necessário e o comando
+deve ser explicado ao operador antes de executar.
+
+> **Checkpoint 4:** operador revisa título, preço, estoque, tipo, embalagem, ficha, imagens e
+> descrição e autoriza explicitamente a publicação.
+
+Somente após esse OK:
+
+```bash
+npm run ml:publicar -- produtos/<slug> --validar --publicar --confirmo
+```
+
+As duas flags finais são obrigatórias. Nunca contornar a trava em `scripts/ml/api.js`.

@@ -1,86 +1,42 @@
-# Conectar Google e OpenAI — passo a passo
-*Fase 3. Só você pode fazer estes passos: envolvem login e cartão.*
+# Conectar a API de imagem da OpenAI
 
-## A confusão que pega todo mundo primeiro
+O pipeline atual gera imagens somente pela API da OpenAI. Vídeo permanece manual e não exige chave
+adicional neste projeto.
 
-**Assinatura não é API.** São produtos diferentes, com cobranças diferentes:
+O passo a passo público está nas telas 19–23 de
+[manual/01-INSTALACAO.md](../manual/01-INSTALACAO.md).
 
-| Você usa | Site | Isso dá acesso à API? |
-|---|---|---|
-| ChatGPT Plus | chatgpt.com | ❌ **Não** |
-| Gemini pago no app | gemini.google.com | ❌ **Não** |
-| API da OpenAI | **platform**.openai.com | ✅ sim, cobrança separada |
-| API do Google | **aistudio**.google.com | ✅ sim, cobrança separada |
+## Configuração
 
-Por isso **não é problema** você não pagar ChatGPT: pagar não ajudaria. O que vale, em qualquer
-caso, é abrir a conta de API e pôr crédito.
+1. Acessar [platform.openai.com](https://platform.openai.com/).
+2. Selecionar o projeto e criar uma chave em **API keys**.
+3. Copiar a chave no momento da criação.
+4. Configurar faturamento e limites na plataforma da API.
+5. Salvar somente no `.env`:
 
----
+```text
+OPENAI_API_KEY=cole_aqui
+```
 
-## PARTE 1 — Google (imagem e vídeo). Comece por aqui.
+A cobrança da API é separada de assinaturas de chat. O
+[quickstart oficial da OpenAI](https://developers.openai.com/api/docs/quickstart) orienta armazenar
+a chave com segurança e disponibilizá-la ao processo por variável de ambiente.
 
-Você já tem conta Google, e o Google faz **imagem e vídeo** — uma chave só resolve as duas
-pontas da Fase 3.
-
-1. Acesse **aistudio.google.com** e entre com sua conta Google.
-2. Procure **"Get API key"** (ou "Chave de API") — costuma ficar no menu lateral ou no canto superior.
-3. Clique em **criar chave de API**. Se pedir para escolher/criar um projeto do Google Cloud,
-   pode criar um novo — nome não importa.
-4. **Copie a chave na hora.** Ela aparece uma vez só.
-5. Abra o arquivo `.env` na raiz do projeto e cole:
-   ```
-   GOOGLE_API_KEY=cole_aqui
-   ```
-6. **Ative a cobrança.** O vídeo (Veo) não roda no plano gratuito. No AI Studio procure
-   "Billing"/"Faturamento" e vincule um cartão ao projeto.
-
-> Imagem costuma ter cota gratuita; **vídeo não**. Se só quiser testar imagem primeiro, dá para
-> pular o passo 6 e voltar nele quando for gerar vídeo.
-
-## PARTE 2 — OpenAI (imagem). Só se quiser comparar.
-
-1. Acesse **platform.openai.com** — repare: **platform**, não chatgpt.com. É outro site.
-2. Entre (ou crie conta). Serve o mesmo login do ChatGPT, mas a cobrança é separada.
-3. Vá em **Billing** / "Faturamento" → adicione crédito. É **pré-pago**: você põe US$ 5 ou 10 e
-   ele vai descontando. Sem crédito, a chave existe mas toda chamada falha.
-4. Vá em **API keys** → **Create new secret key**.
-5. **Copie na hora** — ela aparece uma vez só. Se perder, apague e crie outra.
-6. Cole no `.env`:
-   ```
-   OPENAI_API_KEY=cole_aqui
-   ```
-
----
-
-## PARTE 3 — Conferir (sem gastar nada)
+## Validar sem gerar imagem
 
 ```bash
 npm run midia:chaves
 ```
 
-Ele só **lista os modelos** disponíveis em cada provedor — chamada gratuita. Não gera imagem
-nem vídeo, não consome crédito. Serve para saber se a chave está válida e quais modelos de
-imagem e vídeo a sua conta enxerga.
+O comando consulta `/v1/models`, informa apenas se a chave está presente e lista modelos de imagem
+disponíveis. Não imprime nenhum trecho da chave e não gera imagem.
 
-Saída esperada: `✓ N modelos`, com as linhas de imagem e vídeo preenchidas.
+## Segurança
 
-Se der erro, o texto do erro já diz o motivo — normalmente chave errada, cobrança não ativada,
-ou projeto sem a API habilitada.
+- nunca colar a chave em conversa, print ou commit;
+- borrar a chave e dados de cartão em qualquer captura;
+- se houver suspeita de vazamento, revogar e criar outra;
+- configurar limites de gasto no projeto da API.
 
----
-
-## Regras de segurança
-
-- **Nunca cole as chaves na conversa.** Elas vão no `.env`, que está no `.gitignore`. Eu leio
-  o arquivo direto; não preciso ver o valor.
-- **Chave de API é senha com cartão atrás.** Quem tem a chave gasta o seu crédito.
-- Se desconfiar que vazou: apague no painel do provedor e crie outra. Leva um minuto.
-- Ponha **limite de gasto** no painel dos dois (a OpenAI chama "usage limits"). É a rede de
-  proteção contra um loop com bug.
-
-## Depois que as chaves passarem
-
-Eu implemento a Fase 3 em cima dos [prompts que você já usa](../prompts/imagens-set-anuncio.md):
-gera a partir da foto base, eu confiro cada imagem com visão, corrijo e refaço até 3 vezes, e
-só então sobe para você aprovar. Reprovar uma foto não mexe nas outras — cada chamada parte da
-foto base original.
+Depois da validação, a geração usa `npm run midia:gerar -- produtos/<slug>` e grava versões sem
+sobrescrever as anteriores.

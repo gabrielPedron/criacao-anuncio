@@ -63,24 +63,28 @@ Fora das pastas de produto: `produtos/_catalogo/` guarda o retrato da conta inte
 ## O caminho de dados, ponta a ponta
 
 ```
-FASE 0 (você, na mão): Virtual Seller + Nubimetrics → semântica e top buscas
+FASE 0 (você, na mão): pesquisa de mercado → semântica e top buscas
                        2+ links de concorrentes validados
    │
+   ├─ agente propõe top-3 semânticas
+   │  🛑 CP1 você confirma antes da coleta
    ▼
 links seus + categoria
    └─ ml:referencia / ml:descobrir / ml:produto / ml:demanda / ml:fotos ─┐
       Chrome (avaliações) ────────────────────────────────────────────────┤
                                                                           ▼
                                                          raw/*.json  →  dossie.md
-                                                                          │  🛑 CP1 top-3 semânticas
+                                                                          │
                                                                           ▼
-                                     preço/estoque/tipo/dimensões  →  oferta.json + prompts-imagens.json
-                                                                          │  🛑 CP2 aprovar a copy
-                                                                          ▼
+                         relatório → prompts → título → ficha/modelo → descrição → oferta*.json
+                                                                          │
                                                     midia:gerar  →  imagens/0N-vN.png
-                                                                          │  🛑 CP3 aprovar imagens
+                                                                          │  🛑 CP2 revisar imagens
                                                                           ▼
-                                       ml:catalogo (você escolhe)  →  ml:publicar --validar
+                                              ml:catalogo → candidatos com links
+                                                                          │  🛑 CP3 você escolhe
+                                                                          ▼
+                                                        ml:publicar --validar
                                                                           │  🛑 CP4 OK no anúncio
                                                                           ▼
                                                      ml:publicar --publicar --confirmo
@@ -114,20 +118,17 @@ ativo, exigindo que você feche na mão.
 `publicar-cli.ts` agora lê o `v.ok`, imprime erros e avisos um a um, e **bloqueia o `--publicar`
 quando o dry-run reprova** — antes ele publicaria por cima de um payload recusado.
 
-### 2. README defasado — 12 dos 24 comandos não estão lá
-Faltam `ml:descobrir`, `ml:catalogo`, `ml:referencia`, `ml:recriar`, `ml:sugerir-catalogo`,
-`midia:gerar`, `midia:chaves`, `ml:meus-anuncios`, `ml:buscar`, `ml:url`, `ml:token`,
-`apuracao:teste`. O README é a porta de entrada do item 5 do backlog (empacotar para outros).
+### 2. ~~README defasado~~ ✅ RESOLVIDO em 07/09/2026
+O README passou a listar os comandos públicos e, em 10/09, ganhou um caminho direto para o manual
+do operador.
 
 ### 3. ~~Documentos que se contradizem~~ ✅ ALINHADOS em 06/09/2026
 *Registro do que estava errado:*
-`docs/00-briefing.md` (§6, e linhas 17 e 31), `docs/01-roadmap.md` (§"Por que a imagem fica no braço")
-e o `README.md` ainda dizem **"imagem no braço, não automatizar via API"**. A Fase 3 roda por API
-desde 28/08. Só o `docs/08` registra a mudança, no fim. Foi exatamente assim que a regra de preço
-ficou invertida por dias.
+`docs/00-briefing.md`, `docs/01-roadmap.md` e o `README.md` diziam **"imagem no braço, não automatizar
+via API"**. A Fase 3 roda por API desde 28/08. A regra antiga foi removida dos documentos ativos.
 
-`docs/08` também diz "Reautorização pendente — o token não carrega `write`". Você já publicou
-anúncios desde então; isso está resolvido e o documento não sabe.
+`docs/08` também dizia "Reautorização pendente — o token não carrega `write`". Isso foi resolvido e
+o processo completo foi consolidado em 10/09.
 
 ### 4. ~~Zero teste no caminho que custa dinheiro~~ ✅ RESOLVIDO em 06/09/2026
 `scripts/ml/publicar.test.ts` — 10 checks em `node --test` (`npm test`), sem framework.

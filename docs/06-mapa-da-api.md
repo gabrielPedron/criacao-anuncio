@@ -68,4 +68,7 @@ Snippets em [../coleta/snippets-chrome.md](../coleta/snippets-chrome.md).
 
 ## Escrita
 
-`scripts/ml/api.js` bloqueia POST/PUT/DELETE. A permissão "Publicação e sincronização" do app está em **Leitura** — mesmo que a trava do código caísse, o ML recusaria. Para publicar (Fase 4): mudar a permissão no painel, reautorizar (`ml:url` → `ml:token`) e implementar o fluxo **User Products**, que é o padrão novo do ML.
+`scripts/ml/api.js` bloqueia POST/PUT/DELETE/PATCH por padrão. Para publicar, o operador habilita o
+escopo OAuth `write`, muda **Publicação e sincronização** para escrita e reautoriza com
+`npm run ml:autorizar`. O fluxo **User Products** já está implementado em `ml:publicar`; cada envio
+continua exigindo o OK humano e as flags `--publicar --confirmo`.

@@ -5,12 +5,12 @@
 - **Produto + termo genérico:** 
 - **Categoria (definida por mim):** 
 - **Estratégia:** catálogo / orgânico / ambos
-- **Origem dos dados:** API (`ml:concorrentes`, `ml:anuncio`, `ml:categoria`) / Chrome / ambos
+- **Origem dos dados:** API (`ml:referencia`, `ml:descobrir`, `ml:produto`, `ml:categoria`) / Chrome / ambos
 
 ## 1. Semânticas
-> Sem Nubimetrics (fora do fluxo desde 27/08/2026): os termos vêm das tendências do ML
-> (`ml:semantica`) e dos títulos dos mais vendidos. **Não há volume nem nº de anúncios** —
-> revisar o título com atenção redobrada.
+> A pesquisa da ferramenta do operador entra primeiro. Sem ela, os termos vêm das tendências do ML
+> (`ml:semantica`) e dos títulos dos concorrentes, sem volume confiável — revisar o título com
+> atenção redobrada.
 
 | Termo | Origem (tendência ML / título de concorrente) | Aparece em quantos dos top |
 |---|---|---|
@@ -34,7 +34,7 @@
 |  |  |  |
 
 ## 6. Cobertura de ficha técnica
-*(schema real vem de `npm run ml:categoria`; o preenchido vem de `npm run ml:anuncio`)*
+*(schema real vem de `npm run ml:categoria`; o preenchido vem de `npm run ml:referencia` e `npm run ml:produto`)*
 
 | Atributo (id) | Exigência | Concorrentes preenchem? | Nossa oportunidade |
 |---|---|---|---|

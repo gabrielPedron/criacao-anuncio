@@ -33,13 +33,13 @@ lendo os docs e rodando os scripts.
 | Branch principal | **`master`**. **Não existe `main`** neste repo |
 | Remote | **nenhum**. O repo só existe nesta máquina |
 
-Últimos commits antes do handoff, do mais novo para o mais antigo:
+Commits recentes relevantes, do mais novo para o mais antigo:
 ```
+816d711 Estrutura documentacao generica do operador
+4e12b1c Atualiza handoff apos snapshot publico
+0d8f879 Remove comando interno do pacote publico
 c38d2bb Adiciona npm run publicar, que regera o snapshot publico
 06ea55d Separa o metodo do negocio e reescreve o README como generico
-52f515b Fecha os achados menores e encerra o code review
-1a701ba Paraleliza a descoberta: 1m36s para 25s
-90bc13c Reune pega, brl e opc num lugar so
 ```
 
 **O que estava solto e foi commitado no `handoff-codex`.** Nada foi descartado. Arquivo por arquivo:
@@ -48,7 +48,7 @@ c38d2bb Adiciona npm run publicar, que regera o snapshot publico
 |---|---|---|
 | `.gitignore` | modificado | +2 linhas: ignora `manual/prints/`. Os prints do manual mostram dados reais da conta |
 | `AGENTS.md` | novo | Cópia **byte a byte** do `CLAUDE.md`, para o Codex ler as mesmas regras |
-| `manual/PRINTS-NECESSARIOS.md` | novo | Checklist dos 16 prints de navegador que o operador precisa capturar para o manual/vídeo de instalação. Diz quais 4 prints mostram segredo e precisam ser borrados |
+| `manual/PRINTS-NECESSARIOS.md` | novo | Checklist das 21 capturas visuais que o operador precisa para o manual/vídeo. Diz quais 4 mostram segredo e precisam ser borradas |
 | `docs/AI_HANDOFF.md` | novo | Este arquivo |
 
 `manual/prints/` existe, vazia e ignorada: é onde os prints vão cair.
@@ -63,6 +63,12 @@ interno `publicar` do `package.json`. Nenhum push foi feito.
 interno `publicar` saiu do `package.json`, porque o script correspondente não faz parte do clone
 público. Os 14 testes passaram no repo de trabalho e no snapshot público. O snapshot foi commitado
 localmente, sem remote e sem push. Nenhuma chamada foi feita à API do ML nem à OpenAI.
+
+Depois disso, a documentação genérica foi estruturada em `manual/`: instalação, primeiro anúncio,
+roteiro do vídeo e checklist de capturas. Foi criado `OPERACAO.example.md`, as fontes canônicas foram
+declaradas e uma revisão em dois eixos alinhou User Products, os quatro checkpoints, a ordem da Etapa
+B, os segredos locais e a estrutura real de `produtos/<slug>/`. Os seis achados da revisão foram
+corrigidos antes do novo snapshot público.
 
 **Nas sessões anteriores (06–07/09)**, para contexto. O detalhe está em `docs/07-backlog.md` §RESOLVIDOS:
 - **Método separado do negócio.** `produtos/` e `OPERACAO.md` saíram do git. O README foi reescrito
@@ -92,33 +98,35 @@ Estão completas no `AGENTS.md`. As que mais machucam se forem esquecidas:
 - **Sem dependências novas.** Comentários e mensagens de erro em português.
 - **Push é do operador.** O `publicar` só commita no repo público; o `git push` fica com ele.
 
-## 5. Testes e comandos executados nesta sessão
+## 5. Testes e comandos executados nesta continuação
 
 | Comando | Resultado |
 |---|---|
 | `npm test` | **14/14 passando**, 0 falhas (`scripts/ml/publicar.test.ts`, via `node --test`) |
-| `git status` / `git log` / `git diff` | o estado da §2 |
+| `npm run apuracao:teste` | núcleo de apuração passando |
+| `npm run ml:apurar -- /users/me --repeticoes 3` | leitura real concluída: 3 amostras, 0 falhas e 0 campos instáveis |
+| links, comandos e numeração do manual | links locais válidos, 22 comandos definidos e telas 01–30 completas |
+| `git diff --check` | sem erro de whitespace; apenas aviso esperado de CRLF do Git no Windows |
 | `node --version` | v24.14.1 |
 
-Não rodei nada que chame a API do ML nem a OpenAI.
+Não houve escrita na API do Mercado Livre nem chamada de geração na OpenAI.
 
 ## 6. Pendências, bugs conhecidos e próximos passos (em ordem)
 
-1. **Estruturar a documentação genérica.** Separar instalação, operação do agente e referência
-   técnica, de modo que outra pessoa use as próprias contas e chaves. O checklist dos 16 prints está
-   em `manual/PRINTS-NECESSARIOS.md`; as telas de terminal (12, 14, 15, 18, 23, 25, 26, 29, 30) serão
-   geradas como texto.
-2. **Gravar o teste e o vídeo.** O operador pretende fazer isso na semana seguinte, quando tiver
+1. **Gravar o teste e o vídeo.** A documentação textual e a revisão já estão concluídas. O checklist
+   contém 21 capturas visuais; as telas de terminal
+   (12, 14, 15, 18, 23, 25, 26, 29, 30) serão geradas como texto. O operador pretende gravar na
+   semana seguinte, quando tiver
    crédito no Claude Code. A gravação deve seguir a mesma numeração do manual.
-3. **Compartilhar o repo.** O snapshot público já está commitado localmente. Adicionar o remote e
+2. **Compartilhar o repo.** O snapshot público já está commitado localmente. Adicionar o remote e
    fazer o push continua sendo ação do operador, depois da revisão da documentação.
-4. **Backlog que continua aberto** (`docs/07-backlog.md`):
+3. **Backlog que continua aberto** (`docs/07-backlog.md`):
    - comando de setup guiado;
    - testar o método num nicho distante do atual;
    - item 9: sincronizar `scripts/apuracao/` com o skill canônico. **Espera decisão do operador** e
      mexe em outro repo;
    - item 10: trazer os prompts de vídeo do operador para `prompts/`.
-5. **A pendência da operação** (ficha incompleta de anúncios já publicados) é dado de produto, não
+4. **A pendência da operação** (ficha incompleta de anúncios já publicados) é dado de produto, não
    engenharia. Está descrita no `OPERACAO.md`.
 
 **Limitação conhecida, que não é tarefa:** um concorrente que nunca entrou em catálogo não aparece

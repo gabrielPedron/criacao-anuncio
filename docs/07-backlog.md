@@ -1,5 +1,5 @@
 # Backlog
-*Atualizado em 06/09/2026 — itens vindos da leitura do repo (ver [17-como-roda.md](17-como-roda.md)).*
+*Atualizado em 10/09/2026 — itens vindos da leitura do repo (ver [17-como-roda.md](17-como-roda.md)).*
 *Contagem honesta: começou a sessão com 7 abertos, fechamos 7 e eu criei 9 lendo o código —
 6 morreram no mesmo dia. Sobrou o que está abaixo.*
 
@@ -21,16 +21,12 @@ produto a que pertence. Decidido em 07/09/2026.
 
 ## FAZER  *(1)*
 
-### 1. Publicar o repo com histórico limpo
-A separação já foi feita, mas **`git rm --cached` não limpa o passado**: os 113 objetos de
-`produtos/` continuam em commits antigos, incluindo as perguntas reais de clientes
-(commit `5a701e0`). Quem clonar este repo hoje leva tudo.
+### 1. Compartilhar o repo público
+O snapshot sem histórico já existe em `../criacao-anuncio-publico`, passou pela varredura de
+segredos e está commitado localmente. Falta revisar o manual depois do teste gravado, adicionar o
+remote e fazer o primeiro push — ações do operador.
 
-**Para publicar:** gerar o repo público como **snapshot novo** (`git init` sobre a árvore atual,
-sem histórico), mantendo este aqui privado como repo de trabalho. Não é fork mantido em paralelo —
-é passo de publicação: o código é o mesmo, e republicar é copiar a árvore de novo.
-
-*Também falta:* comando de setup guiado, e testar o método num nicho distante do atual.
+*Também falta:* comando de setup guiado e testar o método num nicho distante do atual.
 
 ---
 
@@ -66,7 +62,7 @@ pessoas. Isso vale **antes** de qualquer automação — o prompt é o ativo, a 
 *Só depois disso:* confirmar como o ML aceita vídeo hoje (historicamente `video_id` de YouTube, o
 que adiciona um passo de upload) e medir o custo por segundo, que é a parte cara.
 
-### 11. Empacotar o processo para outras pessoas — **decidido em 07/09, parcialmente destravado**
+### 11. Empacotar o processo para outras pessoas — **documentação estruturada em 10/09**
 
 **DECISÃO: distribuir o código e o como usar. Nada é operado pelo dono do repo.**
 Cada pessoa cria a própria conta de desenvolvedor no ML, usa as próprias chaves, faz a própria
@@ -81,10 +77,11 @@ Isso mata três riscos sem trabalho nenhum:
 *Sobra um risco:* quando o ML mudar endpoint, o código dos outros quebra. Sem obrigação contratual,
 mas é reputação. **Deixar explícito no README** que a manutenção acompanha o uso dele, não um SLA.
 
-**DESTRAVADO — virou o item 2 (FAZER):** separar "método" de "meu negócio" nos documentos.
+**FEITO:** método e operação foram separados. O manual agora tem instalação, primeiro anúncio,
+roteiro de gravação e um `OPERACAO.example.md` sem dados reais.
 
-*Continua esperando pilotos:* testar em nicho distante do atual, para saber se o método é geral ou
-se só rende em produto físico de ficha técnica rica. E o comando de setup guiado.
+*Continua esperando:* o teste gravado para inserir prints e saídas reais, um piloto em nicho distante
+e o comando de setup guiado.
 
 ### 12. Tornar o processo visível — **metade destravada**
 Extensão do item 11, do lado de *mostrar* e não de empacotar. São três públicos, e só um depende da
