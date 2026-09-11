@@ -33,7 +33,7 @@ publica em nome de ninguém, e nenhuma credencial sai da sua máquina.
 ## Instalação
 
 ```bash
-git clone <url-deste-repo>
+git clone https://github.com/gabrielPedron/criacao-anuncio.git
 cd criacao-anuncio
 cp .env.example .env      # preencha com as suas credenciais
 cp OPERACAO.example.md OPERACAO.md  # preencha com o contexto do seu negócio

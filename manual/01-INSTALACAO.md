@@ -98,7 +98,7 @@ Salve e confirme que o novo aplicativo aparece em **Minhas aplicações**.
 Clone o repositório, entre na pasta e confirme o Node:
 
 ```powershell
-git clone <URL_DO_REPOSITORIO>
+git clone https://github.com/gabrielPedron/criacao-anuncio.git
 Set-Location criacao-anuncio
 node --version
 ```

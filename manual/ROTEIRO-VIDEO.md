@@ -5,7 +5,7 @@ Esta é a folha de produção do vídeo. Grave na ordem das telas e, ao chegar n
 
 ## Antes de gravar
 
-- publique o repositório e substitua `<URL_DO_REPOSITORIO>` pela URL real;
+- confirme que o repositório público abre em https://github.com/gabrielPedron/criacao-anuncio;
 - separe produto, categoria, estratégia, foto base, pesquisa semântica e 2+ concorrentes validados;
 - confirme créditos do Claude Code e da API da OpenAI;
 - use navegador com cerca de 1280 px e zoom em 100%;

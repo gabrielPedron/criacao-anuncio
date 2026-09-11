@@ -1,5 +1,5 @@
 # Handoff para outro agente (Codex)
-*Escrito em 10/09/2026, fim de uma sessão do Claude Code. É a foto do estado. As regras ficam no `AGENTS.md`.*
+*Escrito em 10/09/2026 e atualizado em 11/09/2026. É a foto do estado. As regras ficam no `AGENTS.md`.*
 
 > **Este arquivo vai para o repo público** quando for commitado (o gerador do snapshot exporta o
 > `HEAD`). Não escreva aqui nome de conta, de loja, de pessoa nem id de usuário. Isso mora no
@@ -35,11 +35,11 @@ lendo os docs e rodando os scripts.
 
 Commits recentes relevantes, do mais novo para o mais antigo:
 ```
+aad9ef9 Integra capturas ao roteiro de gravacao
+864e887 Alinha manual e referencias ao fluxo atual
 816d711 Estrutura documentacao generica do operador
 4e12b1c Atualiza handoff apos snapshot publico
 0d8f879 Remove comando interno do pacote publico
-c38d2bb Adiciona npm run publicar, que regera o snapshot publico
-06ea55d Separa o metodo do negocio e reescreve o README como generico
 ```
 
 **O que estava solto e foi commitado no `handoff-codex`.** Nada foi descartado. Arquivo por arquivo:
@@ -53,16 +53,17 @@ c38d2bb Adiciona npm run publicar, que regera o snapshot publico
 
 `manual/prints/` existe, vazia e ignorada: é onde os prints vão cair.
 
-**O repo público** fica em `../criacao-anuncio-publico`, branch `main`, sem remote. O snapshot foi
-regenerado e commitado localmente em 10/09, depois da integração do handoff e da remoção do comando
-interno `publicar` do `package.json`. Nenhum push foi feito.
+**O repo público** fica em `../criacao-anuncio-publico`, branch `main`, com o remote
+`https://github.com/gabrielPedron/criacao-anuncio.git`. O snapshot foi regenerado e publicado no
+GitHub depois da integração do handoff e da remoção do comando interno `publicar` do `package.json`.
 
 ## 3. O que foi feito
 
 **Continuação no Codex (10/09):** o handoff foi integrado ao `master` por fast-forward. O comando
 interno `publicar` saiu do `package.json`, porque o script correspondente não faz parte do clone
-público. Os 14 testes passaram no repo de trabalho e no snapshot público. O snapshot foi commitado
-localmente, sem remote e sem push. Nenhuma chamada foi feita à API do ML nem à OpenAI.
+público. Os 14 testes passaram no repo de trabalho e no snapshot público. O snapshot foi publicado
+em `https://github.com/gabrielPedron/criacao-anuncio`. Nenhuma chamada foi feita à API do ML nem à
+OpenAI.
 
 Depois disso, a documentação genérica foi estruturada em `manual/`: instalação, primeiro anúncio,
 roteiro do vídeo e checklist de capturas. Foi criado `OPERACAO.example.md`, as fontes canônicas foram
@@ -113,12 +114,10 @@ Não houve escrita na API do Mercado Livre nem chamada de geração na OpenAI.
 
 ## 6. Pendências, bugs conhecidos e próximos passos (em ordem)
 
-1. **Publicar o snapshot.** Adicionar o remote no repo público, fazer o primeiro push e substituir
-   `<URL_DO_REPOSITORIO>` pela URL real antes de gravar a tela 12.
-2. **Gravar o teste e o vídeo.** A documentação textual e a revisão já estão concluídas. O checklist
+1. **Gravar o teste e o vídeo.** A documentação textual e a revisão já estão concluídas. O checklist
    contém 21 capturas visuais; as telas de terminal (12, 14, 15, 18, 23, 25, 26, 29 e 30) serão
    geradas como texto. A gravação deve seguir a mesma numeração do manual.
-3. **Backlog que continua aberto** (`docs/07-backlog.md`):
+2. **Backlog que continua aberto** (`docs/07-backlog.md`):
    - comando de setup guiado;
    - testar o método num nicho distante do atual;
    - item 9: sincronizar `scripts/apuracao/` com o skill canônico. **Espera decisão do operador** e
