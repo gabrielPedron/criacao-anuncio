@@ -113,13 +113,11 @@ Não houve escrita na API do Mercado Livre nem chamada de geração na OpenAI.
 
 ## 6. Pendências, bugs conhecidos e próximos passos (em ordem)
 
-1. **Gravar o teste e o vídeo.** A documentação textual e a revisão já estão concluídas. O checklist
-   contém 21 capturas visuais; as telas de terminal
-   (12, 14, 15, 18, 23, 25, 26, 29, 30) serão geradas como texto. O operador pretende gravar na
-   semana seguinte, quando tiver
-   crédito no Claude Code. A gravação deve seguir a mesma numeração do manual.
-2. **Compartilhar o repo.** O snapshot público já está commitado localmente. Adicionar o remote e
-   fazer o push continua sendo ação do operador, depois da revisão da documentação.
+1. **Publicar o snapshot.** Adicionar o remote no repo público, fazer o primeiro push e substituir
+   `<URL_DO_REPOSITORIO>` pela URL real antes de gravar a tela 12.
+2. **Gravar o teste e o vídeo.** A documentação textual e a revisão já estão concluídas. O checklist
+   contém 21 capturas visuais; as telas de terminal (12, 14, 15, 18, 23, 25, 26, 29 e 30) serão
+   geradas como texto. A gravação deve seguir a mesma numeração do manual.
 3. **Backlog que continua aberto** (`docs/07-backlog.md`):
    - comando de setup guiado;
    - testar o método num nicho distante do atual;
