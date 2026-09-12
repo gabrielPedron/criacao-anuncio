@@ -6,7 +6,8 @@ correspondente; por isso não devem ser renumerados quando as imagens forem inse
 ## Antes de começar
 
 Você precisa de uma conta principal de vendedor no Mercado Livre, acesso ao painel de aplicativos
-do ML, Git, Node.js 24 ou superior, Claude Code e uma conta na plataforma de API da OpenAI.
+do ML, Git, Node.js 24 ou superior, Claude Code ou Codex local, e uma conta na plataforma de API da
+OpenAI.
 
 Os segredos ficam somente nos arquivos locais `.env` e `.tokens.json`. Nunca cole Secret Key, chave
 da OpenAI, token ou o valor do `code=` numa conversa, captura pública ou commit.
@@ -18,10 +19,19 @@ da OpenAI, token ou o valor do `code=` numa conversa, captura pública ou commit
 Acesse [nodejs.org](https://nodejs.org/), instale uma versão compatível e mantenha as opções padrão.
 O projeto usa recursos nativos do Node 24 e não possui dependências para instalar.
 
-### 02 — Instalar e entrar no Claude Code
+### 02 — Instalar e entrar no Claude Code ou Codex
 
-Acesse [claude.com/claude-code](https://claude.com/claude-code) e use a instrução de instalação
-mostrada no site. Depois, autentique o Claude Code com a sua própria conta.
+Escolha um dos dois agentes. O restante do projeto e os comandos são iguais:
+
+| Opção | Onde instalar | Arquivo de regras lido pelo agente |
+|---|---|---|
+| Claude Code | [claude.com/claude-code](https://claude.com/claude-code) | `CLAUDE.md` |
+| Codex local | [aplicativo para Windows](https://learn.chatgpt.com/docs/windows/windows-app) ou [CLI](https://learn.chatgpt.com/docs/codex/cli) | `AGENTS.md` |
+
+O Codex está incluído em planos elegíveis do ChatGPT; confira a
+[página oficial de planos](https://learn.chatgpt.com/docs/pricing) porque disponibilidade e limites
+podem mudar. Use o Codex local neste fluxo: `.env`, `.tokens.json`, fotos e produtos ficam no seu
+computador e não acompanham o repositório público para a nuvem.
 
 > A interface e o comando de instalação podem mudar. Na gravação, siga o que o site oficial mostrar
 > no dia, sem copiar um comando antigo deste manual.
@@ -104,7 +114,12 @@ node --version
 ```
 
 A versão deve começar com `v24` ou ser superior. Não rode `npm install`: o projeto usa somente
-recursos nativos.
+recursos nativos. Depois, abra esta pasta no agente escolhido. Não é necessário importar um prompt:
+o Claude Code encontra `CLAUDE.md`, e o Codex encontra `AGENTS.md` antes de começar o trabalho.
+
+- Claude Code no terminal: execute `claude` dentro da pasta.
+- Codex CLI: execute `codex` dentro da pasta.
+- Codex no aplicativo: adicione ou abra um projeto local e selecione a pasta `criacao-anuncio`.
 
 ### 13 — Localizar App ID e Secret Key
 

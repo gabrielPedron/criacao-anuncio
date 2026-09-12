@@ -1,7 +1,7 @@
 # Prints que preciso — checklist de captura
 
-**Regra geral:** são 21 capturas visuais: 19 telas de **navegador**, uma do Claude Code (24) e uma
-da pasta de imagens (27). As 9 saídas de terminal serão geradas como texto no PDF.
+**Regra geral:** são 21 capturas visuais: 19 telas de **navegador**, uma do agente escolhido (24) e
+uma da pasta de imagens (27). As 9 saídas de terminal serão geradas como texto no PDF.
 
 **Salve como** `manual/prints/NN-nome.png`, com o número desta lista. O número é o que amarra o
 print ao lugar certo no manual.
@@ -30,9 +30,10 @@ Se preferir, refaça esses passos com uma conta de teste. Mas borrar resolve.
 Onde: `nodejs.org`
 Capturar: a página inicial com o botão de download em destaque.
 
-**02 — Site do Claude Code**
-Onde: `claude.com/claude-code`
-Capturar: a página com a instrução de instalação visível.
+**02 — Agente de código escolhido**
+Onde: página oficial do Claude Code ou do Codex.
+Capturar: a página com a opção de instalação escolhida visível. Salvar como
+`02-agente-codigo.png`.
 
 ---
 
@@ -118,9 +119,10 @@ separadas, e pagar o ChatGPT não dá acesso à API.
 
 ## Parte 5 — Resultado (3 prints)
 
-**24 — Claude Code rodando o processo**
-Capturar: a janela do Claude Code no meio de um checkpoint, pedindo sua confirmação.
+**24 — Agente rodando o processo**
+Capturar: a janela do Claude Code ou do Codex no meio de um checkpoint, pedindo sua confirmação.
 Serve para mostrar que a pessoa **conversa em português**, não decora comando.
+Salvar como `24-agente-checkpoint.png`.
 
 **27 — As 5 imagens geradas**
 Capturar: a pasta `produtos/<slug>/imagens/` com as miniaturas visíveis.

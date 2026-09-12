@@ -1,7 +1,8 @@
 # Primeiro anúncio — como conversar com o agente
 
-Este guia cobre as telas 24–30. Você não precisa decorar os comandos: abra o Claude Code na pasta do
-projeto, explique o produto e responda aos checkpoints. O agente lê as regras e usa os scripts.
+Este guia cobre as telas 24–30. Você não precisa decorar os comandos: abra o Claude Code ou o Codex
+local na pasta do projeto, explique o produto e responda aos checkpoints. O agente lê as regras e
+usa os scripts.
 
 ## O que separar antes de abrir a conversa
 
@@ -16,9 +17,9 @@ projeto, explique o produto e responda aos checkpoints. O agente lê as regras e
 Sem pesquisa própria o agente consegue continuar pela API, mas deve avisar que a semântica e o título
 terão sinais mais fracos.
 
-## 24 — Abrir o produto no Claude Code
+## 24 — Abrir o produto no agente escolhido
 
-Inicie o Claude Code na raiz do repositório e use uma mensagem como esta:
+Inicie o Claude Code ou o Codex local na raiz do repositório e use uma mensagem como esta:
 
 ```text
 Quero criar um anúncio para [produto]. A categoria que escolhi é [MLB...]

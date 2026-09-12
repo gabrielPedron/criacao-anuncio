@@ -7,7 +7,7 @@ Esta é a folha de produção do vídeo. Grave na ordem das telas e, ao chegar n
 
 - confirme que o repositório público abre em https://github.com/gabrielPedron/criacao-anuncio;
 - separe produto, categoria, estratégia, foto base, pesquisa semântica e 2+ concorrentes validados;
-- confirme créditos do Claude Code e da API da OpenAI;
+- confirme o acesso ao Claude Code ou ao Codex e, separadamente, os créditos da API da OpenAI;
 - use navegador com cerca de 1280 px e zoom em 100%;
 - desligue notificações e feche abas, favoritos e perfis que revelem dados pessoais;
 - crie `manual/prints/` e mantenha `.env`, `.tokens.json`, `OPERACAO.md` e `produtos/` fora do git.
@@ -30,7 +30,7 @@ Em toda tela, diga: onde você está, o que precisa fazer e como sabe que deu ce
 | Tela | Mostrar e falar | Captura |
 |---|---|---|
 | 01 | Abra o Node.js. Explique que o projeto exige Node 24+ e não usa dependências externas. | **PRINT** `01-node-download.png` |
-| 02 | Abra o site do Claude Code. Mostre onde está a instalação e diga que é o agente que lê as regras e conduz o processo. | **PRINT** `02-claude-code.png` |
+| 02 | Mostre as opções Claude Code e Codex local, escolha uma para a demonstração e explique que cada uma lê seu arquivo de regras. | **PRINT** `02-agente-codigo.png` |
 
 ## Capítulo 2 — criar o aplicativo no Mercado Livre
 
@@ -76,7 +76,7 @@ Use um produto e um anúncio que possam aparecer publicamente.
 
 | Tela | Mostrar e falar | Captura |
 |---|---|---|
-| 24 | Abra o Claude Code na raiz, envie a solicitação do produto e mostre o agente parando num checkpoint. Destaque que a pessoa conversa em português, sem decorar comandos. | **PRINT** `24-claude-code-checkpoint.png` |
+| 24 | Abra o Claude Code ou o Codex local na raiz, envie a solicitação do produto e mostre o agente parando num checkpoint. Destaque que a pessoa conversa em português, sem decorar comandos. | **PRINT** `24-agente-checkpoint.png` |
 | 25 | Mostre as três semânticas propostas. Explique que o operador confirma ou corrige antes da coleta aprofundada. | **TEXTO** guardar a resposta do agente |
 | 26 | Mostre o resumo do dossiê e da oferta. Confira diferencial, título, ficha e descrição; informe preço, estoque, modalidade, dimensões e peso. | **TEXTO** guardar a resposta do agente |
 | 27 | Mostre as cinco imagens juntas e explique a revisão de fidelidade, rótulo, texto, cor e proporção. | **PRINT** `27-imagens-geradas.png` |

@@ -9,9 +9,10 @@ o que sai, onde cada coisa mora e o que ainda está solto.
 ## O que este projeto é, mecanicamente
 
 Uma coleção de **24 scripts Node de linha de comando**, sem dependência nenhuma, mais um conjunto de
-documentos que o Claude lê como manual. Não é um app, não tem servidor, não tem banco. O "runtime"
-é você conversando comigo com este repo aberto: eu leio o `CLAUDE.md`, decido qual script rodar,
-leio a saída e escrevo arquivo dentro de `produtos/<slug>/`.
+documentos que o agente lê como manual. Não é um app, não tem servidor, não tem banco. O "runtime"
+é você conversando com o Claude Code ou com o Codex local neste repo: o primeiro lê `CLAUDE.md`, o
+segundo lê `AGENTS.md`, e ambos decidem qual script rodar, leem a saída e escrevem arquivos dentro de
+`produtos/<slug>/`.
 
 **~3.100 linhas no total.** Metade em `scripts/ml/` (cliente do Mercado Livre) e um terço em
 `scripts/apuracao/` (núcleo de auditoria de API, que não é específico do ML).

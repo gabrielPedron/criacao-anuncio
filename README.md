@@ -1,4 +1,4 @@
-# Criação de anúncios no Mercado Livre, com Claude Code
+# Criação de anúncios no Mercado Livre, com Claude Code ou Codex
 
 Pipeline que vai da pesquisa de mercado ao anúncio publicado: coleta pela API do Mercado Livre →
 dossiê de concorrência → oferta (título, ficha, descrição) → imagens geradas → publicação.
@@ -6,8 +6,9 @@ dossiê de concorrência → oferta (título, ficha, descrição) → imagens ge
 Se você quer instalar e usar, comece pelo [manual do operador](manual/README.md). Esta página é a
 visão geral e a referência de comandos.
 
-Quem faz o raciocínio é o **Claude Code**, lendo o `CLAUDE.md` e os documentos de `docs/`. Os scripts
-deste repo são as mãos: falam com a API do ML e com a da OpenAI, e devolvem JSON ou tabela.
+Quem faz o raciocínio é o agente de código escolhido: o **Claude Code** lê o `CLAUDE.md`, e o
+**Codex** lê o `AGENTS.md`. Ambos usam os documentos de `docs/`. Os scripts deste repo são as mãos:
+falam com a API do ML e com a da OpenAI, e devolvem JSON ou tabela.
 
 **Nada é publicado sem confirmação humana.** Escrita na API é bloqueada por padrão, e criar anúncio
 exige duas flags explícitas.
@@ -18,14 +19,15 @@ exige duas flags explícitas.
 
 | Requisito | Para quê | Custo |
 |---|---|---|
-| [Claude Code](https://claude.com/claude-code) | é ele que conduz o processo | assinatura |
+| [Claude Code](https://claude.com/claude-code) ou [Codex](https://learn.chatgpt.com/docs/windows/windows-app) | agente que conduz o processo | assinatura correspondente; o Codex está incluído em planos elegíveis do ChatGPT |
 | Node.js 24+ | roda os scripts (`.ts` sem build) | grátis |
 | Conta de vendedor no Mercado Livre | é nela que o anúncio é criado | — |
 | App de desenvolvedor no ML | dá acesso à API pela sua conta | grátis |
 | Chave da API da OpenAI | gera as imagens do anúncio | pago por uso |
 | Ferramenta de pesquisa de mercado | opcional, mas melhora muito o resultado | varia |
 
-> A chave da OpenAI **não é** a assinatura do ChatGPT — são produtos e cobranças separados.
+> A assinatura do ChatGPT que dá acesso ao Codex **não inclui o uso da API da OpenAI**. A geração
+> das imagens usa uma chave da API e tem cobrança separada.
 
 **Cada pessoa usa a própria conta e as próprias chaves.** Este repo não é um serviço: ninguém
 publica em nome de ninguém, e nenhuma credencial sai da sua máquina.
@@ -126,8 +128,8 @@ Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
 ## Estrutura
 
 ```
-CLAUDE.md    as regras que o Claude Code segue — leia para entender o método
-AGENTS.md    as mesmas regras para outros agentes de código
+CLAUDE.md    as regras que o Claude Code segue
+AGENTS.md    as mesmas regras no nome reconhecido pelo Codex
 manual/      instalação, primeiro anúncio e roteiro do vídeo
 OPERACAO.md  seu contexto: conta, produtos, nicho (local, fora do git)
 docs/        o processo e as decisões, numeradas
