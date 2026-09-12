@@ -12,6 +12,12 @@ Esta é a folha de produção do vídeo. Grave na ordem das telas e, ao chegar n
 - desligue notificações e feche abas, favoritos e perfis que revelem dados pessoais;
 - crie `manual/prints/` e mantenha `.env`, `.tokens.json`, `OPERACAO.md` e `produtos/` fora do git.
 
+> **Ressalva para o Codex:** neste projeto, ensine o uso pelo aplicativo ou pela CLI **local**. O
+> fluxo depende de `.env`, `.tokens.json`, fotos e produtos guardados no computador; esses arquivos
+> não acompanham o repositório público para o Codex na nuvem. A assinatura do ChatGPT pode dar
+> acesso ao Codex conforme o plano, mas não paga o uso da API da OpenAI para gerar imagens — a API
+> exige chave e créditos próprios.
+
 Grave em cinco capítulos. Isso permite parar nas telas sensíveis sem perder a gravação inteira.
 Nas telas 13, 17, 21 e 22, não deixe o segredo entrar no vídeo: pare a gravação, capture a tela,
 borre a cópia e use apenas a versão borrada na edição. Se não for editar, narre o passo sem abrir o
