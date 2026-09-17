@@ -12,8 +12,8 @@ OPERACAO.md
 
 node_modules/
 
+# Artefatos locais de automação do navegador
+.playwright-mcp/
+
 # Ferramenta do mantenedor, nao de quem clona
 scripts/publicar-repo.ts
-
-# Material do manual (prints com dados reais)
-manual/prints/

@@ -1,5 +1,5 @@
 # Handoff para outro agente (Codex)
-*Escrito em 10/09/2026 e atualizado em 11/09/2026. É a foto do estado. As regras ficam no `AGENTS.md`.*
+*Escrito em 10/09/2026 e atualizado em 17/09/2026. É a foto do estado. As regras ficam no `AGENTS.md`.*
 
 > **Este arquivo vai para o repo público** quando for commitado (o gerador do snapshot exporta o
 > `HEAD`). Não escreva aqui nome de conta, de loja, de pessoa nem id de usuário. Isso mora no
@@ -35,23 +35,14 @@ lendo os docs e rodando os scripts.
 
 Commits recentes relevantes, do mais novo para o mais antigo:
 ```
-aad9ef9 Integra capturas ao roteiro de gravacao
-864e887 Alinha manual e referencias ao fluxo atual
-816d711 Estrutura documentacao generica do operador
-4e12b1c Atualiza handoff apos snapshot publico
-0d8f879 Remove comando interno do pacote publico
+1b003f6 Adiciona ressalva do Codex ao roteiro
+5f5b442 Adapta manual para Claude Code e Codex
+f433e49 Publica URL oficial do projeto
 ```
 
-**O que estava solto e foi commitado no `handoff-codex`.** Nada foi descartado. Arquivo por arquivo:
-
-| Arquivo | Estado | O que é |
-|---|---|---|
-| `.gitignore` | modificado | +2 linhas: ignora `manual/prints/`. Os prints do manual mostram dados reais da conta |
-| `AGENTS.md` | novo | Cópia **byte a byte** do `CLAUDE.md`, para o Codex ler as mesmas regras |
-| `manual/PRINTS-NECESSARIOS.md` | novo | Checklist das 21 capturas visuais que o operador precisa para o manual/vídeo. Diz quais 4 mostram segredo e precisam ser borradas |
-| `docs/AI_HANDOFF.md` | novo | Este arquivo |
-
-`manual/prints/` existe, vazia e ignorada: é onde os prints vão cair.
+`AGENTS.md` e `CLAUDE.md` são mantidos byte a byte iguais para que Codex e Claude Code recebam as
+mesmas regras. O onboarding de um clone novo está nesses arquivos: o agente verifica o ambiente,
+orienta os arquivos privados, valida as conexões e então pede os inputs da Fase 0.
 
 **O repo público** fica em `../criacao-anuncio-publico`, branch `main`, com o remote
 `https://github.com/gabrielPedron/criacao-anuncio.git`. O snapshot foi regenerado e publicado no
@@ -65,11 +56,10 @@ público. Os 14 testes passaram no repo de trabalho e no snapshot público. O sn
 em `https://github.com/gabrielPedron/criacao-anuncio`. Nenhuma chamada foi feita à API do ML nem à
 OpenAI.
 
-Depois disso, a documentação genérica foi estruturada em `manual/`: instalação, primeiro anúncio,
-roteiro do vídeo e checklist de capturas. Foi criado `OPERACAO.example.md`, as fontes canônicas foram
-declaradas e uma revisão em dois eixos alinhou User Products, os quatro checkpoints, a ordem da Etapa
-B, os segredos locais e a estrutura real de `produtos/<slug>/`. Os seis achados da revisão foram
-corrigidos antes do novo snapshot público.
+Depois disso, a documentação genérica foi estruturada em `manual/`: instalação escrita, primeiro
+anúncio e roteiro curto do vídeo de distribuição. Foi criado `OPERACAO.example.md`, as fontes
+canônicas foram declaradas e uma revisão em dois eixos alinhou User Products, os quatro checkpoints,
+a ordem da Etapa B, os segredos locais e a estrutura real de `produtos/<slug>/`.
 
 **Nas sessões anteriores (06–07/09)**, para contexto. O detalhe está em `docs/07-backlog.md` §RESOLVIDOS:
 - **Método separado do negócio.** `produtos/` e `OPERACAO.md` saíram do git. O README foi reescrito
@@ -97,7 +87,8 @@ Estão completas no `AGENTS.md`. As que mais machucam se forem esquecidas:
 - **Campo novo da API:** rode `npm run ml:apurar -- /caminho` antes de escrever código que lê esse
   campo. `tags[]` é conjunto, nunca posição.
 - **Sem dependências novas.** Comentários e mensagens de erro em português.
-- **Push é do operador.** O `publicar` só commita no repo público; o `git push` fica com ele.
+- **Operadores não fazem push.** Eles apenas clonam o repo público e trabalham localmente. O push do
+  snapshot público é tarefa de manutenção deste projeto.
 
 ## 5. Testes e comandos executados nesta continuação
 
@@ -106,7 +97,7 @@ Estão completas no `AGENTS.md`. As que mais machucam se forem esquecidas:
 | `npm test` | **14/14 passando**, 0 falhas (`scripts/ml/publicar.test.ts`, via `node --test`) |
 | `npm run apuracao:teste` | núcleo de apuração passando |
 | `npm run ml:apurar -- /users/me --repeticoes 3` | leitura real concluída: 3 amostras, 0 falhas e 0 campos instáveis |
-| links, comandos e numeração do manual | links locais válidos, 22 comandos definidos e telas 01–30 completas |
+| links e comandos do manual | documentação escrita e roteiro de instalação coerentes |
 | `git diff --check` | sem erro de whitespace; apenas aviso esperado de CRLF do Git no Windows |
 | `node --version` | v24.14.1 |
 
@@ -114,16 +105,15 @@ Não houve escrita na API do Mercado Livre nem chamada de geração na OpenAI.
 
 ## 6. Pendências, bugs conhecidos e próximos passos (em ordem)
 
-1. **Gravar o teste e o vídeo.** A documentação textual e a revisão já estão concluídas. O checklist
-   contém 21 capturas visuais; as telas de terminal (12, 14, 15, 18, 23, 25, 26, 29 e 30) serão
-   geradas como texto. A gravação deve seguir a mesma numeração do manual.
+1. **Gravar o vídeo de distribuição.** Mostrar o repo público, o clone local, a abertura no agente e
+   as conexões. A criação do anúncio permanece no manual escrito e é conduzida pelo agente.
 2. **Backlog que continua aberto** (`docs/07-backlog.md`):
    - comando de setup guiado;
    - testar o método num nicho distante do atual;
    - item 9: sincronizar `scripts/apuracao/` com o skill canônico. **Espera decisão do operador** e
      mexe em outro repo;
    - item 10: trazer os prompts de vídeo do operador para `prompts/`.
-4. **A pendência da operação** (ficha incompleta de anúncios já publicados) é dado de produto, não
+3. **A pendência da operação** (ficha incompleta de anúncios já publicados) é dado de produto, não
    engenharia. Está descrita no `OPERACAO.md`.
 
 **Limitação conhecida, que não é tarefa:** um concorrente que nunca entrou em catálogo não aparece

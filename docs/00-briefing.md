@@ -64,12 +64,13 @@ busca: fica restrito à leitura das avaliações nas páginas de anúncio.
   dupla no fluxo User Products.
 
 ## 9. Estado atual e primeiro passo
-*(atualizado em 10/09/2026)*
+*(atualizado em 17/09/2026)*
 - **Pipeline:** roda de ponta a ponta e já publicou anúncios reais.
 - **Conexões:** OAuth do ML renova sozinho; imagens usam a API da OpenAI.
 - **Distribuição:** método e operação estão separados. Cada operador cria o próprio app, `.env`,
   `.tokens.json` e `OPERACAO.md` pelo [manual](../manual/README.md).
-- **Próximo passo:** gravar o teste guiado, capturar as telas numeradas e montar o PDF.
+- **Próximo passo:** gravar o vídeo curto de distribuição: repositório público → clone local → agente
+  → conexões validadas. O restante do processo permanece no manual escrito e é conduzido pelo agente.
 
 ## 10. Segurança operacional (regras firmes)
 - Nunca colocar segredos no repositório. `.env` e `.tokens.json` ficam no `.gitignore`.

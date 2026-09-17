@@ -7,7 +7,22 @@ Contexto completo em [docs/00-briefing.md](docs/00-briefing.md). Leia antes de s
 ## Antes de tudo: leia o `OPERACAO.md`, se existir
 Este repo é o **método**, e é genérico. Quem opera — a conta do ML, os produtos, o nicho, as
 ferramentas de pesquisa — fica em `OPERACAO.md`, que é local e **não vai para o git**.
-**Se o arquivo existir, leia antes de agir.** Se não existir, pergunte o que precisar ao operador.
+**Se o arquivo existir, leia antes de agir.** Se não existir, siga o onboarding abaixo antes de
+pedir o contexto do negócio ao operador.
+
+## Primeiro uso em um clone novo
+Quando o operador disser que acabou de baixar o projeto ou pedir ajuda para configurar:
+1. Explique que `git clone` já criou a cópia local. Ele não precisa criar repositório, fazer fork,
+   executar `git push` nem enviar a pasta para a nuvem.
+2. Verifique `node --version` e apenas a **existência** de `.env`, `OPERACAO.md` e `.tokens.json`;
+   nunca mostre o conteúdo desses arquivos.
+3. Se `.env` ou `OPERACAO.md` não existirem, crie as cópias a partir dos arquivos `.example` e peça
+   que o operador preencha os valores diretamente no editor local. Nunca peça segredos na conversa.
+4. Conduza o passo a passo de [manual/01-INSTALACAO.md](manual/01-INSTALACAO.md). A Secret Key, a
+   chave da OpenAI e a URL com `code=` devem ser manipuladas pelo operador localmente, fora do chat.
+5. Valide com `npm run ml:teste`, `npm run midia:chaves` e `npm test`, sem imprimir credenciais ou
+   identificadores da conta.
+6. Quando as conexões estiverem prontas, pare e peça os inputs da Fase 0 para o primeiro produto.
 
 ## Divisão de trabalho
 - **Fase 0 — pesquisa do operador (sempre primeiro):** ele traz a semântica e as top buscas do mês

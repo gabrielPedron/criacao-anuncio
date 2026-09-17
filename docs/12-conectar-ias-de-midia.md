@@ -3,7 +3,7 @@
 O pipeline atual gera imagens somente pela API da OpenAI. Vídeo permanece manual e não exige chave
 adicional neste projeto.
 
-O passo a passo público está nas telas 19–23 de
+O passo a passo público está nas etapas 19–23 de
 [manual/01-INSTALACAO.md](../manual/01-INSTALACAO.md).
 
 ## Configuração
@@ -33,8 +33,8 @@ disponíveis. Não imprime nenhum trecho da chave e não gera imagem.
 
 ## Segurança
 
-- nunca colar a chave em conversa, print ou commit;
-- borrar a chave e dados de cartão em qualquer captura;
+- nunca colar a chave em conversa, vídeo, documento público ou commit;
+- não mostrar a chave nem dados de cartão durante a gravação;
 - se houver suspeita de vazamento, revogar e criar outra;
 - configurar limites de gasto no projeto da API.
 

@@ -77,11 +77,12 @@ Isso mata três riscos sem trabalho nenhum:
 *Sobra um risco:* quando o ML mudar endpoint, o código dos outros quebra. Sem obrigação contratual,
 mas é reputação. **Deixar explícito no README** que a manutenção acompanha o uso dele, não um SLA.
 
-**FEITO:** método e operação foram separados. O manual agora tem instalação, primeiro anúncio,
-roteiro de gravação e um `OPERACAO.example.md` sem dados reais.
+**FEITO:** método e operação foram separados. O manual agora tem instalação escrita, primeiro
+anúncio, roteiro curto de gravação e um `OPERACAO.example.md` sem dados reais. O clone novo também
+tem onboarding explícito em `AGENTS.md` e `CLAUDE.md`.
 
-*Continua esperando:* o teste gravado para inserir prints e saídas reais, um piloto em nicho distante
-e o comando de setup guiado.
+*Continua esperando:* gravar o vídeo de distribuição, testar um piloto em nicho distante e decidir
+se ainda faz sentido criar um comando de setup guiado depois de observar o onboarding pelo agente.
 
 ### 12. Tornar o processo visível — **metade destravada**
 Extensão do item 11, do lado de *mostrar* e não de empacotar. São três públicos, e só um depende da

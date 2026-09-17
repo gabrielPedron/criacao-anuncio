@@ -46,6 +46,22 @@ npm test                  # roda os testes do caminho de publicação
 
 Sem dependências: só `fetch` e `node:*` nativos. `npm install` não é necessário.
 
+## Como este projeto chega a cada operador
+
+O endereço compartilhado é somente este repositório público. `git clone` baixa uma cópia completa
+para a máquina do operador; ele não precisa fazer fork, criar outro repositório, executar `git push`
+nem enviar a pasta de volta ao GitHub.
+
+Depois de abrir a pasta no Claude Code ou no Codex local, use:
+
+```text
+Acabei de baixar este projeto. Leia as instruções do repositório e me conduza pela configuração
+inicial. Verifique o que está faltando sem mostrar nem pedir segredos na conversa.
+```
+
+O agente verifica o ambiente, orienta os arquivos privados e conduz as conexões. `.env`,
+`.tokens.json`, `OPERACAO.md` e `produtos/` ficam somente na máquina de quem opera.
+
 ## Como o processo roda
 
 ```

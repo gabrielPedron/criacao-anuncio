@@ -10,8 +10,9 @@ credenciais e fornece os dados dos próprios produtos.
 2. [Primeiro anúncio — como conversar com o agente](02-PRIMEIRO-ANUNCIO.md)
 3. [Roteiro da gravação](ROTEIRO-VIDEO.md)
 
-O [checklist de capturas](PRINTS-NECESSARIOS.md) indica quais telas visuais ainda precisam ser
-fotografadas. As telas de terminal serão montadas como texto a partir do teste gravado.
+O manual é inteiramente escrito. O vídeo mostra somente como encontrar o repositório, baixar uma
+cópia local, abrir a pasta no agente e validar as conexões. A execução do primeiro produto fica a
+cargo do agente, seguindo estas instruções.
 
 ## O que fica fora do material compartilhado
 
@@ -30,7 +31,4 @@ fotografadas. As telas de terminal serão montadas como texto a partir do teste 
 
 Para evitar versões concorrentes, use como fontes canônicas: `AGENTS.md`/`CLAUDE.md` para regras do
 agente, [docs/08](../docs/08-processo-completo.md) para o método, [docs/17](../docs/17-como-roda.md)
-para o estado dos scripts e este manual para a sequência de telas do operador.
-
-> O texto do manual pode ser finalizado agora. As imagens e os trechos reais de terminal entram
-> depois do teste gravado, sem mudar a ordem das telas 01–30.
+para o estado dos scripts e este manual para o passo a passo do operador.

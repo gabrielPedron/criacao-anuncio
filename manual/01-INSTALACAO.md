@@ -1,7 +1,7 @@
 # Instalação — do zero às conexões validadas
 
-Este é o texto-base da primeira parte do manual e do vídeo. Os números 01–23 identificam a tela
-correspondente; por isso não devem ser renumerados quando as imagens forem inseridas.
+Este é o passo a passo escrito da instalação. Os números 01–23 identificam as etapas na ordem em
+que devem ser realizadas.
 
 ## Antes de começar
 
@@ -10,7 +10,7 @@ do ML, Git, Node.js 24 ou superior, Claude Code ou Codex local, e uma conta na p
 OpenAI.
 
 Os segredos ficam somente nos arquivos locais `.env` e `.tokens.json`. Nunca cole Secret Key, chave
-da OpenAI, token ou o valor do `code=` numa conversa, captura pública ou commit.
+da OpenAI, token ou o valor do `code=` numa conversa, vídeo, documento público ou commit.
 
 ## Parte 1 — preparar a máquina
 
@@ -124,7 +124,7 @@ o Claude Code encontra `CLAUDE.md`, e o Codex encontra `AGENTS.md` antes de come
 ### 13 — Localizar App ID e Secret Key
 
 No aplicativo recém-criado, localize os dois valores. O App ID pode aparecer em documentação; a
-Secret Key deve ser tratada como senha e borrada em qualquer captura.
+Secret Key deve ser tratada como senha e nunca deve aparecer no vídeo ou em documento público.
 
 ### 14 — Criar os arquivos locais
 
@@ -167,7 +167,7 @@ Confira se está na conta principal correta e autorize o aplicativo.
 ### 17 — Copiar a URL que contém `code=`
 
 Depois do consentimento, o navegador abre o httpbin. Copie a URL inteira da barra de endereço.
-O código é temporário, de uso único e deve ser borrado na captura.
+O código é temporário, de uso único e não deve aparecer no vídeo ou numa conversa.
 
 ### 18 — Gravar o token e validar a conexão
 
@@ -195,14 +195,14 @@ Clique em **Create new secret key**, dê um nome relacionado ao projeto e confir
 
 ### 21 — Copiar a chave uma única vez
 
-Copie a chave no momento da criação e guarde-a diretamente no `.env`. Na captura, deixe visível no
-máximo o prefixo `sk-proj-…`.
+Copie a chave no momento da criação e guarde-a diretamente no `.env`. Não mostre nem mesmo parte da
+chave no vídeo.
 
 ### 22 — Configurar o faturamento da API
 
 Abra **Billing** na plataforma da OpenAI, adicione uma forma de pagamento ou créditos e confira os
-limites da conta. A API é cobrada separadamente de assinaturas de chat. Borre qualquer cartão ou
-dado pessoal na captura.
+limites da conta. A API é cobrada separadamente de assinaturas de chat. Não mostre cartão nem dado
+pessoal no vídeo.
 
 ### 23 — Validar a chave sem gerar imagem
 
