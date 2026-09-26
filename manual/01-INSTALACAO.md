@@ -44,7 +44,8 @@ feche e abra o PowerShell de novo.
 
 ### 3. Baixar o projeto
 
-Rode os três comandos, um de cada vez:
+O projeto fica em **[github.com/gabrielPedron/criacao-anuncio](https://github.com/gabrielPedron/criacao-anuncio)**.
+Você não precisa baixar nada pelo site: os comandos abaixo fazem isso. Rode os três, um de cada vez:
 
 ```powershell
 Set-Location $HOME\Documents
