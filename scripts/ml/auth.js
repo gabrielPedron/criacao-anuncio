@@ -113,7 +113,7 @@ export async function getAccessToken() {
   lerEnv(); // falha cedo e com mensagem clara se o .env não existir
   let tokens = lerTokens();
   if (!tokens) {
-    throw new Error('Sem .tokens.json. Rode primeiro: npm run ml:url  →  autorize  →  npm run ml:token -- SEU_CODE');
+    throw new Error('Sem .tokens.json. Rode primeiro: npm run ml:autorizar  →  autorize  →  npm run ml:autorizar -- "URL_COM_CODE"');
   }
   if (Date.now() < tokens.expira_em - MARGEM_MS) return tokens.access_token;
 
@@ -127,6 +127,10 @@ export async function getAccessToken() {
       client_id: env.ML_CLIENT_ID,
       client_secret: env.ML_CLIENT_SECRET,
       refresh_token: tokens.refresh_token,
+    }).catch((e) => {
+      // invalid_grant = refresh_token vencido (6 meses sem uso) ou revogado no painel do ML
+      if (!/invalid_grant/.test(e.message)) throw e;
+      throw new Error('A autorização do Mercado Livre venceu ou foi revogada. Autorize de novo: npm run ml:autorizar');
     });
     console.error('[ml] access_token renovado.');
     return salvarTokens(dados).access_token;

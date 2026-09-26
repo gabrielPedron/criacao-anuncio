@@ -1,7 +1,23 @@
 # Custo da geração de imagens
-*Medido na conta real em 31/08/2026.*
 
-## O número
+## O número de hoje: qualidade `medium`
+
+Desde 31/08/2026 o padrão é `medium`. Testado contra `high` na mesma foto, o rótulo ficou igualmente
+legível e a saída caiu para ~1/4 dos tokens.
+
+| | |
+|---|---|
+| **Custo por imagem** | **~US$ 0,06 a 0,08** |
+| Set completo (5 fotos) | **~US$ 0,30 a 0,40** |
+| Anúncios com US$ 5 de crédito | **~12**, contando algumas refações |
+
+*Estimado, não medido isoladamente.* Sai do custo medido no `high` (abaixo): a entrada continua a
+mesma (~1.800 tokens) e a saída cai de ~7.900 para ~2.000 tokens. Conforme o peso da entrada no
+preço, dá US$ 0,055 a 0,086 por imagem. O código usa US$ 0,08 (`USD_POR_IMAGEM` em
+`scripts/midia/openai.ts`) para a estimativa mostrada antes de gerar nunca ficar abaixo do real.
+Para cravar o número, compare o gasto de um set completo em platform.openai.com/usage.
+
+## Histórico: medido no `high` em 31/08/2026
 
 | | |
 |---|---|

@@ -45,6 +45,7 @@ Um produto = uma pasta. É o formato de saída inteiro do projeto:
 
 ```
 produtos/<slug>/
+  entrada.md        a ficha do que você informou; o que falta fica PENDENTE
   raw/              JSON cru da API + fotos dos concorrentes   (fora do git)
   dossie.md         a leitura do mercado, escrita por mim
   base/produto.png  a foto que você deu

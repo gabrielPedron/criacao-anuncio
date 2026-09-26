@@ -48,11 +48,13 @@ export async function gerarDeFotoBase(prompt: string, fotos: string[], op: Opcoe
 }
 
 /**
- * Custo por imagem medido numa conta real em 31/08/2026:
- * US$ 1,77 para 8 gerações = ~US$ 0,22 por imagem (gpt-image-2, 1200x1200, high).
- * Serve como estimativa; a fonte de verdade é platform.openai.com/usage.
+ * Custo por imagem no padrão atual (gpt-image-2, 1200x1200, medium). Ver docs/14.
+ * Medido em 31/08/2026 no high: US$ 0,221 (1.815 tokens de entrada, 7.926 de saída).
+ * O medium gera ~1/4 da saída, o que dá US$ 0,055–0,086 conforme o peso da entrada no preço;
+ * fica no topo da faixa para a estimativa nunca sair abaixo do real.
+ * A fonte de verdade é platform.openai.com/usage.
  */
-export const USD_POR_IMAGEM = 0.221;
+export const USD_POR_IMAGEM = 0.08;
 
 /** Resume o consumo de tokens de uma geração, para acompanhar o gasto. */
 export function resumirUso(uso: any): string {

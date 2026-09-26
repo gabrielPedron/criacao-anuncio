@@ -21,12 +21,11 @@ produto a que pertence. Decidido em 07/09/2026.
 
 ## FAZER  *(1)*
 
-### 1. Compartilhar o repo público
-O snapshot sem histórico já existe em `../criacao-anuncio-publico`, passou pela varredura de
-segredos e está commitado localmente. Falta revisar o manual depois do teste gravado, adicionar o
-remote e fazer o primeiro push — ações do operador.
-
-*Também falta:* comando de setup guiado e testar o método num nicho distante do atual.
+### 1. Testar o método num nicho distante do atual
+O repo público está no ar (github.com/gabrielPedron/criacao-anuncio) e o manual foi reescrito na
+ordem da aula gravada em 26/09. O setup guiado virou `npm run verificar` + o prompt de primeiro
+uso; a atualização do cliente, `npm run atualizar`. Falta rodar um produto de outro nicho de ponta
+a ponta para ver o que no método ainda é específico de tinta/impermeabilizante.
 
 ---
 

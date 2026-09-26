@@ -40,7 +40,7 @@ cd criacao-anuncio
 cp .env.example .env      # preencha com as suas credenciais
 cp OPERACAO.example.md OPERACAO.md  # preencha com o contexto do seu negócio
 npm run ml:autorizar      # abre o fluxo OAuth do Mercado Livre
-npm run ml:teste          # confirma a conexão e mostra o que a API libera
+npm run verificar         # diagnóstico: .env, token do ML, chave da OpenAI, OPERACAO.md
 npm test                  # roda os testes do caminho de publicação
 ```
 
@@ -61,6 +61,10 @@ inicial. Verifique o que está faltando sem mostrar nem pedir segredos na conver
 
 O agente verifica o ambiente, orienta os arquivos privados e conduz as conexões. `.env`,
 `.tokens.json`, `OPERACAO.md` e `produtos/` ficam somente na máquina de quem opera.
+
+Se aparecer um erro, a primeira opção é mostrar à própria IA um print da mensagem, o comando usado
+e um breve contexto da etapa. Oculte antes qualquer chave, token, URL com `code=`, dado de conta,
+comprador ou pagamento; nunca cole o conteúdo dos arquivos privados na conversa.
 
 ## Como o processo roda
 
@@ -96,6 +100,8 @@ Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
 | `npm run ml:url` | só imprime a URL de autorização |
 | `npm run ml:token -- <code>` | troca o código da autorização pelo par de tokens |
 | `npm run ml:teste` | prova a conexão e testa quais endpoints estão liberados |
+| `npm run verificar` | diagnóstico da instalação inteira, sem mostrar segredo — primeiro passo do suporte |
+| `npm run atualizar` | baixa as melhorias do repo sem tocar em `.env`, `OPERACAO.md` e `produtos/` |
 
 **Coleta**
 
@@ -117,7 +123,7 @@ Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
 | Comando | O que faz |
 |---|---|
 | `npm run midia:chaves` | confere se a chave da OpenAI funciona, sem gerar nada |
-| `npm run midia:gerar -- produtos/<slug>` | gera as 5 imagens a partir da foto base |
+| `npm run midia:gerar -- produtos/<slug>` | mostra o custo estimado e para; com `--confirmo`, gera as 5 imagens |
 | `... --foto <n> --ajuste "<o que corrigir>"` | refaz só uma, sem tocar nas aprovadas |
 | `... --variacoes <n>` · `--dry` | gera N tentativas · mostra os prompts sem chamar a API |
 

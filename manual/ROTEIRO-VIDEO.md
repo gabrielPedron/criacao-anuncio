@@ -115,19 +115,19 @@ Esses arquivos privados não são enviados ao GitHub.
 
 Mostre no painel de desenvolvedores onde criar a aplicação e explique as configurações escritas no
 [manual de instalação](01-INSTALACAO.md): Redirect URI, Authorization Code, Refresh Token, escopos e
-permissões iniciais de leitura.
+permissões (escrita só em Publicação).
 
-Não mostre a Secret Key nem faça a troca do código com a gravação aberta. Narre a sequência:
+Não mostre a Secret Key. Narre a sequência:
 
 1. App ID e Secret Key são colocados no `.env`, fora da gravação.
-2. `npm run ml:autorizar` gera a URL de consentimento.
+2. `npm.cmd run ml:autorizar` gera a URL de consentimento.
 3. O operador autoriza a própria conta principal no navegador.
-4. A URL devolvida, que contém `code=`, é usada localmente e não é enviada para a IA.
-5. O projeto cria `.tokens.json`.
-6. `npm run ml:teste` confirma a conexão.
+4. A URL devolvida, que contém `code=`, é colada na conversa com a IA. O código vale uma vez e
+   expira em minutos; mesmo assim, desfoque-o na edição do vídeo.
+5. A IA grava o `.tokens.json` e confirma a conexão.
 
 Se quiser mostrar a confirmação real, retome a gravação somente depois que `.tokens.json` já existir
-e mostre uma saída sanitizada de `npm run ml:teste`, sem identificadores da conta.
+e mostre a saída de `npm.cmd run verificar`, que não exibe identificadores da conta.
 
 ## Parte 6 — conectar a geração de imagens
 
@@ -138,12 +138,10 @@ operador cria a própria chave em `platform.openai.com`, configura faturamento e
 Depois de ocultar os dados da conta, mostre apenas os comandos de validação:
 
 ```powershell
-npm run midia:chaves
-npm test
+npm.cmd run verificar
 ```
 
-O primeiro confirma a chave sem gerar imagem; o segundo testa o caminho de publicação sem criar um
-anúncio.
+O diagnóstico confere as duas conexões e o `OPERACAO.md` sem gerar imagem nem mostrar segredo.
 
 ## Parte 7 — entregar a condução para a IA
 
@@ -157,6 +155,15 @@ que você precisa de mim para começar o primeiro produto. Não publique nada se
 O agente deve pedir, no mínimo, a semântica da pesquisa e dois links de concorrentes que o operador
 confirmou serem o mesmo produto. A partir daí, o processo continua pelo
 [guia do primeiro anúncio](02-PRIMEIRO-ANUNCIO.md), com os quatro checkpoints humanos.
+
+Explique também que a IA não pode chutar os números do anúncio. Antes da oferta final, ela deve
+perguntar ao operador o preço, o estoque, se o anúncio será Clássico ou Premium e as dimensões e o
+peso bruto do produto já embalado para envio.
+
+Se ocorrer um erro durante a instalação ou o uso, a primeira opção é enviar para essa mesma IA um
+print da tela, o comando executado e uma breve explicação do que estava tentando fazer. Antes do
+envio, o operador deve ocultar chaves, tokens, o valor de `code=`, dados de conta, compradores e
+pagamento. Não mostrar nem colar o conteúdo dos arquivos privados.
 
 ## Abertura sugerida
 

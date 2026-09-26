@@ -65,13 +65,14 @@ Categoria também é decisão do operador.
 Gerar com:
 
 ```bash
-npm run midia:gerar -- produtos/<slug>
+npm run midia:gerar -- produtos/<slug>             # mostra o custo e para
+npm run midia:gerar -- produtos/<slug> --confirmo  # gera, depois do OK do operador
 ```
 
 Cada nova tentativa parte da foto base e recebe versão própria. Para refazer uma imagem:
 
 ```bash
-npm run midia:gerar -- produtos/<slug> --foto 3 --ajuste "o que precisa corrigir"
+npm run midia:gerar -- produtos/<slug> --foto 3 --ajuste "o que precisa corrigir" --confirmo
 ```
 
 > **Checkpoint 2:** operador revisa e aprova as imagens.

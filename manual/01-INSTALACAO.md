@@ -1,222 +1,272 @@
-# Instalação — do zero às conexões validadas
+# Instalação — do zero ao primeiro anúncio pronto para começar
 
-Este é o passo a passo escrito da instalação. Os números 01–23 identificam as etapas na ordem em
-que devem ser realizadas.
+Este manual segue a mesma ordem da aula em vídeo. Faça uma vez só; depois de instalado, cada produto
+novo começa direto no [guia do primeiro anúncio](02-PRIMEIRO-ANUNCIO.md).
 
-## Antes de começar
+## O que você vai precisar
 
-Você precisa de uma conta principal de vendedor no Mercado Livre, acesso ao painel de aplicativos
-do ML, Git, Node.js 24 ou superior, Claude Code ou Codex local, e uma conta na plataforma de API da
-OpenAI.
+- Windows com **PowerShell** (já vem instalado).
+- **Claude Code** ou **Codex** (versão *Code* do Claude ou do ChatGPT). Tanto faz qual: o projeto
+  funciona igual nos dois.
+- Conta **principal** de vendedor no Mercado Livre. Conta de colaborador pode entrar no painel e
+  mesmo assim ser recusada pela API.
+- Conta na **plataforma de API da OpenAI**, com crédito pré-pago (mínimo US$ 5). É separada da
+  assinatura do ChatGPT e serve só para gerar as imagens.
 
-Os segredos ficam somente nos arquivos locais `.env` e `.tokens.json`. Nunca cole Secret Key, chave
-da OpenAI, token ou o valor do `code=` numa conversa, vídeo, documento público ou commit.
+> **Três coisas nunca vão para conversa, print ou vídeo:** a Secret Key do Mercado Livre, a chave
+> da OpenAI e o conteúdo dos arquivos `.env`, `.tokens.json` e `OPERACAO.md`. Elas ficam só no seu
+> computador.
 
-## Parte 1 — preparar a máquina
+## Parte 1 — preparar o computador
 
-### 01 — Instalar Node.js 24 ou superior
+### 1. Conferir o Node.js
 
-Acesse [nodejs.org](https://nodejs.org/), instale uma versão compatível e mantenha as opções padrão.
-O projeto usa recursos nativos do Node 24 e não possui dependências para instalar.
-
-### 02 — Instalar e entrar no Claude Code ou Codex
-
-Escolha um dos dois agentes. O restante do projeto e os comandos são iguais:
-
-| Opção | Onde instalar | Arquivo de regras lido pelo agente |
-|---|---|---|
-| Claude Code | [claude.com/claude-code](https://claude.com/claude-code) | `CLAUDE.md` |
-| Codex local | [aplicativo para Windows](https://learn.chatgpt.com/docs/windows/windows-app) ou [CLI](https://learn.chatgpt.com/docs/codex/cli) | `AGENTS.md` |
-
-O Codex está incluído em planos elegíveis do ChatGPT; confira a
-[página oficial de planos](https://learn.chatgpt.com/docs/pricing) porque disponibilidade e limites
-podem mudar. Use o Codex local neste fluxo: `.env`, `.tokens.json`, fotos e produtos ficam no seu
-computador e não acompanham o repositório público para a nuvem.
-
-> A interface e o comando de instalação podem mudar. Na gravação, siga o que o site oficial mostrar
-> no dia, sem copiar um comando antigo deste manual.
-
-## Parte 2 — criar o aplicativo no Mercado Livre
-
-Faça esta parte logado na conta principal do Mercado Livre. Conta de colaborador pode permitir o
-login e ainda assim devolver 403 quando a API for usada.
-
-### 03 — Abrir o painel de desenvolvedor
-
-Acesse [developers.mercadolivre.com.br](https://developers.mercadolivre.com.br/) e localize
-**Minhas aplicações**.
-
-### 04 — Criar uma aplicação
-
-Abra **Minhas aplicações**, clique em **Criar aplicação** e escolha um nome que identifique o uso,
-por exemplo `meus-anuncios`.
-
-### 05 — Informar a Redirect URI
-
-Use exatamente:
-
-```text
-https://httpbin.org/get
-```
-
-Essa página apenas exibe o código temporário devolvido pelo Mercado Livre. Ela evita a necessidade
-de manter um servidor durante a instalação.
-
-### 06 — Configurar os fluxos OAuth
-
-Marque **Authorization Code** e **Refresh Token**. Deixe **Client Credentials** desmarcado.
-
-O Refresh Token costuma vir desmarcado. Sem ele, o acesso expira e a autorização precisa ser refeita
-manualmente; com ele, o projeto renova o acesso sozinho.
-
-### 07 — Deixar PKCE desativado
-
-Os scripts atuais não implementam `code_verifier`. Se a opção PKCE estiver ligada, a autorização
-falhará.
-
-### 08 — Selecionar negócio e escopos
-
-Selecione **Mercado Livre**, deixe **VIS** desmarcado e habilite `read` e `offline_access`.
-
-Comece apenas com leitura. Quando o anúncio estiver pronto para publicação, será necessário habilitar
-o escopo `write`, liberar escrita em Publicação e reautorizar o app; essa elevação aparece no guia do
-primeiro anúncio.
-
-### 09 — Configurar as permissões
-
-Use o menor acesso necessário:
-
-| Área | Acesso inicial |
-|---|---|
-| Comunicações pré e pós-vendas | Leitura |
-| Publicação e sincronização | Leitura |
-| Demais áreas configuráveis | Sem acesso |
-
-Se o painel travar alguma permissão obrigatória, mantenha o valor imposto pelo Mercado Livre. Não
-libere escrita em mensagens: o agente não responde clientes em nome da loja.
-
-### 10 — Não assinar tópicos
-
-Deixe todos os tópicos ou webhooks desmarcados. O projeto não mantém servidor para receber eventos.
-
-### 11 — Concluir a aplicação
-
-Salve e confirme que o novo aplicativo aparece em **Minhas aplicações**.
-
-### 12 — Preparar o projeto no terminal
-
-Clone o repositório, entre na pasta e confirme o Node:
+Abra o menu Iniciar, pesquise **PowerShell** e abra o **Windows PowerShell** (não precisa ser como
+administrador). Digite:
 
 ```powershell
-git clone https://github.com/gabrielPedron/criacao-anuncio.git
-Set-Location criacao-anuncio
 node --version
 ```
 
-A versão deve começar com `v24` ou ser superior. Não rode `npm install`: o projeto usa somente
-recursos nativos. Depois, abra esta pasta no agente escolhido. Não é necessário importar um prompt:
-o Claude Code encontra `CLAUDE.md`, e o Codex encontra `AGENTS.md` antes de começar o trabalho.
+Se aparecer `v24` ou maior (ex.: `v24.14.1`), está pronto. Se der erro ou mostrar versão menor,
+pesquise **node.js download**, baixe o instalador para Windows em
+[nodejs.org](https://nodejs.org/), instale com as opções padrão e **feche e abra o PowerShell** de
+novo.
 
-- Claude Code no terminal: execute `claude` dentro da pasta.
-- Codex CLI: execute `codex` dentro da pasta.
-- Codex no aplicativo: adicione ou abra um projeto local e selecione a pasta `criacao-anuncio`.
+### 2. Conferir o Git
 
-### 13 — Localizar App ID e Secret Key
+```powershell
+git --version
+```
 
-No aplicativo recém-criado, localize os dois valores. O App ID pode aparecer em documentação; a
-Secret Key deve ser tratada como senha e nunca deve aparecer no vídeo ou em documento público.
+Se der erro, instale pelo [git-scm.com](https://git-scm.com/download/win) com as opções padrão e
+feche e abra o PowerShell de novo.
 
-### 14 — Criar os arquivos locais
+### 3. Baixar o projeto
 
-No PowerShell, dentro do projeto:
+Rode os três comandos, um de cada vez:
+
+```powershell
+Set-Location $HOME\Documents
+git clone https://github.com/gabrielPedron/criacao-anuncio.git
+Set-Location .\criacao-anuncio
+```
+
+O `git clone` já cria a cópia do projeto no seu computador. Você não precisa criar repositório,
+fazer fork nem enviar nada para a nuvem.
+
+> **Dica de organização:** se você já usa o Claude Code ou o Codex, provavelmente tem uma pasta
+> `Documents\Claude` ou `Documents\Codex` com seus projetos. Nesse caso, troque o primeiro comando
+> por `Set-Location $HOME\Documents\Claude` (ou `Codex`) para manter tudo junto.
+
+### 4. Criar os arquivos da sua operação
+
+Ainda no PowerShell, dentro da pasta do projeto:
 
 ```powershell
 Copy-Item .env.example .env
 Copy-Item OPERACAO.example.md OPERACAO.md
 ```
 
-Abra `.env` no editor e preencha sem mostrar os valores no terminal:
+- `.env` vai guardar as chaves de conexão com o Mercado Livre e com a OpenAI.
+- `OPERACAO.md` vai guardar o contexto do seu negócio (nicho, conta, preferências).
+- `.tokens.json` aparece sozinho depois que você autorizar o Mercado Livre, e o projeto o renova
+  automaticamente.
+- `produtos/` vai receber uma pasta para cada produto que o agente criar.
+
+Nenhum desses quatro vai para o Git: eles são só seus.
+
+### 5. Abrir o projeto no agente
+
+No **Claude** ou no **ChatGPT**, entre na versão **Code** (na parte superior da janela), clique em
+**Novo**, escolha a pasta `Documents\criacao-anuncio` e confirme **Confiar no workspace**.
+
+Mande esta primeira mensagem:
 
 ```text
-ML_CLIENT_ID=App ID
-ML_CLIENT_SECRET=Secret Key
-ML_REDIRECT_URI=https://httpbin.org/get
-ML_SITE=MLB
-OPENAI_API_KEY=
+Acabei de baixar este projeto, leia as instruções do repositório e me conduza pela
+configuração inicial.
 ```
 
-Preencha também o `OPERACAO.md` com o contexto da sua operação. Os dois arquivos são locais e não
-devem ser enviados ao git.
+O agente lê as regras do projeto sozinho e vai acompanhando você nas próximas partes.
 
-## Parte 3 — autorizar a conta do Mercado Livre
+## Parte 2 — conectar o Mercado Livre
 
-### 15 — Gerar a URL de autorização
+### 6. Criar o aplicativo
 
-Execute:
+Logado na conta **principal**, acesse
+[developers.mercadolivre.com.br/devcenter](https://developers.mercadolivre.com.br/devcenter) e
+clique em **Criar nova aplicação**. Preencha:
+
+| Campo | O que colocar |
+|---|---|
+| Nome | algo como `criacao-anuncio-seunegocio` |
+| Faixa de usuários | 1 a 10 |
+| Logotipo | qualquer imagem |
+| URI de Redirect | `https://httpbin.org/get` (exatamente assim) |
+| Fluxos OAuth | **Authorization Code** e **Refresh Token** marcados; **Client Credentials** desmarcado |
+| PKCE | desativado |
+| Negócio | Mercado Livre |
+| Escopos | `read`, `write` e `offline_access` |
+| Tópicos / notificações | nenhum |
+
+O **Refresh Token** é o que mantém a conexão ativa sozinha. Sem ele, você teria que autorizar de
+novo a cada poucas horas.
+
+### 7. Configurar as permissões
+
+| Área | Acesso |
+|---|---|
+| Comunicações pré e pós-venda | Leitura |
+| Publicação e sincronização | **Leitura e escrita** |
+| Publicidade | Leitura |
+| Faturamento | Leitura |
+| Métricas do negócio | Leitura |
+| Promoções, cupons e descontos | Leitura |
+| Vendas e envios | Leitura |
+
+A única escrita é em **Publicação**, que é o que permite subir o anúncio. Mesmo com ela liberada,
+o agente **nunca publica sem o seu OK** na conversa.
+
+Aceite os termos, faça a verificação de "não sou um robô" e clique em **Criar**.
+
+### 8. Colar as chaves no `.env`
+
+Na lista de aplicações do DevCenter, clique em **Editar** no app que você criou. Lá estão o
+**ID do aplicativo** e a **Secret Key**.
+
+Abra o arquivo `.env` da pasta do projeto no Bloco de Notas ou no editor e cole:
+
+```text
+ML_CLIENT_ID=cole_aqui_o_id_do_aplicativo
+ML_CLIENT_SECRET=cole_aqui_a_secret_key
+```
+
+**Sem espaço** antes nem depois do valor. Salve com **Ctrl+S**.
+
+### 9. Autorizar a conta
+
+No PowerShell, dentro da pasta do projeto:
 
 ```powershell
-npm run ml:autorizar
+npm.cmd run ml:autorizar
 ```
 
-O comando imprime uma URL. Abra-a no navegador sem copiar a URL para conversas ou documentos.
+> Use `npm.cmd` e não só `npm`: no Windows, o PowerShell costuma bloquear o `npm` com o erro
+> "a execução de scripts foi desabilitada neste sistema". O `npm.cmd` é o mesmo comando, sem esse
+> bloqueio.
 
-### 16 — Dar consentimento no Mercado Livre
+O comando mostra um link. Copie, abra no navegador (logado na conta principal) e clique em
+**Autorizar**. Você vai cair numa página de texto do `httpbin.org`.
 
-Confira se está na conta principal correta e autorize o aplicativo.
+Copie a **URL inteira** da barra de endereço dessa página e cole na conversa com o agente, pedindo:
 
-### 17 — Copiar a URL que contém `code=`
+```text
+Autorizei o Mercado Livre, esta é a URL que apareceu: [cole aqui]
+Grave o token e confirme se a conexão está funcionando.
+```
 
-Depois do consentimento, o navegador abre o httpbin. Copie a URL inteira da barra de endereço.
-O código é temporário, de uso único e não deve aparecer no vídeo ou numa conversa.
+O código dentro dessa URL vale uma vez só e expira em poucos minutos. Por isso cole logo depois de
+autorizar. Se demorar e der erro, é só rodar o `npm.cmd run ml:autorizar` de novo.
 
-### 18 — Gravar o token e validar a conexão
+## Parte 3 — conectar a OpenAI (imagens)
 
-Volte ao terminal e execute imediatamente:
+Todo o resto do anúncio (pesquisa, título, ficha, descrição) usa a sua assinatura do Claude ou do
+ChatGPT. Só as **imagens** usam a API da OpenAI, que é cobrada à parte.
+
+### 10. Colocar crédito
+
+Acesse [platform.openai.com](https://platform.openai.com/). Na tela inicial, em **Credit balance**,
+clique em **Add credits**. O mínimo é US$ 5, e **não precisa ser recorrente**: deixe a recarga
+automática desligada.
+
+**Quanto rende:** cada imagem custa menos de **US$ 0,08**. Um anúncio completo tem 5 imagens, até
+cerca de **US$ 0,40**. Com US$ 5, dá para uns **10 anúncios**, já contando algumas imagens
+refeitas. O agente sempre mostra o custo e pede o seu OK antes de gerar.
+
+### 11. Criar a chave
+
+Vá em **API keys** → **Create new secret key**:
+
+| Campo | O que colocar |
+|---|---|
+| Nome | `criacao-anuncio` |
+| Projeto | Default project |
+| Permissões | All |
+
+Clique em **Create secret key** e **copie a chave antes de clicar em Done**. Depois ela não
+aparece mais. Se perder, é só criar outra.
+
+Cole no `.env`, na linha da OpenAI, sem espaço, e salve com **Ctrl+S**:
+
+```text
+OPENAI_API_KEY=cole_aqui_a_chave
+```
+
+## Parte 4 — conferir e configurar a operação
+
+### 12. Rodar o diagnóstico
+
+Peça ao agente para conferir se está tudo certo, ou rode você mesmo:
 
 ```powershell
-npm run ml:autorizar -- "COLE_A_URL_INTEIRA_AQUI"
-npm run ml:teste
+npm.cmd run verificar
 ```
 
-O primeiro comando grava `.tokens.json`; o segundo deve confirmar `/users/me`. Um 403 em endpoints
-de busca pode ser uma restrição conhecida do ML e não significa que `/users/me` falhou.
+Ele confere Node, `.env`, conexão com o Mercado Livre, chave da OpenAI e `OPERACAO.md`, sem mostrar
+nenhum segredo. Tudo com ✓ significa instalação concluída. Se algum item aparecer com ✗, a própria
+mensagem diz o que fazer. Se não resolver, mande a saída para o agente.
 
-## Parte 4 — conectar a API da OpenAI
+### 13. Configurar o `OPERACAO.md`
 
-### 19 — Abrir a área de chaves
+Mande para o agente:
 
-Acesse [platform.openai.com](https://platform.openai.com/), selecione o projeto que será usado e
-abra **API keys**. O [quickstart oficial da OpenAI](https://developers.openai.com/api/docs/quickstart)
-é a referência caso os nomes ou a posição dos controles mudem.
+```text
+Me ajude a configurar o OPERACAO.md. Quais informações você precisa de mim?
+Como você já está conectado com a API do meu Mercado Livre, acesse o máximo de
+informações que conseguir para levantar os dados da minha operação.
+```
 
-### 20 — Criar uma chave secreta
+Ele lê o que a API já mostra da sua conta e pergunta só o resto: seu nicho, a ferramenta de pesquisa
+que você usa e suas preferências.
 
-Clique em **Create new secret key**, dê um nome relacionado ao projeto e confirme.
+**Pronto.** Continue em [Primeiro anúncio](02-PRIMEIRO-ANUNCIO.md).
 
-### 21 — Copiar a chave uma única vez
+## Receber atualizações do projeto
 
-Copie a chave no momento da criação e guarde-a diretamente no `.env`. Não mostre nem mesmo parte da
-chave no vídeo.
-
-### 22 — Configurar o faturamento da API
-
-Abra **Billing** na plataforma da OpenAI, adicione uma forma de pagamento ou créditos e confira os
-limites da conta. A API é cobrada separadamente de assinaturas de chat. Não mostre cartão nem dado
-pessoal no vídeo.
-
-### 23 — Validar a chave sem gerar imagem
-
-Preencha `OPENAI_API_KEY` no `.env` e execute:
+Quando houver melhorias no projeto, peça ao agente "rode a atualização do projeto". Se preferir
+fazer você mesmo: abra o **Windows PowerShell** (menu Iniciar → pesquise PowerShell), entre na
+pasta do projeto e rode:
 
 ```powershell
-npm run midia:chaves
-npm test
+Set-Location $HOME\Documents\criacao-anuncio
+npm.cmd run atualizar
 ```
 
-O primeiro comando apenas consulta os modelos disponíveis; não gera imagem. O segundo valida o
-caminho de publicação sem escrever na API do Mercado Livre.
+Suas chaves, o `OPERACAO.md` e a pasta `produtos/` nunca são tocados.
 
-## Instalação concluída
+Para a atualização funcionar sempre, **adapte o projeto à sua operação pelo `OPERACAO.md`**. Se
+quiser que o agente trabalhe de um jeito diferente, peça: "grave isso como preferência no
+OPERACAO.md". Evite editar `CLAUDE.md`, `AGENTS.md` ou os scripts: arquivo do projeto alterado
+trava a atualização. Se isso acontecer, o próprio comando explica como resolver.
 
-Você terminou quando `npm run ml:teste`, `npm run midia:chaves` e `npm test` passam. Continue em
-[Primeiro anúncio — como conversar com o agente](02-PRIMEIRO-ANUNCIO.md).
+## Se aparecer algum erro
+
+A primeira ajuda é o próprio agente que está conduzindo o projeto:
+
+1. Peça ao agente "rode o verificar", ou rode você mesmo no PowerShell, dentro da pasta do projeto
+   (`Set-Location $HOME\Documents\criacao-anuncio` e depois `npm.cmd run verificar`), e mande a saída.
+2. Diga qual comando você executou e, em uma frase, o que estava tentando fazer.
+3. Se ajudar, mande um print. Antes, **esconda** Secret Key, chave da OpenAI, tokens, dados de
+   compradores, dados da conta e de pagamento.
+
+Nunca cole o conteúdo de `.env`, `.tokens.json` ou `OPERACAO.md` na conversa.
+
+| Erro comum | O que fazer |
+|---|---|
+| "a execução de scripts foi desabilitada" | use `npm.cmd run ...` no lugar de `npm run ...` |
+| `node` ou `git` "não é reconhecido" | instale (passos 1 e 2) e abra o PowerShell de novo |
+| `invalid_grant` ao autorizar | o código expirou ou já foi usado: rode `npm.cmd run ml:autorizar` de novo |
+| "A autorização do Mercado Livre venceu" | passou muito tempo sem uso: autorize de novo (passo 9) |
+| 403 do Mercado Livre | confira se autorizou com a conta **principal** e se as permissões do passo 7 foram salvas |
+| OpenAI "insufficient_quota" | acabou o crédito: adicione mais em Billing (passo 10) |

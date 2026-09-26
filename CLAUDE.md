@@ -18,11 +18,14 @@ Quando o operador disser que acabou de baixar o projeto ou pedir ajuda para conf
    nunca mostre o conteúdo desses arquivos.
 3. Se `.env` ou `OPERACAO.md` não existirem, crie as cópias a partir dos arquivos `.example` e peça
    que o operador preencha os valores diretamente no editor local. Nunca peça segredos na conversa.
-4. Conduza o passo a passo de [manual/01-INSTALACAO.md](manual/01-INSTALACAO.md). A Secret Key, a
-   chave da OpenAI e a URL com `code=` devem ser manipuladas pelo operador localmente, fora do chat.
-5. Valide com `npm run ml:teste`, `npm run midia:chaves` e `npm test`, sem imprimir credenciais ou
-   identificadores da conta.
-6. Quando as conexões estiverem prontas, pare e peça os inputs da Fase 0 para o primeiro produto.
+4. Conduza o passo a passo de [manual/01-INSTALACAO.md](manual/01-INSTALACAO.md). A Secret Key e a
+   chave da OpenAI são coladas pelo operador direto no `.env`, nunca no chat.
+   **Exceção: a URL com `code=`** pode ser colada no chat — o code vale uma vez e expira em minutos.
+   Rode na hora `npm run ml:autorizar -- "URL"` e não repita o valor do code na resposta.
+5. Valide com `npm run verificar` e `npm test`, sem imprimir credenciais ou identificadores da conta.
+6. Ajude a preencher o `OPERACAO.md`: leia o que a API já mostra da conta (`/users/me`, anúncios
+   ativos via `npm run ml:meus-anuncios`), proponha o texto e pergunte só o que a API não dá
+   (nicho, ferramenta de pesquisa, preferências). Depois pare e peça os inputs da Fase 0.
 
 ## Divisão de trabalho
 - **Fase 0 — pesquisa do operador (sempre primeiro):** ele traz a semântica e as top buscas do mês
@@ -44,8 +47,18 @@ Quando o operador disser que acabou de baixar o projeto ou pedir ajuda para conf
 - **Categoria é escolha do operador.** Não questionar.
 - **Descrição sem método de envio** (Full/agências) — o ML implica.
 - **Campos do ML:** texto corrido, sem bullets, sem emoji. Exceção: campo "modelo" em anúncio orgânico.
+- **Imagem gasta crédito do operador.** `npm run midia:gerar` sem `--confirmo` só mostra o custo;
+  mostre o valor, espere o OK e aí rode com `--confirmo`. Vale para cada refação também.
+- **Personalização vai no `OPERACAO.md`**, nunca em `CLAUDE.md`/`AGENTS.md`/scripts. Arquivo do
+  projeto alterado trava o `npm run atualizar`. Se o operador pedir um ajuste de regra, grave lá.
 
 ## Pedir no início de todo produto
+Copie [coleta/TEMPLATE-entrada.md](coleta/TEMPLATE-entrada.md) para `produtos/<slug>/entrada.md`,
+preencha com o que o operador mandou e pergunte o que faltar dos blocos 1 e 2 antes de coletar —
+principalmente os dados técnicos que a IA não descobre (rendimento, voltagem, amperagem…).
+O bloco 3 (preço, estoque, modalidade, embalagem) pode vir depois, mas precisa estar completo antes
+de montar a oferta final. Os dois inputs que mais pesam:
+
 1. **2 ou mais links de concorrentes que o operador já validou** como sendo o mesmo produto
    (`npm run ml:referencia -- "url1" "url2"`). Eu acho nome parecido; ele sabe o que **é** o mesmo produto.
 2. **A semântica dele** — top buscas do mês e termos com pouca concorrência, da ferramenta de
@@ -70,6 +83,21 @@ foi medido num piloto real: a pesquisa própria rendeu mais que a descoberta aut
 ## Perguntar sempre antes de publicar
 Preço · quantidade em estoque · clássico (`gold_special`) ou premium (`gold_pro`) ·
 dimensões e peso bruto da embalagem. Nada disso se adivinha.
+
+Esses valores devem vir diretamente do operador. Nunca inferir preço, peso ou dimensões pela foto,
+pelos concorrentes, pela mediana do mercado ou por um produto parecido. Se qualquer um estiver
+ausente, pare e faça perguntas objetivas antes de montar a oferta final.
+
+## Quando o operador encontrar um erro
+A primeira opção de suporte é a própria IA que está conduzindo este projeto. Comece rodando
+`npm run verificar` — ele aponta o que está faltando sem expor segredo. Depois peça o comando usado,
+uma explicação curta do que ele estava tentando fazer e, quando ajudar, um print da tela. Analise o
+erro e conduza a correção passo a passo dentro do repositório antes de mandar o operador procurar
+outra ferramenta.
+
+Antes de receber ou analisar um print, lembre o operador de ocultar Secret Key, chave da OpenAI,
+tokens, URL com `code=`, dados de compradores, dados da conta e informações de pagamento. Nunca
+peça o conteúdo de `.env`, `.tokens.json` ou `OPERACAO.md` na conversa.
 
 ## Antes de ler campo novo da API
 Rode `npm run ml:apurar -- /caminho` **antes** de escrever código que lê campos. O glossário

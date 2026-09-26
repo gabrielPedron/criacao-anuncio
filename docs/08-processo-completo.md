@@ -45,8 +45,8 @@ O agente gera cinco imagens pela API da OpenAI a partir da foto base. Cada nova 
 versão; refazer uma foto não altera as aprovadas.
 
 ```bash
-npm run midia:gerar -- produtos/<slug>
-npm run midia:gerar -- produtos/<slug> --foto 3 --ajuste "correção"
+npm run midia:gerar -- produtos/<slug> --confirmo
+npm run midia:gerar -- produtos/<slug> --foto 3 --ajuste "correção" --confirmo
 ```
 
 > **Checkpoint 2:** revisar fidelidade do produto, texto e qualidade de cada imagem.

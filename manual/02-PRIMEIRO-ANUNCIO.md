@@ -1,125 +1,103 @@
 # Primeiro anúncio — como conversar com o agente
 
-Este guia começa depois que as conexões foram validadas. Você não precisa decorar os comandos: abra
-o Claude Code ou o Codex local na pasta do projeto, explique o produto e responda aos checkpoints.
-O agente lê as regras e usa os scripts.
+Este guia começa depois da instalação (`npm.cmd run verificar` com tudo ✓). Você não precisa decorar
+comandos: abre o projeto no Claude Code ou no Codex, manda o que tem do produto e responde às
+perguntas. O agente faz o processo de ponta a ponta, da pesquisa dos concorrentes até subir o
+anúncio, e só publica depois do seu OK.
 
-## O que separar antes de abrir a conversa
+## O que separar antes de começar
 
-- nome e categoria do produto, escolhida por você;
-- estratégia: catálogo, orgânico ou ambos;
-- pelo menos dois links de concorrentes que você confirmou serem o mesmo produto;
-- top buscas do mês, termos com pouca concorrência e grafias alternativas da sua ferramenta de
-  pesquisa, se você tiver esses dados;
-- foto base nítida, preferencialmente com fundo branco;
-- dados reais do produto que não podem ser inferidos.
+| O que | Por quê |
+|---|---|
+| **Foto do produto com fundo branco** | é a base de todas as imagens; o agente sempre parte dela |
+| **2 ou mais links de concorrentes** que você confirmou serem o mesmo produto | a análise se baseia neles; nome parecido pode ser outra versão ou embalagem |
+| **Principais semânticas** (top buscas do mês) do Nubimetrics, Virtual Seller, Mercado Livre Tendências ou outra ferramenta | a API do ML não mostra volume de busca; sem isso o título sai mais fraco |
+| **Dados técnicos que a IA não descobre** | rendimento (m² da tinta), voltagem, amperagem, tamanho, composição… |
+| **Categoria** e estratégia (catálogo, orgânico ou ambos) | a escolha é sua |
+| **Preço, estoque, Clássico ou Premium** | decisão do seu negócio; a IA nunca calcula nem copia |
+| **Medidas e peso bruto da embalagem pronta para envio** | obrigatório no ML; a IA não adivinha pela foto |
 
-Sem pesquisa própria o agente consegue continuar pela API, mas deve avisar que a semântica e o título
-terão sinais mais fracos.
+Não precisa de texto grande nem descrição pronta, só as informações principais. O que faltar, o
+agente pergunta. Ele registra tudo numa ficha em `produtos/<produto>/entrada.md`, com `PENDENTE` em
+cada campo que ainda não foi informado.
 
-## 1 — Abrir o produto no agente escolhido
+Sem links de concorrentes ou sem semântica o agente consegue continuar, mas avisa que o resultado
+fica pior. Isso foi medido: a pesquisa do operador rende mais que a descoberta automática sozinha.
 
-Inicie o Claude Code ou o Codex local na raiz do repositório e use uma mensagem como esta:
+## 1 — Começar o produto
+
+Abra uma **conversa nova** para cada produto, anexe a foto e mande algo assim:
 
 ```text
-Quero criar um anúncio para [produto]. A categoria que escolhi é [MLB...]
-e a estratégia é [catálogo/orgânico/ambos].
-
-Minha pesquisa de busca é:
-[cole apenas termos e números, nunca credenciais]
+Quero criar um anúncio para [produto]. Categoria: [nome ou MLB...]. Estratégia: [catálogo/orgânico/ambos].
 
 Concorrentes que confirmei como o mesmo produto:
 [link 1]
 [link 2]
 
-Leia as instruções do projeto e conduza o processo até o próximo checkpoint.
-Não publique nada sem meu OK explícito.
+Minhas semânticas / top buscas do mês:
+[termos e números]
+
+Dados do produto:
+[ex.: rendimento 18 m², embalagem 24 kg, cor cinza]
+
+Preço [R$], estoque [quantidade], [clássico/premium].
+Embalagem: [altura] x [largura] x [comprimento] cm, [peso bruto] kg.
+
+Leia as instruções do projeto e conduza o processo. Não publique nada sem meu OK.
 ```
 
-Se `OPERACAO.md` ainda estiver incompleto, o agente deve pedir o contexto que falta antes de avançar.
+O que você ainda não tiver, deixe de fora: o agente pede na hora certa.
 
-## 2 — Checkpoint das top-3 semânticas
+## 2 — Confirmar as semânticas
 
-O agente cruza sua pesquisa com os sinais disponíveis no ML e apresenta três semânticas. Confirme,
-corrija ou rejeite antes da coleta aprofundada. Esse é o primeiro checkpoint humano.
+O agente cruza a sua pesquisa com o que encontra no Mercado Livre e propõe **as 3 semânticas
+principais**. Confirme ou corrija antes de ele aprofundar a pesquisa.
 
-## 3 — Revisar dossiê e oferta
+## 3 — Revisar a oferta e o título
 
-Depois da coleta, confira o dossiê, o diferencial proposto, o título, a ficha e a descrição. Dados
-ausentes devem estar marcados como não encontrados ou pendentes; não podem ser inventados.
+Depois da pesquisa, o agente mostra o dossiê dos concorrentes, o diferencial da oferta e **opções de
+título**. Não gostou? Peça mais opções.
 
-Antes de gerar imagens, aprove o ângulo da oferta. Antes da publicação, informe explicitamente:
+> **Escolha o título com calma.** Depois de publicado, o Mercado Livre não deixa alterar o título
+> pela integração. Só pelo painel ou republicando.
 
-| Dado | Quem decide |
-|---|---|
-| Preço | você, a partir dos seus custos |
-| Estoque disponível | você |
-| Clássico (`gold_special`) ou Premium (`gold_pro`) | você |
-| Dimensões e peso bruto da embalagem | você |
-
-A mediana de mercado é apenas referência. Ela nunca vira preço automaticamente.
+Dados que não foram encontrados aparecem como pendentes, nunca inventados.
 
 ## 4 — Revisar as imagens
 
-O agente gera cinco imagens em `produtos/<slug>/imagens/`. Revise produto, cor, rótulo, texto,
-proporções e fidelidade à foto base. Reprovar uma imagem não altera as aprovadas; o agente pode refazer
-somente aquela foto a partir da base original.
+Antes de gerar, o agente mostra **quanto vai custar** (até cerca de US$ 0,40 pelas 5 imagens) e espera
+o seu OK. As imagens ficam em `produtos/<produto>/imagens/`.
+
+Confira produto, cor, rótulo, textos e fidelidade à foto original. Se uma imagem estiver ruim, diga
+qual e o que está errado: o agente refaz **só aquela**, a partir da foto original, sem mexer nas
+aprovadas. Cada refação custa menos de US$ 0,08.
 
 Não aprove imagem com informação inventada, texto errado ou produto diferente do real.
 
 ## 5 — Escolher o catálogo
 
-Antes de publicar, o agente lista candidatos de catálogo com links. Abra os links e diga se algum é
-exatamente o mesmo produto, embalagem e versão. Nome parecido não é confirmação, e o agente não pode
-decidir sozinho.
+Se a estratégia envolver catálogo, o agente lista os produtos de catálogo candidatos **com links**.
+Abra e diga se algum é exatamente o mesmo produto, na mesma embalagem e versão. Essa decisão é
+sempre sua.
 
-## 6 — Liberar escrita somente quando for publicar
+## 6 — Revisar e dar o OK
 
-Se o aplicativo foi criado apenas com leitura, volte ao painel do ML, habilite o escopo OAuth
-`write`, libere escrita em **Publicação e sincronização** e reautorize:
+O agente monta a ficha técnica (preenchida com o máximo de informação), a descrição e o anúncio
+completo, e mostra tudo para você revisar. Confira preço, estoque, modalidade, medidas, título e
+imagens.
 
-```powershell
-npm run ml:autorizar
-```
+Só depois de você dizer claramente que autoriza, ele sobe o anúncio.
 
-Repita o consentimento e grave o novo token como nos passos 16–18. Isso libera a conta; ainda assim,
-o código continua exigindo confirmação explícita para cada publicação.
+## 7 — Conferir no ar
 
-## 7 — Validar e dar o OK final
+Abra o link que o agente devolve e confira título, preço, fotos, ficha, descrição e modalidade. Peça
+também um resumo final: link, código do anúncio e pendências manuais, se houver.
 
-Peça ao agente para montar o anúncio localmente e mostrar o payload. O dry-run no ML não cria o item,
-mas, quando a oferta usa fotos locais, precisa enviá-las para obter URLs; isso já é uma escrita e
-exige sua autorização explícita e `--confirmo`. Revise as imagens e o título com calma: no fluxo User
-Products, o título fica travado depois da publicação.
+Para o próximo produto, abra uma conversa nova e repita a partir do passo 1.
 
-Somente depois diga claramente que autoriza publicar aquela oferta. O envio exige `--publicar` e
-`--confirmo`; sem as duas flags, o script não cria o anúncio.
+## Se aparecer algum erro
 
-## 8 — Conferir o anúncio no ar
-
-Abra o link público devolvido pelo processo e confira título, preço, fotos, ficha, descrição,
-categoria e modalidade. Se algo estiver errado, não presuma que o título poderá ser alterado por API.
-
-## 9 — Registrar o resultado
-
-Peça ao agente um resumo final com o link, o identificador do anúncio, o arquivo de oferta usado,
-as decisões tomadas nos checkpoints e qualquer pendência manual. Esse resumo não deve conter token,
-Secret Key nem chave da OpenAI.
-
-## 10 — Encerrar deixando o produto reproduzível
-
-Confirme que a pasta do produto contém, no mínimo:
-
-```text
-produtos/<slug>/
-  raw/
-  dossie.md
-  base/produto.png
-  prompts-imagens.json
-  imagens/
-  imagens/historico.md
-  oferta*.json
-```
-
-Esses arquivos ficam locais e fora do git. Para o próximo produto, abra uma conversa nova e repita a
-partir da etapa 1.
+Peça ao agente "rode o verificar" (ou rode `npm.cmd run verificar` no PowerShell, dentro da pasta
+`Documents\criacao-anuncio`), mande a saída e explique em uma frase o que estava fazendo. Se mandar print, esconda antes chaves, tokens, dados de compradores, da conta e de
+pagamento. Nunca cole o conteúdo de `.env`, `.tokens.json` ou `OPERACAO.md` na conversa.

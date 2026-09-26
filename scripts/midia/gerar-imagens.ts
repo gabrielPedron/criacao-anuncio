@@ -1,6 +1,7 @@
 // Gera o set de imagens do anúncio a partir da foto base + os prompts do operador.
 //
-//   npm run midia:gerar -- produtos/<slug>              → gera as 5
+//   npm run midia:gerar -- produtos/<slug>              → mostra o custo e para
+//   npm run midia:gerar -- produtos/<slug> --confirmo   → gera as 5 (gasta crédito)
 //   npm run midia:gerar -- produtos/<slug> --foto 3     → refaz SÓ a 3 (não toca nas aprovadas)
 //   npm run midia:gerar -- produtos/<slug> --dry        → mostra o que faria, sem chamar a API
 //   ... --foto 2 --ajuste "os baldes de comparação estão vazios, põe 3,6kg no rótulo"
@@ -10,7 +11,7 @@
 // anterior, ao contrário de editar dentro de um fio de conversa.
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, appendFileSync } from "node:fs";
 import { resolve, join } from "node:path";
-import { gerarDeFotoBase, resumirUso } from "./openai.ts";
+import { gerarDeFotoBase, resumirUso, USD_POR_IMAGEM } from "./openai.ts";
 import { morrer } from "../ml/api.js";
 import { args, pega } from "../cli.ts";
 
@@ -51,6 +52,15 @@ try {
   console.log(`\n${spec.produto}`);
   console.log(`Base: ${bases.length} foto(s) · Destino: ${destino}`);
   console.log(`Tamanho ${tamanho}, qualidade ${qualidade}\n`);
+
+  // Gasta crédito pré-pago do operador: sem --confirmo, só mostra a conta e para.
+  // ponytail: preço fixo do medium 1200x1200 (docs/14); --qualidade high custa ~3x a estimativa.
+  const n = alvo.length * variacoes;
+  if (!dry && !args.includes("--confirmo")) {
+    console.log(`Isto gera ${n} imagem(ns) — cerca de US$ ${(n * USD_POR_IMAGEM).toFixed(2)} do crédito da OpenAI.`);
+    console.log(`Confirme com o operador e rode de novo com --confirmo.\n`);
+    process.exit(0);
+  }
 
   // 1200x1200 no gpt-image-2 (testado 30/08/2026): ativa o zoom do ML, que pede >=1200.
 

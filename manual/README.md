@@ -10,9 +10,9 @@ credenciais e fornece os dados dos próprios produtos.
 2. [Primeiro anúncio — como conversar com o agente](02-PRIMEIRO-ANUNCIO.md)
 3. [Roteiro da gravação](ROTEIRO-VIDEO.md)
 
-O manual é inteiramente escrito. O vídeo mostra somente como encontrar o repositório, baixar uma
-cópia local, abrir a pasta no agente e validar as conexões. A execução do primeiro produto fica a
-cargo do agente, seguindo estas instruções.
+A instalação segue a mesma ordem da aula em vídeo. Existe também uma versão em PDF para mandar
+junto com a aula; ela é gerada a partir destes arquivos, que são a fonte oficial. A execução de
+cada produto fica a cargo do agente, seguindo estas instruções.
 
 ## O que fica fora do material compartilhado
 

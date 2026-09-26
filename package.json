@@ -5,6 +5,8 @@
   "type": "module",
   "description": "Pipeline de criacao de anuncios do Mercado Livre, conduzido pelo Claude Code",
   "scripts": {
+    "verificar": "node scripts/verificar.ts",
+    "atualizar": "node scripts/atualizar.ts",
     "ml:url": "node scripts/ml/url-autorizacao.js",
     "ml:token": "node scripts/ml/trocar-code.js",
     "ml:teste": "node scripts/ml/testar-conexao.js",
