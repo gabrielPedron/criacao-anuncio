@@ -23,7 +23,22 @@ export type Oferta = {
   fotos?: string[];           // ids ou URLs já no ML
   fotos_locais?: string[];    // arquivos a subir antes de publicar
   video_id?: string | null;
+  /**
+   * Obrigatória (pergunte ao operador). Vira `sale_terms` no ML. Antes de 06/10/2026 o projeto
+   * nunca mandava: 6 anúncios publicados ficaram sem garantia e foi preciso editar depois.
+   */
+  garantia: { tipo: "fabrica" | "vendedor" | "sem"; prazo?: string };
+  /** Sem GTIN, diga por quê (ex.: "operador cadastra depois"). Só aviso: o ML aceita sem. */
+  sem_gtin_motivo?: string;
 };
+
+/** Nome do tipo de garantia como o ML escreve em sale_terms (WARRANTY_TYPE). */
+export const TIPOS_GARANTIA = {
+  fabrica: "Garantia de fábrica",
+  vendedor: "Garantia do vendedor",
+  sem: "Sem garantia",
+} as const;
+const PRAZO_GARANTIA = /^\d+ (dias|meses|anos)$/;
 
 const TIPOS_ANUNCIO = new Set(["gold_special", "gold_pro"]);
 const DIMENSOES = [
@@ -62,8 +77,18 @@ export function carregarOferta(pasta: string): Oferta {
   if (dimensoesFaltando.length) {
     faltando.push(`${dimensoesFaltando.join(", ")} — o ML exige, e define o custo do frete`);
   }
+  const g = o.garantia;
+  if (!g || !(g.tipo in TIPOS_GARANTIA)) {
+    faltando.push('garantia ({"tipo": "fabrica" | "vendedor" | "sem", "prazo": "3 meses"}) — pergunte, não assuma');
+  } else if (g.tipo !== "sem" && !PRAZO_GARANTIA.test(g.prazo ?? "")) {
+    faltando.push(`garantia.prazo no formato "3 meses", "90 dias" ou "1 anos" (veio "${g.prazo ?? ""}")`);
+  }
 
   if (faltando.length) throw new Error(`oferta.json incompleto — falta: ${faltando.join(", ")}`);
+
+  if (!temAtributo.has("GTIN") && !o.sem_gtin_motivo?.trim()) {
+    console.warn("⚠ Sem GTIN (código de barras) e sem sem_gtin_motivo. O ML aceita, mas a ficha fica incompleta.");
+  }
 
   if (o.titulo.length > 60) {
     console.warn(`⚠ Título com ${o.titulo.length} caracteres. O ML corta em 60.`);
@@ -116,8 +141,16 @@ export function montarPayload(o: Oferta) {
     listing_type_id: o.tipo_anuncio,
     pictures: (o.fotos ?? []).map((f) => (/^https?:/.test(f) ? { source: f } : { id: f })),
     attributes: o.atributos ?? [],
+    sale_terms: termosDeGarantia(o.garantia),
     ...(o.video_id ? { video_id: o.video_id } : {}),
   };
+}
+
+/** Garantia da oferta → sale_terms do ML. Também usado pelo ml:editar. */
+export function termosDeGarantia(g: Oferta["garantia"]) {
+  const termos: { id: string; value_name: string }[] = [{ id: "WARRANTY_TYPE", value_name: TIPOS_GARANTIA[g.tipo] }];
+  if (g.tipo !== "sem") termos.push({ id: "WARRANTY_TIME", value_name: g.prazo! });
+  return termos;
 }
 
 /**

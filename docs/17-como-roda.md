@@ -57,7 +57,7 @@ produtos/<slug>/
 
 `oferta.json` é o **artefato central**: é o que `ml:publicar` transforma em payload do ML. Quando o
 mesmo produto vira dois anúncios em categorias diferentes, viram dois arquivos na mesma pasta
-(`oferta-cimento.json`, `oferta-protecao.json`) e o CLI aceita o caminho do arquivo direto.
+(`oferta-categoria-a.json`, `oferta-categoria-b.json`) e o CLI aceita o caminho do arquivo direto.
 
 Fora das pastas de produto: `produtos/_catalogo/` guarda o retrato da conta inteira (27 anúncios,
 164 perguntas de clientes), que é base de conhecimento para os anúncios novos.

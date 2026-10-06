@@ -8,6 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { RAIZ, lerTokens } from "./ml/auth.js";
 import { ml } from "./ml/api.js";
+import { acharChrome } from "./ml/chrome.ts";
 
 const MODELO_IMAGEM = "gpt-image-2"; // o mesmo de scripts/midia/gerar-imagens.ts
 let falhas = 0;
@@ -71,6 +72,15 @@ const arqOp = resolve(RAIZ, "OPERACAO.md");
 if (!existsSync(arqOp)) falha("OPERACAO.md não existe. No PowerShell: Copy-Item OPERACAO.example.md OPERACAO.md");
 else if (readFileSync(arqOp, "utf8").includes("[nome e nicho]")) aviso("OPERACAO.md ainda é o modelo. Peça à IA: \"Me ajude a configurar o OPERACAO.md\".");
 else ok("OPERACAO.md preenchido");
+
+// Google Chrome — ml:busca, ml:sugestoes e ml:pagina dependem dele (o navegador headless é
+// bloqueado pelo ML). Sem ele o resto funciona; por isso é aviso, não falha.
+try {
+  acharChrome();
+  ok("Google Chrome encontrado (ml:busca, ml:sugestoes, ml:pagina)");
+} catch {
+  aviso("Google Chrome não encontrado: ml:busca, ml:sugestoes e ml:pagina não vão funcionar. Instale em google.com/chrome ou aponte CHROME_PATH no .env.");
+}
 
 console.log(falhas
   ? `\n${falhas} item(ns) para resolver. Mande esta saída para a IA do projeto e peça ajuda.\n`

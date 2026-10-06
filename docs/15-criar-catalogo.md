@@ -6,8 +6,8 @@ Sugestão enviada para o produto do primeiro piloto — status inicial **UNDER_R
 Como o operador previu: **é sugestão, não publicação.** O ML cura antes de virar produto.
 
 ```bash
-npm run ml:sugerir-catalogo -- MLB7566538598              # monta e mostra
-npm run ml:sugerir-catalogo -- MLB7566538598 --confirmo   # envia
+npm run ml:sugerir-catalogo -- MLB1000000001              # monta e mostra
+npm run ml:sugerir-catalogo -- MLB1000000001 --confirmo   # envia
 npm run ml:sugerir-catalogo -- --status MLB7575844910     # acompanha
 ```
 

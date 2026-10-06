@@ -22,7 +22,8 @@ a seis ângulos que guiarão título, ficha, descrição e imagens.
 
 Criar `produtos/<slug>/prompts-imagens.json` a partir do dossiê:
 
-1. capa em fundo branco, sem texto;
+1. capa sem texto, selo nem logo novo: semiambientada (produto grande em destaque, fundo com
+   contexto e quebra de cor) ou fundo quase branco para produto básico;
 2. qualidade ou diferencial;
 3. principais dúvidas;
 4. benefícios;
@@ -38,6 +39,10 @@ Criar `produtos/<slug>/prompts-imagens.json` a partir do dossiê:
 O `family_name` não pode passar de 60 caracteres. Depois da publicação no fluxo User Products, o
 título fica irreversível pela API.
 
+O ML acrescenta `COLOR` e `FINISH` no fim do título (docs/16). Não gastar caractere da família com
+cor ou acabamento que já estão na ficha, e mostrar ao operador o título final com o acréscimo.
+Entregar três opções, cada uma com o ângulo de busca que ela cobre.
+
 ## 4. Ficha e modelo
 
 Preencher todos os atributos confirmados da categoria e marcar o que depende do operador. O campo
@@ -46,6 +51,10 @@ modelo pode receber palavras-chave apenas no anúncio orgânico.
 ## 5. Descrição
 
 Escrever em texto corrido, sem bullets, emoji ou método de envio.
+
+Cada objeção do dossiê (§5) precisa de um trecho da descrição que a responda. Se o dado não existe
+(número de demãos, lado de aplicar, como remover…), perguntar ao operador **antes** da revisão
+final — editar depois de publicado pode mexer no ranqueamento.
 
 ## 6. Dados obrigatórios do operador
 
@@ -57,6 +66,8 @@ Antes de montar a oferta final, perguntar sempre:
 | Estoque | quantidade real disponível |
 | Tipo de anúncio | `gold_special` ou `gold_pro` |
 | Embalagem | dimensões e peso bruto reais |
+| Garantia | tipo (`fabrica`, `vendedor`, `sem`) e prazo — vai em `"garantia"` no `oferta.json` |
+| Código de barras | GTIN no atributo, ou o motivo em `"sem_gtin_motivo"` |
 
 Categoria também é decisão do operador.
 
@@ -107,8 +118,18 @@ npm run ml:publicar -- produtos/<slug> --validar
 Fotos locais são escrita. Para validar com as fotos reais, `--confirmo` é necessário e o comando
 deve ser explicado ao operador antes de executar.
 
-> **Checkpoint 4:** operador revisa título, preço, estoque, tipo, embalagem, ficha, imagens e
-> descrição e autoriza explicitamente a publicação.
+Antes da revisão final, a conferência (só lê arquivos locais):
+
+```bash
+npm run ml:conferir -- produtos/<slug>
+```
+
+Ela mostra o título como vai aparecer (com o acréscimo de cor e acabamento), a ficha comparada com a
+categoria e com os concorrentes, GTIN, garantia, as objeções do dossiê e o que ainda está PENDENTE
+no `entrada.md`. Com ✗, não vai para a revisão.
+
+> **Checkpoint 4:** operador revisa título, preço, estoque, tipo, embalagem, garantia, ficha,
+> imagens e descrição e autoriza explicitamente a publicação.
 
 Somente após esse OK:
 
@@ -117,3 +138,21 @@ npm run ml:publicar -- produtos/<slug> --validar --publicar --confirmo
 ```
 
 As duas flags finais são obrigatórias. Nunca contornar a trava em `scripts/ml/api.js`.
+
+## 10. Depois de publicar
+
+```bash
+npm run ml:saude -- MLB<id>          # nota de qualidade do próprio ML e o que ele aponta
+```
+
+O que o ML sugere é sugestão: preço, clássico ou premium e vídeo são decisão do operador.
+
+Para completar algo depois de publicado (garantia, atributo, descrição), nunca script avulso:
+
+```bash
+npm run ml:editar -- MLB<id> --garantia "fabrica:3 meses"          # mostra o antes e o depois
+npm run ml:editar -- MLB<id> --atributo "ID=valor" --confirmo      # grava e confere
+```
+
+O `ml:editar` só grava com `--confirmo` (escrita, com OK do operador) e confere que título, status,
+preço e o resto da ficha não mudaram. Título não se edita: é irreversível (docs/16).

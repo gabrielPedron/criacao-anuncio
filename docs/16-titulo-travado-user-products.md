@@ -42,8 +42,8 @@ Executado nos dois anúncios do piloto:
 
 | antigo | novo | título resultante |
 |---|---|---|
-| MLB7566538598 | MLB7590381684 | o primeiro piloto Emborrachada 24kg Impermeabilizante Laje Telha Branco Fosco |
-| MLB7487086196 | MLB7590369326 | o primeiro piloto Emborrachada 18kg Impermeabilizante Laje Telha Branco Fosco |
+| MLB1000000001 | MLB1000000003 | Produto do piloto 24kg Impermeabilizante Laje Telha Branco Fosco |
+| MLB1000000002 | MLB1000000004 | Produto do piloto 18kg Impermeabilizante Laje Telha Branco Fosco |
 
 ### Duas coisas confirmadas na prática
 

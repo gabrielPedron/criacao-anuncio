@@ -10,6 +10,12 @@ ferramentas de pesquisa — fica em `OPERACAO.md`, que é local e **não vai par
 **Se o arquivo existir, leia antes de agir.** Se não existir, siga o onboarding abaixo antes de
 pedir o contexto do negócio ao operador.
 
+**Metodologia externa.** Se o `OPERACAO.md` apontar o arquivo de uma metodologia, ela vive fora
+deste repo: rodar `git pull` nesse repositório antes de consultar e nunca copiá-la para cá. O mapa
+do que ela alimenta em cada etapa fica no `OPERACAO.md`, junto com as partes marcadas como uso
+interno, que nunca viram texto visível ao cliente (anúncio, imagem, descrição, resposta) nem arquivo
+versionado deste repo.
+
 ## Primeiro uso em um clone novo
 Quando o operador disser que acabou de baixar o projeto ou pedir ajuda para configurar:
 1. Explique que `git clone` já criou a cópia local. Ele não precisa criar repositório, fazer fork,
@@ -31,7 +37,9 @@ Quando o operador disser que acabou de baixar o projeto ou pedir ajuda para conf
 - **Fase 0 — pesquisa do operador (sempre primeiro):** ele traz a semântica e as top buscas do mês
   (de qualquer ferramenta de pesquisa que use), mais **2+ links de concorrentes que ele validou**.
   É a primeira fonte, não um fallback. Roteiro em [docs/02-etapa-A-coleta.md](docs/02-etapa-A-coleta.md).
-- **Etapa A — coleta:** API do ML para tudo que é estruturado + Chrome (skill `leitor-de-sites`) só para as **avaliações** dos concorrentes. Saída = dossiê ([coleta/TEMPLATE-dossie.md](coleta/TEMPLATE-dossie.md)).
+- **Etapa A — coleta:** API do ML para tudo que é estruturado + Chrome do projeto (`ml:busca`, `ml:sugestoes`,
+  `ml:pagina`, guia anônima num perfil separado em `.chrome-ml/`) para o que a API bloqueia: busca por termo, sugestões de
+  busca, anúncio de outro vendedor e avaliações. Saída = dossiê ([coleta/TEMPLATE-dossie.md](coleta/TEMPLATE-dossie.md)).
 - **Ferramenta de pesquisa: manual sim, automatizada não.** O operador usa no navegador dele e me
   passa o resultado em texto. **Eu dirigindo essas ferramentas por automação está fora** — foi
   tentado e a sessão caía no meio da coleta. Ver [docs/11-sem-nubimetrics.md](docs/11-sem-nubimetrics.md).
@@ -47,6 +55,8 @@ Quando o operador disser que acabou de baixar o projeto ou pedir ajuda para conf
 - **Categoria é escolha do operador.** Não questionar.
 - **Descrição sem método de envio** (Full/agências) — o ML implica.
 - **Campos do ML:** texto corrido, sem bullets, sem emoji. Exceção: campo "modelo" em anúncio orgânico.
+- **Pedido de custo vai no topo da resposta, numa linha só** ("Gero as 5 imagens por US$ 0,40?
+  sim/não"). Escondido no fim, o operador volta achando que as imagens já existem.
 - **Imagem gasta crédito do operador.** `npm run midia:gerar` sem `--confirmo` só mostra o custo;
   mostre o valor, espere o OK e aí rode com `--confirmo`. Vale para cada refação também.
 - **Personalização vai no `OPERACAO.md`**, nunca em `CLAUDE.md`/`AGENTS.md`/scripts. Arquivo do
@@ -74,7 +84,9 @@ foi medido num piloto real: a pesquisa própria rendeu mais que a descoberta aut
 3. **Escolher o catálogo.** Rodar `npm run ml:catalogo`, mandar os **links** dos candidatos e
    deixar o operador dizer se algum é o mesmo produto. Nunca decidir sozinho — nome parecido
    pode ser outra embalagem ou versão.
-4. Revisar o anúncio montado antes de publicar.
+4. Revisar o anúncio montado antes de publicar. Antes de mostrar, rodar `npm run ml:conferir --
+   produtos/<slug>` e levar junto, item a item, o trecho da descrição que responde cada objeção do
+   dossiê (§5). Objeção sem resposta = pedir o dado ao operador antes, não depois de publicar.
 
 > **O título é IRREVERSÍVEL.** Publicado com `family_name`, o ML não deixa mais mudar o título
 > por API — nem pelo item, nem pela família ([docs/16](docs/16-titulo-travado-user-products.md)).
@@ -82,7 +94,8 @@ foi medido num piloto real: a pesquisa própria rendeu mais que a descoberta aut
 
 ## Perguntar sempre antes de publicar
 Preço · quantidade em estoque · clássico (`gold_special`) ou premium (`gold_pro`) ·
-dimensões e peso bruto da embalagem. Nada disso se adivinha.
+dimensões e peso bruto da embalagem · **garantia (tipo e prazo)** · **código de barras (GTIN)**,
+ou o motivo de não ter. Nada disso se adivinha. O `ml:publicar` recusa oferta sem garantia.
 
 Esses valores devem vir diretamente do operador. Nunca inferir preço, peso ou dimensões pela foto,
 pelos concorrentes, pela mediana do mercado ou por um produto parecido. Se qualquer um estiver
@@ -109,6 +122,8 @@ apuração real — nunca por documentação ou memória. Detalhes em [docs/10-a
 posição. Foi a auditoria que pegou isso.
 
 ## Convenções técnicas
+- **Texto com crase não vai dentro de `node -e "…"` no terminal:** o bash executa o trecho entre
+  crases como comando. Texto de documento vai por edição de arquivo; JS longo, num arquivo próprio.
 - Node puro, ESM, **sem dependências** — `fetch` e `node:fs` nativos. Não adicionar pacote sem necessidade real.
 - `.ts` roda direto (type stripping do Node 24), sem build. Imports precisam da **extensão explícita**.
 - `scripts/apuracao/` é cópia do skill `apuracao-de-api` — corrigiu bug ali? sincronizar de volta com o skill.
@@ -126,7 +141,9 @@ categorias. A conta, os produtos e os números de quem opera estão no `OPERACAO
 
 O ML **bloqueia** para este app: `/sites/MLB/search`, `/items/$ID` de terceiros e `/reviews/item/$ID` (403). O caminho aberto é **categoria → highlights → produto de catálogo → itens + perguntas**. Os scripts já trabalham por ele — ver [docs/06-mapa-da-api.md](docs/06-mapa-da-api.md) antes de escrever chamada nova, pra não reimplementar o que está bloqueado.
 
-**Avaliações de concorrente** só pelo Chrome (skill `leitor-de-sites`). **Perguntas** vêm pela API.
+**Busca, sugestões de busca, anúncio de terceiro e avaliações** vêm do Chrome do projeto (`ml:busca`,
+`ml:sugestoes`, `ml:pagina`). O navegador headless é bloqueado pelo ML; o Chrome normal, não.
+**Perguntas** vêm pela API.
 
 Backlog em [docs/07-backlog.md](docs/07-backlog.md); como a máquina roda hoje, em
 [docs/17-como-roda.md](docs/17-como-roda.md).

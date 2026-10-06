@@ -1,8 +1,8 @@
 // Sugere um produto novo ao catálogo do ML.
 // É SUGESTÃO: entra como UNDER_REVIEW e o ML cura antes de virar produto de catálogo.
 //
-//   npm run ml:sugerir-catalogo -- MLB7566538598              → monta e mostra o corpo
-//   npm run ml:sugerir-catalogo -- MLB7566538598 --confirmo   → envia
+//   npm run ml:sugerir-catalogo -- MLB1000000001              → monta e mostra o corpo
+//   npm run ml:sugerir-catalogo -- MLB1000000001 --confirmo   → envia
 //   npm run ml:sugerir-catalogo -- --status MLB7575844910     → consulta uma sugestão
 //
 // CONTRATO (descoberto por tentativa em 31/08/2026, não estava documentado para nós):

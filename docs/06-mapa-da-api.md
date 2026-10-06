@@ -56,15 +56,36 @@ O `paging.total` é **fuzzy**: um termo inexistente devolve ~50 resultados, e te
 
 Além disso, muito produto de catálogo vem com **0 vendedores ativos** — por isso `ml:concorrentes` (via `/highlights`) é melhor pra achar quem realmente vende, e `ml:buscar` é melhor pra varrer um termo.
 
-## Ainda no Chrome
+## No Chrome do projeto
 
-1. **Avaliações** dos concorrentes — `/reviews/*` dá 403/404 na API, mas a **página de anúncio renderiza normal** e a extração funciona. Snippet pronto em [../coleta/snippets-chrome.md](../coleta/snippets-chrome.md).
+O que a API nega vem do Chrome normal, em guia anônima e com perfil separado, dirigido por código (`scripts/ml/chrome.ts`).
+Navegador headless (Playwright, o do Hermes, `web_extract`) é **bloqueado** pelo ML com a página
+"Hubo un error accediendo a esta pagina"; o Chrome com janela passa. Testado em 05 e 06/10/2026.
 
-> **Busca por termo foi testada no Chrome e não funciona** — nem navegando (resultados nunca renderizam) nem por fetch (serialização proprietária). Fica na API, via catálogo.
+| O que | Comando |
+|---|---|
+| Busca por termo: total de resultados e a 1ª página, com os patrocinados marcados | `npm run ml:busca -- "termo"` |
+| Sugestões de busca (autocompletar; dá 403 fora do navegador) | `npm run ml:sugestoes -- "termo"` |
+| Anúncio de outro vendedor: preço, vendidos, ficha, descrição, avaliações | `npm run ml:pagina -- "url"` |
+
+1. **Avaliações** dos concorrentes — `/reviews/*` dá 403/404 na API. `ml:pagina` lê as que a página
+   mostra (as primeiras, ordenadas por útil). Em página de catálogo podem ser herdadas de outro produto.
+
+> **Busca por termo:** a nota antiga dizia que não funcionava no Chrome ("resultados nunca
+> renderizam"). Era o navegador de automação sendo bloqueado. No Chrome normal funciona — revisto
+> em 06/10/2026.
 
 > **Fotos saíram do Chrome:** `ml:fotos` baixa os arquivos e o Claude Code lê com visão direto. Não precisa de navegador nem screenshot.
 
 Snippets em [../coleta/snippets-chrome.md](../coleta/snippets-chrome.md).
+
+## Qualidade e edição do próprio anúncio
+
+| Endpoint | O que dá | Comando |
+|---|---|---|
+| `GET /item/$ID/performance` | nota de qualidade do ML (0–100) e regras pendentes, por grupo | `ml:saude` |
+| `PUT /items/$ID` com `sale_terms` | garantia (`WARRANTY_TYPE` por nome, `WARRANTY_TIME` "3 meses") — **não é atributo** | `ml:editar --garantia` |
+| `PUT /items/$ID` com `attributes: [um só]` | acrescenta/troca só aquele atributo; os demais ficam (visto em 06/10/2026, e o `ml:editar` confere a cada vez) | `ml:editar --atributo` |
 
 ## Escrita
 

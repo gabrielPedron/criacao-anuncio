@@ -1,5 +1,7 @@
 // CLI da publicação. Sem flag, NÃO fala com a API — só monta e mostra.
 import { carregarOferta, montarPayload, validar, publicar, enviarDescricao, subirFoto } from "./publicar.ts";
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { morrer } from "./api.js";
 
 const args = process.argv.slice(2);
@@ -27,6 +29,13 @@ try {
       oferta.fotos.push(id);
       console.log(`  ✓ ${f.split(/[\/]/).pop()} → ${id}`);
     }
+    // Grava os ids no oferta.json: se a publicação falhar depois daqui, a próxima rodada usa as
+    // fotos que já estão no ML em vez de subir tudo de novo (a CLI só sobe quando `fotos` está vazio).
+    const arq = pasta!.endsWith(".json") ? resolve(pasta!) : resolve(pasta!, "oferta.json");
+    const bruto = JSON.parse(readFileSync(arq, "utf8"));
+    bruto.fotos = oferta.fotos;
+    writeFileSync(arq, JSON.stringify(bruto, null, 2) + "\n");
+    console.log(`  ids das fotos gravados em ${arq}`);
   } else if (oferta.fotos_locais?.length && !oferta.fotos?.length) {
     console.log(`\n⚠ ${oferta.fotos_locais.length} fotos locais NÃO foram enviadas — subir foto é escrita no ML.`);
     console.log(`  O dry-run vai rodar sem elas, e o ML reclama que foto é obrigatória.`);

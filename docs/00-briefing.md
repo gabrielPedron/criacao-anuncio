@@ -2,7 +2,7 @@
 *Leia primeiro. Contexto inteiro do projeto. Os documentos 01–05 detalham cada parte.*
 
 ## 1. O que é
-Automatizar a **criação de anúncios** de Mercado Livre para a própria loja, seguindo um método de criação de oferta (Pilar 2 — Criação de Oferta).
+Automatizar a **criação de anúncios** de Mercado Livre para a própria loja, seguindo um método de criação de oferta.
 **Pressuposto:** preço, margem e logística pertencem ao operador. O agente coleta sinais de mercado,
 mas não calcula margem nem transforma a mediana dos concorrentes em preço. O foco é pegar o produto →
 gerar título, ficha, descrição e fotos → validar → publicar.

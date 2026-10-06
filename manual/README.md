@@ -10,6 +10,9 @@ credenciais e fornece os dados dos próprios produtos.
 2. [Primeiro anúncio — como conversar com o agente](02-PRIMEIRO-ANUNCIO.md)
 3. [Roteiro da gravação](ROTEIRO-VIDEO.md)
 
+**Trilha Hermes (em teste):** [instalar e conectar à assinatura do Claude](HERMES-INSTALACAO.md) —
+alternativa ao Claude Code/Codex, ainda em validação; não faz parte da aula gravada.
+
 A instalação segue a mesma ordem da aula em vídeo. Existe também uma versão em PDF para mandar
 junto com a aula; ela é gerada a partir destes arquivos, que são a fonte oficial. A execução de
 cada produto fica a cargo do agente, seguindo estas instruções.

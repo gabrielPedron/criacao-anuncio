@@ -4,8 +4,8 @@
 // o ML não deixa editar o título nem pelo item, nem pela família (docs/16). O único caminho
 // por API é publicar um anúncio novo, idêntico, com a família certa.
 //
-//   npm run ml:recriar -- MLB7566538598 "Novo Título"            → mostra o payload, dry-run
-//   npm run ml:recriar -- MLB7566538598 "Novo Título" --publicar --confirmo
+//   npm run ml:recriar -- MLB1000000001 "Novo Título"            → mostra o payload, dry-run
+//   npm run ml:recriar -- MLB1000000001 "Novo Título" --publicar --confirmo
 //
 // O clone é fiel de propósito: preço, estoque, tipo de anúncio, fotos (mesmos ids, sem
 // re-upload), atributos, sale_terms e descrição vêm do item vivo. Nada é recalculado.

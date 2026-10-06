@@ -41,6 +41,7 @@ if (antes === depois) {
   console.log("\n✓ Você já está na versão mais recente.\n");
 } else {
   console.log("\n✓ Projeto atualizado. O que mudou:\n");
-  console.log(git("log", "--format=  - %s", `${antes}..${depois}`));
-  console.log("\n  Rode agora: npm.cmd run verificar\n");
+  // Assunto + corpo: o corpo de cada publicação traz a lista de novidades (vem do NOVIDADES.md).
+  console.log(git("log", "--format=  %s%n%b", `${antes}..${depois}`).replace(/\n{3,}/g, "\n\n"));
+  console.log("\n  Histórico completo em NOVIDADES.md. Rode agora: npm.cmd run verificar\n");
 }

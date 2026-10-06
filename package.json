@@ -29,6 +29,12 @@
     "ml:referencia": "node scripts/ml/referencia.ts",
     "ml:sugerir-catalogo": "node scripts/ml/sugerir-catalogo.ts",
     "ml:recriar": "node scripts/ml/recriar.ts",
+    "ml:busca": "node scripts/ml/busca.ts",
+    "ml:sugestoes": "node scripts/ml/sugestoes.ts",
+    "ml:pagina": "node scripts/ml/pagina.ts",
+    "ml:conferir": "node scripts/ml/conferir.ts",
+    "ml:editar": "node scripts/ml/editar.ts",
+    "ml:saude": "node scripts/ml/saude.ts",
     "test": "node --test scripts/ml/*.test.ts"
   }
 }

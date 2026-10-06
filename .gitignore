@@ -17,3 +17,6 @@ node_modules/
 
 # Ferramenta do mantenedor, nao de quem clona
 scripts/publicar-repo.ts
+
+# Perfil separado do Chrome que o projeto dirige (ml:busca, ml:pagina, ml:sugestoes)
+.chrome-ml/

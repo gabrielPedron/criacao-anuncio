@@ -36,9 +36,30 @@ as top-3 semânticas e parar até o operador confirmar.
 | Ler produto de catálogo e perguntas | `npm run ml:produto -- MLBxxxxxxxxxx --salvar produtos/<slug>/raw/produto.json` |
 | Medir visitas dos últimos 30 dias | `npm run ml:demanda -- MLBxxxxxxxxxx` |
 | Baixar fotos para leitura visual | `npm run ml:fotos -- MLBxxxxxxxxxx --dir produtos/<slug>/raw/fotos` |
+| Sugestões de busca do ML (Fase 0, sem volume) | `npm run ml:sugestoes -- "termo1" "termo2" --salvar produtos/<slug>/raw/sugestoes.json` |
+| Concorrência por termo e 1ª página da busca | `npm run ml:busca -- "termo1" "termo2" --salvar produtos/<slug>/raw/busca.json` |
+| Anúncio de outro vendedor (o que a API nega) e avaliações | `npm run ml:pagina -- "url1" "url2" --salvar produtos/<slug>/raw/paginas.json` |
+
+Os três últimos usam o Chrome do projeto (perfil separado, `.chrome-ml/`). Sem pesquisa do operador,
+`ml:sugestoes` + `ml:busca` são o melhor sinal de semântica que se tem: ordem de popularidade e
+quantidade de concorrentes, mas nunca volume de busca.
 
 `ml:referencia` ancora a coleta porque o operador sabe o que é o mesmo produto; `ml:descobrir`
 apenas amplia. Nome parecido não prova equivalência.
+
+## Conferências antes do dossiê
+
+Três erros que já aconteceram num piloto e mudam a análise inteira:
+
+1. **"Este anúncio é meu" precisa de prova.** Conferir se o MLB está em `npm run ml:meus-anuncios`.
+   `/items/<id>` de terceiro devolve 403; o próprio, não. Link com a marca do operador pode ser de
+   revendedor, e aí ele é o concorrente mais importante, não o anúncio de base.
+2. **A unidade do rótulo manda.** Se o operador fala "ml" e o rótulo diz "g" (ou o contrário),
+   perguntar: define `NET_VOLUME` ou `NET_WEIGHT` e entra no título.
+3. **Ficha e avaliação de concorrente podem ser de outro produto.** Página de catálogo pode herdar
+   avaliações de um produto vizinho da mesma linha, e a ficha pode trazer superfície ou cor que não
+   batem. Avaliação só vira objeção no dossiê se falar do uso real do produto; atributo incoerente
+   entra como erro do concorrente, nunca copiado para a nossa ficha.
 
 ## Avaliações pelo navegador
 

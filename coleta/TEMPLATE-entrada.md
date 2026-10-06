@@ -23,6 +23,14 @@ medidas do produto, composição, cor, validade, garantia, conteúdo da embalage
 
 - [dado]: [valor]
 - [dado]: [valor]
+- **Garantia:** [de fábrica / do vendedor / sem] e prazo [ex.: 3 meses]
+- **Código de barras (GTIN):** [número, ou o motivo de não ter]
+
+**Dúvidas que a descrição precisa responder** — o agente lista a partir das perguntas e avaliações
+dos concorrentes (modo de aplicar, quantidade, compatibilidade, remoção…) e o operador responde aqui.
+O que ficar sem resposta não entra na descrição como promessa.
+
+- [dúvida]: [resposta do operador]
 
 ## 3. Para publicar (sempre do operador)
 

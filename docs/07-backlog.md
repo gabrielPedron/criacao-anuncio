@@ -1,5 +1,5 @@
 # Backlog
-*Atualizado em 10/09/2026 — itens vindos da leitura do repo (ver [17-como-roda.md](17-como-roda.md)).*
+*Atualizado em 06/10/2026 — primeiro produto conduzido pelo Hermes.*
 *Contagem honesta: começou a sessão com 7 abertos, fechamos 7 e eu criei 9 lendo o código —
 6 morreram no mesmo dia. Sobrou o que está abaixo.*
 
@@ -19,7 +19,7 @@ produto a que pertence. Decidido em 07/09/2026.
 
 ---
 
-## FAZER  *(1)*
+## FAZER  *(8)*
 
 ### 1. Testar o método num nicho distante do atual
 O repo público está no ar (github.com/gabrielPedron/criacao-anuncio) e o manual foi reescrito na
@@ -27,7 +27,50 @@ ordem da aula gravada em 26/09. O setup guiado virou `npm run verificar` + o pro
 uso; a atualização do cliente, `npm run atualizar`. Falta rodar um produto de outro nicho de ponta
 a ponta para ver o que no método ainda é específico de tinta/impermeabilizante.
 
----
+### 15. Chrome do projeto: medir em volume
+Os defeitos da revisão de 06/10 foram corrigidos (ver RESOLVIDOS). Continua aberto só o que pede uso:
+- rodar um produto inteiro só com `ml:busca`/`ml:sugestoes`/`ml:pagina` e anotar se o ML bloqueia
+  em algum volume (até agora ~30 páginas, nenhum bloqueio);
+- `ml:pagina` lê só as avaliações que a página mostra (as ~5 primeiras). Abrir "ver todas" se o
+  dossiê precisar de mais;
+- os seletores são do layout de 10/2026 (`li.ui-search-layout__item`, `.poly-component__*`). Quando
+  o ML mudar, o comando agora falha com "nenhum anúncio lido" em vez de salvar vazio.
+
+### 16. Descoberta mais barata com a busca — **destravado pelo item 15**
+`ml:descobrir` faz ~1.300 chamadas para achar concorrentes por catálogo e não enxerga quem nunca
+entrou em catálogo (item 14). A 1ª página de `ml:busca` traz tradicionais e catálogo, com id, preço
+e marcação de patrocinado, em 1 página por termo. Avaliar se `ml:busca` vira a porta de entrada e
+o `ml:descobrir` fica só para ampliar.
+
+### 17. Etapa A num comando só — **eficiência**
+No piloto de 06/10 foram ~10 comandos soltos (`ml:referencia`, `ml:categoria`, `ml:semantica`,
+`ml:sugestoes`, `ml:busca`, `ml:pagina`, `ml:fotos`…) e o dossiê foi escrito do zero. Proposta:
+- `npm run ml:coletar -- produtos/<slug>` lê o `entrada.md` (links, categoria, termos) e roda tudo,
+  salvando em `raw/` com data;
+- o mesmo comando gera o **esqueleto do dossiê** com o que é mecânico: tabela de anúncios analisados,
+  cobertura da ficha, resultados por termo, sugestões de busca. O agente escreve só o julgamento.
+
+### 19. Acompanhar a posição depois de publicar — **resultado**
+A metodologia (Parte II-B) manda medir a posição em pelo menos 5 palavras-chave, semanal para
+produto de pouco volume. Com `ml:busca` isso fica barato: um `ml:posicao -- MLB… "termo1" …` que
+devolve a posição orgânica do anúncio (desconsiderando os patrocinados) em cada termo e grava o
+histórico em `produtos/<slug>/posicao.csv`. Primeiro alvo: o anúncio do piloto de 06/10.
+
+### 20. Fidelidade do rótulo nas imagens — **qualidade**
+O gpt-image-2 acerta o texto grande do rótulo e embaralha o miúdo (visível no zoom). Testar:
+(a) edição com máscara, gerando só o fundo e deixando o pote da foto base intacto; (b) capa com a
+foto real sobre fundo gerado. Medir custo e resultado antes de mudar o padrão.
+
+### 22. Prova social real depois das primeiras vendas — **qualidade**
+A foto 5 ficou sem prova social porque não havia avaliação real. Aos 30 dias: `ml:pagina` no
+próprio anúncio; se houver avaliação boa e útil, gerar a foto 5 com ela (só texto real).
+
+### 23. Repositório público dos mentorados — **falta o push e uma decisão**
+O mecanismo ficou pronto em 06/10 (ver RESOLVIDOS): versão com tag, novidades no `atualizar`,
+filtro de ids da conta, Chrome no `verificar`. Falta:
+- **o push** da v1 (`git push --follow-tags` em `../criacao-anuncio-publico`) — ação do operador;
+- **decidir** se a trilha Hermes ("em teste") fica na v1 ou sai até o teste fechar;
+- **cadência:** publicar por lote validado num produto real, não a cada commit.
 
 ## PARADO DE PROPÓSITO  *(5)*
 
@@ -169,6 +212,42 @@ O contorno (você cola a URL) é a Fase 0, e já está no processo.
 
 ## RESOLVIDOS
 
+- ~~**Ficha completa antes de publicar (18)**~~ → **feito em 06/10.** `oferta.json` exige
+  `garantia` (`fabrica`/`vendedor`/`sem` + prazo) e o `montarPayload` manda `sale_terms`
+  (dry-run no ML aceitou por nome); sem GTIN, aviso + `sem_gtin_motivo`. Novo `ml:conferir` antes
+  da Parada 2: título final com COLOR + FINISH, ficha × schema × concorrentes, GTIN, garantia,
+  objeções do dossiê a casar com a descrição e pendências do `entrada.md`. AGENTS, TEMPLATE-entrada
+  e docs/03 pedem garantia, GTIN e as respostas às dúvidas antes da revisão. Os 6 anúncios do
+  pipeline que estavam sem garantia foram corrigidos com OK do operador. 4 testes novos. (06/10)
+- ~~**`ml:editar` com trava (21)**~~ → **feito em 06/10.** Garantia, atributo ou descrição de anúncio
+  publicado: mostra antes/depois, só grava com `--confirmo`, recusa anúncio de outra conta e confere
+  título, status, preço e contagem de atributos. Usado nos 5 anúncios da garantia. O `ml:publicar`
+  grava os ids das fotos subidas no `oferta.json`. (06/10)
+- ~~**`ml:saude` (24)**~~ → **feito em 06/10.** `/item/<id>/performance` apurado (estável) e virou
+  comando: nota, nível e só as regras PENDING; `--conta` ordena todos os ativos do pior para o melhor.
+  É o passo 10 do docs/03. (06/10)
+- ~~**Lições só na skill do Hermes (25)**~~ → **feito em 06/10.** PUT de um atributo e garantia em
+  `sale_terms` no docs/06; custo de imagem no topo e a armadilha da crase no AGENTS/CLAUDE;
+  `/performance` no docs/06 e no docs/03. (06/10)
+- ~~**Defeitos do Chrome do projeto (15, revisão de 06/10)**~~ → **feito em 06/10.** Sessão em contexto
+  isolado (`Target.createBrowserContext`, descartado no fim) — vale mesmo se a janela foi aberta sem
+  `--incognito`; espera a página NOVA (marca o documento anterior) e acabou a 1ª busca vazia; comando
+  CDP com tempo limite e erro se o Chrome fechar; `ml:busca` sem card tenta de novo e falha sem
+  salvar; `ml:pagina` falha sem título; limpeza das avaliações virou `limparAvaliacao()` com teste. (06/10)
+- ~~**Mecanismo do repositório público (23, parte técnica)**~~ → **feito em 06/10.** `NOVIDADES.md`
+  versionado: a 1ª seção vira a mensagem do commit público e a tag (`v1`, `v2`…), e o
+  `npm run atualizar` passa a mostrar o corpo (a lista de novidades), não só "Atualiza a partir de…".
+  O filtro do `publicar-repo` barra ids de anúncio/produto da conta (retrato local + API) e confere a
+  mensagem; ids próprios em docs/15, docs/16, `recriar.ts` e `sugerir-catalogo.ts` viraram fictícios.
+  `npm run verificar` avisa quando falta o Google Chrome. (06/10)
+
+- ~~**Puxar dados do ML além da API**~~ → **feito em 06/10.** Navegador headless (Playwright, Hermes,
+  `web_extract`) é bloqueado pelo ML; Chrome normal com perfil separado (`.chrome-ml/`), dirigido por
+  CDP com o `WebSocket` nativo do Node, passa. Viraram `ml:busca` (total de resultados + 1ª página,
+  patrocinados marcados), `ml:sugestoes` (autocompletar, que dá 403 fora do navegador) e `ml:pagina`
+  (anúncio de terceiro, ficha, descrição, avaliações). Operador liberou busca pelo Chrome e escolheu
+  perfil separado. Sem dependência nova; 2 testes de funções puras em `chrome.test.ts`. (06/10)
+
 - ~~**README defasado**~~ e ~~**separar método de negócio**~~ → feitos juntos em 07/09, porque um
   dependia do outro.
   **README reescrito do zero, genérico:** o que é preciso antes de começar (com custo de cada
@@ -262,8 +341,8 @@ O contorno (você cola a URL) é a Fase 0, e já está no processo.
   corrigido para o que foi testado. (06/09)
 
 - ~~**Ajuste na maneira de buscar**~~ → era a **Fase 0**: o operador traz semântica (Virtual Seller +
-  Nubimetrics) e links de concorrentes validados, e a API amplia a partir disso. Medido no Cimento
-  Queimado: rende mais que a descoberta automática sozinha. Documentado em
+  Nubimetrics) e links de concorrentes validados, e a API amplia a partir disso. Medido no segundo
+  piloto: rende mais que a descoberta automática sozinha. Documentado em
   [02-etapa-A-coleta.md](02-etapa-A-coleta.md) e na FASE 0 do [08](08-processo-completo.md). (06/09)
 
 - ~~**`ml:publicar --validar` dava falso positivo**~~ → `publicar-cli.ts` lê o `v.ok`, lista erros e

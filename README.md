@@ -117,6 +117,12 @@ Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
 | `npm run ml:fotos -- <MLB do produto>` | baixa as fotos do concorrente para leitura visual |
 | `npm run ml:demanda -- <MLB>` | visitas em 30 dias — sinal de demanda real |
 | `npm run ml:meus-anuncios` | retrato da sua conta: fichas, descrições e perguntas já respondidas |
+| `npm run ml:sugestoes -- "<termo>"` | sugestões de busca do ML (autocompletar), pelo Chrome |
+| `npm run ml:busca -- "<termo>"` | total de resultados e 1ª página da busca, patrocinados marcados, pelo Chrome |
+| `npm run ml:pagina -- "<url>"` | anúncio de outro vendedor: preço, vendidos, ficha, descrição e avaliações, pelo Chrome |
+| `npm run ml:conferir -- produtos/<slug>` | conferência antes da revisão final: título final, ficha, GTIN, garantia, objeções, pendências |
+| `npm run ml:saude -- <MLB>` (ou `--conta`) | nota de qualidade do próprio ML e o que ele aponta como pendente |
+| `npm run ml:editar -- <MLB> --garantia "fabrica:3 meses"` | completa anúncio publicado (garantia, atributo, descrição); grava só com `--confirmo` |
 
 **Imagens**
 

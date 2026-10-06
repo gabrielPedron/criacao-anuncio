@@ -15,6 +15,7 @@ const COMPLETA = {
   quantidade: 10,
   descricao: "Descricao de teste, texto corrido, sem bullet e sem emoji, com tamanho suficiente.",
   tipo_anuncio: "gold_special",
+  garantia: { tipo: "fabrica", prazo: "3 meses" },
   atributos: [
     { id: "BRAND", value_name: "Marca De Teste" },
     { id: "SELLER_PACKAGE_HEIGHT", value_name: "30 cm" },
@@ -144,4 +145,26 @@ test("montarPayload leva preço e estoque como vieram — nada é recalculado", 
   const p = montarPayload(carregarOferta(arquivoCom({ ...COMPLETA, preco: 44.9, quantidade: 7 })));
   assert.equal(p.price, 44.9);
   assert.equal(p.available_quantity, 7);
+});
+
+// Antes de 06/10/2026 o publicar nunca mandava garantia: 6 anúncios foram ao ar sem ela.
+test("carregarOferta exige a garantia e o prazo no formato do ML", () => {
+  const semGarantia: Record<string, unknown> = { ...COMPLETA };
+  delete semGarantia.garantia;
+  assert.throws(() => carregarOferta(arquivoCom(semGarantia)), (e: Error) => e.message.includes("garantia"));
+  assert.throws(
+    () => carregarOferta(arquivoCom({ ...COMPLETA, garantia: { tipo: "fabrica", prazo: "3m" } })),
+    (e: Error) => e.message.includes("garantia.prazo"),
+  );
+  assert.throws(() => carregarOferta(arquivoCom({ ...COMPLETA, garantia: { tipo: "vitalicia" } })));
+  assert.doesNotThrow(() => carregarOferta(arquivoCom({ ...COMPLETA, garantia: { tipo: "sem" } })));
+});
+
+test("montarPayload leva a garantia em sale_terms", () => {
+  assert.deepEqual(montarPayload(carregarOferta(arquivoCom(COMPLETA))).sale_terms, [
+    { id: "WARRANTY_TYPE", value_name: "Garantia de fábrica" },
+    { id: "WARRANTY_TIME", value_name: "3 meses" },
+  ]);
+  const sem = montarPayload(carregarOferta(arquivoCom({ ...COMPLETA, garantia: { tipo: "sem" } })));
+  assert.deepEqual(sem.sale_terms, [{ id: "WARRANTY_TYPE", value_name: "Sem garantia" }]);
 });
