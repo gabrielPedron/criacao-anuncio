@@ -3,6 +3,17 @@
 O que mudou em cada versão publicada. O `npm run atualizar` mostra a versão nova; aqui fica o
 histórico. Quem mantém o projeto escreve a versão nova no topo antes de publicar.
 
+## v3 — 11/11/2026 — Ajustes do Chrome do projeto no .env.example
+
+**Depois de atualizar:** nada obrigatório. Só se quiser mudar o teto diário ou apontar onde está o
+Chrome: copie as linhas novas do fim do `.env.example` para o seu `.env` e tire o `#` da que for usar.
+
+- **O `.env.example` lista os ajustes que a v2 anunciou:** `ML_CHROME_LIMITE_DIA` (páginas do ML por
+  dia, padrão 80), `CHROME_PATH` (caminho do Chrome, se o `verificar` não achar sozinho) e
+  `ML_CHROME_PORTA` (padrão 9334). Vêm comentados: sem eles, vale o padrão.
+- **Valor vazio ou errado não mexe mais no teto.** `ML_CHROME_LIMITE_DIA=` sem número, ou com texto,
+  volta para 80. Antes, vazio travava o Chrome e texto tirava o limite.
+
 ## v2 — 11/11/2026 — Coleta num comando, seu nicho e leitura do site com ritmo
 
 **Depois de atualizar:** rode `npm.cmd run verificar`. Depois, duas coisas que o `atualizar` não faz

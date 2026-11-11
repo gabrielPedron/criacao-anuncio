@@ -1,7 +1,7 @@
 // Funções puras do leitor de páginas. Não abre Chrome.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { slugDaBusca, idsDoLink, limparAvaliacao, pausaEntrePaginas, motivoParaParar, contarPagina, cacheValido, diaLocal } from "./chrome.ts";
+import { slugDaBusca, idsDoLink, limparAvaliacao, pausaEntrePaginas, motivoParaParar, contarPagina, cacheValido, diaLocal, numeroDoEnv } from "./chrome.ts";
 
 test("slugDaBusca tira acento, caixa e pontuação", () => {
   assert.equal(slugDaBusca("Tinta Acrílica p/ Piso"), "tinta-acrilica-p-piso");
@@ -80,4 +80,14 @@ test("cacheValido: menos de 12 h vale; mais velho ou do futuro, não", () => {
   assert.equal(cacheValido("2026-11-11T02:59:00Z", agora), false);   // 12 h e 1 min
   assert.equal(cacheValido("2026-11-11T16:00:00Z", agora), false);   // relógio voltou: não confia
   assert.equal(cacheValido("lixo", agora), false);
+});
+
+test("numeroDoEnv: vazio, texto ou negativo usa o padrão; 0 vale", () => {
+  assert.equal(numeroDoEnv(undefined, 80), 80);
+  assert.equal(numeroDoEnv("", 80), 80);          // linha do .env.example copiada sem valor
+  assert.equal(numeroDoEnv("  ", 80), 80);
+  assert.equal(numeroDoEnv("oitenta", 80), 80);   // NaN tiraria o teto
+  assert.equal(numeroDoEnv("-5", 80), 80);
+  assert.equal(numeroDoEnv(" 40 ", 80), 40);
+  assert.equal(numeroDoEnv("0", 80), 0);          // 0 de propósito: Chrome desligado
 });

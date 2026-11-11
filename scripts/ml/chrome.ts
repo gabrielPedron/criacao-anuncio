@@ -26,7 +26,15 @@ const RAIZ = resolve(import.meta.dirname, "../..");
 const PERFIL = join(RAIZ, ".chrome-ml");
 // Ajustes do Chrome do projeto: vêm do .env ou do ambiente (o ambiente vence). Sem exigir credencial.
 const ENV: Record<string, string | undefined> = { ...lerArquivoEnv(), ...process.env };
-const PORTA = Number(ENV.ML_CHROME_PORTA ?? 9334);
+
+/** Número do .env. Vazio, texto ou negativo usa o padrão: uma linha copiada sem valor
+ *  ("ML_CHROME_LIMITE_DIA=") viraria 0 e travaria o Chrome, ou NaN e tiraria o teto. */
+export function numeroDoEnv(valor: string | undefined, padrao: number): number {
+  const n = Number(valor?.trim() || NaN);
+  return Number.isFinite(n) && n >= 0 ? n : padrao;
+}
+
+const PORTA = numeroDoEnv(ENV.ML_CHROME_PORTA, 9334) || 9334;
 const espera = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- ritmo ----------
@@ -34,7 +42,7 @@ const espera = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const ARQ_RITMO = join(PERFIL, "ritmo.json");
 const PASTA_CACHE = join(PERFIL, "cache");
 /** Páginas do ML por dia, somando todos os comandos. Um produto completo usa ~15. */
-export const LIMITE_DIA = Number(ENV.ML_CHROME_LIMITE_DIA ?? 80);
+export const LIMITE_DIA = numeroDoEnv(ENV.ML_CHROME_LIMITE_DIA, 80);
 const PAUSA_BARREIRA_H = 6;
 const VALIDADE_CACHE_H = 12;
 

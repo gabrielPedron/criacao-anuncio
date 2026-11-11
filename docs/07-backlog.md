@@ -25,7 +25,7 @@ produto a que pertence. Decidido em 07/09/2026.
 | 1 | **19.** Posição depois de publicar | nada | linha de base medida em 07/10; repetir semanal |
 | 2 | **26.** Catálogo × categorias | OK do operador para qualquer escrita | leitura pronta (`ml:catalogo-status`); vínculo pendente |
 | 3 | **1 + 17 + 15 + 16.** Piloto em nicho distante | produto, categoria, top-3 e 2 links do operador | parado nos inputs |
-| 4 | **23.** Repositório público | push e decisão do operador | mecanismo pronto |
+| 4 | **23.** Repositório público | decisão sobre a trilha Hermes | v3 no ar em 11/11 |
 | 5 | **20.** Fidelidade do rótulo nas imagens | OK de custo | não começado |
 | 6 | **22.** Prova social real | 30 dias de anúncio (a partir de 05/11) | aguardando data |
 | 7 | **27.** Trilha Shopee | decisão de começar | por último, por decisão de 07/10 |
@@ -96,14 +96,15 @@ registrar aqui a comparação.
 
 ### 23. Repositório público dos mentorados — **prioridade 4, ação do operador**
 O mecanismo está pronto (versão com tag, novidades no `atualizar`, filtro de ids da conta).
-A v1 está no ar (`main` em `6aaf3f7`), mas **a tag `v1` não chegou ao remoto** (conferido em 11/11).
-**v2 escrita no `NOVIDADES.md` em 11/11** (revisão de 19/10 + visitas + ritmo do Chrome), ainda não
-publicada: contraria a cadência abaixo, porque o piloto não rodou. Falta:
-- **decidir** se a v2 sai antes do piloto ou espera por ele;
-- **decidir** se a trilha Hermes ("em teste") fica na v1 ou sai até o teste fechar;
-- **cadência:** publicar por lote validado num produto real, não a cada commit. As melhorias de
-  07/10 e a revisão de 19/10 (branch `hermes-0710`) entram no lote só depois do piloto, com uma
-  seção nova no `NOVIDADES.md` escrita na hora de publicar.
+**v2 no ar em 11/11/2026** (`main` em `b049aff`, tags `v1` e `v2` no remoto; a `v1` não tinha
+subido até então). Conferido com um clone em v1 rodando `npm run atualizar`: avança para a v2 e
+mostra as novidades. **Saiu antes do piloto, por decisão do operador em 11/11**, contra a cadência
+abaixo: a revisão de 19/10 e o `ml:coletar` estão com os mentorados sem terem rodado num produto
+real de ponta a ponta. **v3 no mesmo dia** só com os ajustes opcionais do Chrome no `.env.example`
+(a v2 os anunciava sem estarem lá). O que o piloto ensinar vai na próxima versão. Falta:
+- **decidir** se a trilha Hermes ("em teste") fica publicada ou sai até o teste fechar;
+- **cadência:** publicar por lote validado num produto real, não a cada commit, com uma seção nova
+  no `NOVIDADES.md` escrita na hora de publicar.
 
 ### 20. Fidelidade do rótulo nas imagens — **prioridade 5, gasta crédito**
 O gpt-image-2 acerta o texto grande do rótulo e embaralha o miúdo. Testar: (a) edição com máscara,
