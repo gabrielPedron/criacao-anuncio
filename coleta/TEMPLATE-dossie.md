@@ -29,9 +29,9 @@
 ## 5. Objeções e dores reais
 *(das perguntas e avaliações; citar o anúncio de origem)*
 
-| Objeção / dor | Frequência | Anúncio |
-|---|---|---|
-|  |  |  |
+| # | Objeção / dor | Frequência | Anúncio |
+|---|---|---|---|
+| 5.1 |  |  |  |
 
 ## 6. Cobertura de ficha técnica
 *(schema real vem de `npm run ml:categoria`; o preenchido vem de `npm run ml:referencia` e `npm run ml:produto`)*

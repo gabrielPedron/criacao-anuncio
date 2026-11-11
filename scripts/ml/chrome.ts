@@ -10,20 +10,113 @@
 //
 // Só leitura: navegar, rolar, ler o DOM. Nada de clicar em comprar/perguntar, nada de login,
 // nada de contornar captcha — se aparecer, o script para e avisa.
+//
+// RITMO (pedido do operador em 11/11/2026): escala de gente, não de robô. Uma aba, em série,
+// pausa de leitura entre páginas, teto de páginas por dia, pausa de 6 h depois de qualquer
+// barreira do ML e cache de 12 h para não reabrir a mesma página. É o que reduz a pegada sem
+// perder dado. O que NÃO entra, de propósito: disfarce de automação (mexer em fingerprint, user
+// agent, webdriver), mouse falso, troca de IP/proxy e qualquer coisa que resolva captcha.
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { lerArquivoEnv } from "./auth.js";
 import { resolve, join } from "node:path";
 
 const RAIZ = resolve(import.meta.dirname, "../..");
 const PERFIL = join(RAIZ, ".chrome-ml");
-const PORTA = Number(process.env.ML_CHROME_PORTA ?? 9334);
+// Ajustes do Chrome do projeto: vêm do .env ou do ambiente (o ambiente vence). Sem exigir credencial.
+const ENV: Record<string, string | undefined> = { ...lerArquivoEnv(), ...process.env };
+const PORTA = Number(ENV.ML_CHROME_PORTA ?? 9334);
 const espera = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// ---------- ritmo ----------
+
+const ARQ_RITMO = join(PERFIL, "ritmo.json");
+const PASTA_CACHE = join(PERFIL, "cache");
+/** Páginas do ML por dia, somando todos os comandos. Um produto completo usa ~15. */
+export const LIMITE_DIA = Number(ENV.ML_CHROME_LIMITE_DIA ?? 80);
+const PAUSA_BARREIRA_H = 6;
+const VALIDADE_CACHE_H = 12;
+
+export type Ritmo = { dia: string; paginas: number; barrado_em: string | null };
+
+/** Dia no fuso da máquina, "2026-11-11". O teto zera à meia-noite local, não à do UTC. */
+export function diaLocal(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/**
+ * Pausa antes de abrir a próxima página: 2,5 a 5 s, e 1 vez em 6 uma de 6 a 12 s, como quem parou
+ * para ler. Média ~4,6 s: um produto inteiro (~15 páginas) leva cerca de 1 min a mais que antes.
+ */
+export function pausaEntrePaginas(sorteio: () => number = Math.random): number {
+  return sorteio() < 1 / 6 ? 6000 + sorteio() * 6000 : 2500 + sorteio() * 2500;
+}
+
+const hora = (d: Date) => d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+/** Motivo para NÃO abrir mais página agora, ou null se pode. */
+export function motivoParaParar(r: Ritmo, agora: Date, limite = LIMITE_DIA): string | null {
+  if (r.barrado_em) {
+    const libera = new Date(Date.parse(r.barrado_em) + PAUSA_BARREIRA_H * 3_600_000);
+    if (agora < libera) {
+      return `O ML barrou a leitura às ${hora(new Date(r.barrado_em))}. Pausa do Chrome do projeto até ` +
+        `${hora(libera)}: insistir logo depois de um bloqueio costuma piorá-lo.\n` +
+        `  Enquanto isso, a coleta roda só pela API: npm run ml:coletar -- produtos/<slug> --executar --sem-chrome`;
+    }
+  }
+  if (r.dia === diaLocal(agora) && r.paginas >= limite) {
+    return `Limite de ${limite} páginas do ML por dia atingido (somando todos os comandos). Volta amanhã.\n` +
+      `  Para mudar o teto: ML_CHROME_LIMITE_DIA no .env. A coleta pela API segue com --sem-chrome.`;
+  }
+  return null;
+}
+
+/** Conta uma página aberta, zerando o contador na virada do dia. */
+export function contarPagina(r: Ritmo, agora: Date): Ritmo {
+  const dia = diaLocal(agora);
+  return { ...r, dia, paginas: r.dia === dia ? r.paginas + 1 : 1 };
+}
+
+export function cacheValido(lidoEm: string, agora: Date, horas = VALIDADE_CACHE_H): boolean {
+  const idade = agora.getTime() - Date.parse(lidoEm);
+  return idade >= 0 && idade < horas * 3_600_000;
+}
+
+function lerRitmo(): Ritmo {
+  try { return { dia: "", paginas: 0, barrado_em: null, ...JSON.parse(readFileSync(ARQ_RITMO, "utf8")) }; }
+  catch { return { dia: "", paginas: 0, barrado_em: null }; }
+}
+function gravarRitmo(r: Ritmo) {
+  mkdirSync(PERFIL, { recursive: true });
+  writeFileSync(ARQ_RITMO, JSON.stringify(r, null, 2));
+}
+
+const arquivoCache = (chave: string) => join(PASTA_CACHE, createHash("sha1").update(chave).digest("hex") + ".json");
+
+/**
+ * Leitura de menos de 12 h para a mesma chave (URL da busca, URL do anúncio, termo de sugestão):
+ * reaproveita em vez de reabrir. Evita ler de novo entre o --sondar e o --executar.
+ * `--recarregar` na linha de comando ignora o cache.
+ */
+export function doCache<T = any>(chave: string): { lido_em: string; dado: T } | null {
+  if (process.argv.includes("--recarregar")) return null;
+  try {
+    const c = JSON.parse(readFileSync(arquivoCache(chave), "utf8"));
+    return cacheValido(c.lido_em, new Date()) ? c : null;
+  } catch { return null; }
+}
+export function guardarNoCache(chave: string, dado: unknown) {
+  mkdirSync(PASTA_CACHE, { recursive: true });
+  writeFileSync(arquivoCache(chave), JSON.stringify({ lido_em: new Date().toISOString(), dado }));
+}
+export const horaDoCache = (lidoEm: string) => hora(new Date(lidoEm));
 
 /** Onde costuma estar o Chrome. CHROME_PATH no ambiente vence qualquer palpite. */
 export function acharChrome(): string {
   const local = process.env.LOCALAPPDATA ?? "";
   const candidatos = [
-    process.env.CHROME_PATH,
+    ENV.CHROME_PATH,
     "C:/Program Files/Google/Chrome/Application/chrome.exe",
     "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
     local && join(local, "Google/Chrome/Application/chrome.exe"),
@@ -126,6 +219,8 @@ async function clienteCdp(url: string) {
  * do Chrome tiver sido aberta antes sem --incognito (achado da revisão de 06/10/2026).
  */
 export async function conectar(): Promise<Pagina> {
+  const parar = motivoParaParar(lerRitmo(), new Date());
+  if (parar) throw new Error(parar);
   await ligar();
   const info = await (await fetch(`http://127.0.0.1:${PORTA}/json/version`)).json();
   const navegador = await clienteCdp(info.webSocketDebuggerUrl);
@@ -144,8 +239,13 @@ export async function conectar(): Promise<Pagina> {
   }
 
   async function abrir(url: string) {
-    // Intervalo entre páginas: ritmo de gente, não de robô. Menos chance de bloqueio.
-    await espera(1200 + Math.random() * 1500);
+    // Teto do dia e pausa pós-barreira valem também no meio de um comando, não só ao conectar.
+    const ritmo = lerRitmo();
+    const parar = motivoParaParar(ritmo, new Date());
+    if (parar) throw new Error(parar);
+    gravarRitmo(contarPagina(ritmo, new Date()));
+    // Pausa de leitura entre páginas: ritmo de gente, não de robô.
+    await espera(pausaEntrePaginas());
     // Marca o documento atual. Só conta como carregada a página que NÃO tem a marca: sem isso, logo
     // depois de abrir o Chrome a leitura pegava o about:blank (que já está "complete") e a busca
     // saía vazia — a "1ª busca vazia" de 06/10.
@@ -162,7 +262,12 @@ export async function conectar(): Promise<Pagina> {
     if (!pronta) throw new Error(`A página não terminou de carregar em 30 s: ${url}`);
     await espera(1500);
     const barreira = await avaliar(detectarBarreira);
-    if (barreira) throw new Error(`${barreira} em ${url}. Parei: não contorno bloqueio, captcha nem login.`);
+    if (barreira) {
+      // Registra para os próximos comandos respeitarem a pausa de 6 h, em vez de insistir.
+      gravarRitmo({ ...lerRitmo(), barrado_em: new Date().toISOString() });
+      throw new Error(`${barreira} em ${url}. Parei: não contorno bloqueio, captcha nem login. ` +
+        `O Chrome do projeto fica em pausa por ${PAUSA_BARREIRA_H} h.`);
+    }
   }
 
   async function fechar() {
@@ -192,10 +297,10 @@ export function slugDaBusca(termo: string): string {
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
-/** Do link de um card tira o id do anúncio (MLB123) e/ou do catálogo (/p/MLB123). */
+/** Do link (card da busca ou link colado pelo operador) tira o id do anúncio e/ou do catálogo (/p/MLB123). */
 export function idsDoLink(link: string): { item: string | null; catalogo: string | null } {
   const catalogo = (link.match(/\/p\/(MLB\d+)/i) || [])[1] ?? null;
-  const wid = (link.match(/[?#&]wid=(MLB\d+)/i) || [])[1];
+  const wid = (link.match(/[?#&]wid=(MLB\d+)/i) || link.match(/item_id[:=](MLB\d+)/i) || [])[1];
   const item = wid ?? ((link.match(/MLB-?(\d{8,})/) || [])[1] ? "MLB" + link.match(/MLB-?(\d{8,})/)![1] : null);
   return { item: item === catalogo ? null : item, catalogo };
 }

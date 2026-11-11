@@ -39,8 +39,12 @@ export const GLOSSARIO: Termo[] = [
   { nosso: "marca", caminho: "attributes[id=BRAND].value_name", recurso: "/products/$CATALOGO", confirmado: true },
 
   // --- demanda e prova ---
-  { nosso: "visitas", caminho: "total_visits", recurso: "/items/$ITEM/visits/time_window", confirmado: true },
-  { nosso: "visitas por dia", caminho: "results[].total", recurso: "/items/$ITEM/visits/time_window", confirmado: true },
+  { nosso: "visitas", caminho: "total_visits", recurso: "/items/$ITEM/visits/time_window", confirmado: true,
+    nota: "só do anúncio próprio: 403 para anúncio de outro vendedor desde out/2026 (apurado em 11/11/2026)" },
+  { nosso: "visitas por dia", caminho: "results[].total", recurso: "/items/$ITEM/visits/time_window", confirmado: true,
+    nota: "só do anúncio próprio, como acima" },
+  { nosso: "descrição do concorrente", caminho: "plain_text", recurso: "/items/$ITEM/description", confirmado: true,
+    nota: "aberta para anúncio de outro vendedor (apurado em 11/11/2026); vazia quando a loja usa imagem" },
   { nosso: "perguntas", caminho: "questions[].text", recurso: "/questions/search?item=$ITEM", confirmado: true },
   { nosso: "resposta do vendedor", caminho: "questions[].answer.text", recurso: "/questions/search?item=$ITEM", confirmado: true },
   { nosso: "total de perguntas", caminho: "total", recurso: "/questions/search?item=$ITEM", confirmado: true },
@@ -49,6 +53,12 @@ export const GLOSSARIO: Termo[] = [
   { nosso: "mais vendidos da categoria", caminho: "content[].id", recurso: "/highlights/MLB/category/$CAT", confirmado: true },
   { nosso: "termos em tendência", caminho: "[].keyword", recurso: "/trends/MLB/$CAT", confirmado: true },
   { nosso: "fotos do catálogo", caminho: "pictures[].url", recurso: "/products/$CATALOGO", confirmado: true },
+
+  // --- catálogo da própria conta (ml:catalogo-status; apurado em 19/10/2026, 3 leituras estáveis) ---
+  { nosso: "produto de catálogo ligado", caminho: "catalog_product_id", recurso: "/items/$PROPRIO", confirmado: true, nota: "só anúncio próprio: de terceiro é 403" },
+  { nosso: "é o anúncio de catálogo?", caminho: "catalog_listing", recurso: "/items/$PROPRIO", confirmado: true, nota: "true = o anúncio que compete no catálogo" },
+  { nosso: "elegibilidade de catálogo", caminho: "status", recurso: "/items/$PROPRIO/catalog_listing_eligibility", confirmado: true, nota: "vistos: CATALOG_PRODUCT_ID_NULL e ALREADY_OPTED_IN (07/10), COMPETING no próprio anúncio de catálogo (19/10); LOOPING_ITEM visto, sem significado apurado" },
+  { nosso: "motivo da elegibilidade", caminho: "reason", recurso: "/items/$PROPRIO/catalog_listing_eligibility", confirmado: true, nota: "null quando não há motivo" },
 
   // --- bloqueados: registrados para ninguem tentar de novo ---
   { nosso: "avaliações", caminho: "—", recurso: "/reviews/item/$ITEM", confirmado: false, nota: "403 — só pelo Chrome. Ver docs/06." },

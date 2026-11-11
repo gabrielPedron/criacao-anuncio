@@ -7,14 +7,16 @@ estimado. Os blocos 1 e 2 são necessários para começar; o bloco 3 só é exig
 ## 1. Para começar a pesquisa
 
 - **Foto base** (fundo branco, nítida): [caminho do arquivo]
-- **Categoria** (escolha do operador): [MLB... ou nome]
+- **Categoria** (principal, escolha do operador; ID explícito): [MLB123456 — se o operador der só o nome, o agente roda `ml:categoria "<nome>"`, mostra ID, caminho e link, e só preenche depois do OK]
+- **Categorias adicionais aprovadas:** [nenhuma ou MLB234567, MLB345678 — IDs escolhidos pelo operador; cada categoria terá oferta, ficha e revisão próprias]
 - **Estratégia:** [catálogo / orgânico / ambos]
+- **Nicho:** [nichos/<nicho>.md, ou "nenhum" — o agente lê antes da sondagem, do título, das imagens e da descrição]
 - **Concorrentes validados pelo operador** (2 ou mais links do mesmo produto):
   - [link 1]
   - [link 2]
-- **Semântica** (top buscas do mês, termos com pouca concorrência — Nubimetrics, Virtual Seller,
-  Mercado Livre Tendências ou outra): [termos e números, ou "não tenho" — o agente avisa que o título
-  fica mais fraco]
+- **Semântica** (top buscas do mês e termos com pouca concorrência, de qualquer ferramenta): [termos e
+  números, ou "não tenho" — o agente avisa que o título fica mais fraco]
+- **Top-3 semânticas confirmadas:** [termo 1, termo 2, termo 3 — o agente propõe pela sondagem (`ml:coletar --sondar`); preencher SOMENTE após OK humano; a coleta completa recusa sem elas]
 
 ## 2. Dados técnicos que a IA não descobre sozinha
 

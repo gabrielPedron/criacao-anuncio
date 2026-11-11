@@ -23,10 +23,9 @@ const HOSTS_AUTH = {
 };
 export const AUTH_HOST = (site = 'MLB') => HOSTS_AUTH[site] ?? HOSTS_AUTH.MLB;
 
-export function lerEnv() {
-  if (!existsSync(ARQ_ENV)) {
-    throw new Error('Falta o arquivo .env na raiz do projeto. Copie o .env.example e preencha ML_CLIENT_ID e ML_CLIENT_SECRET.');
-  }
+/** Chaves do .env sem exigir nada (o Chrome do projeto não precisa das credenciais). Sem .env: {}. */
+export function lerArquivoEnv() {
+  if (!existsSync(ARQ_ENV)) return {};
   const env = {};
   for (const linha of readFileSync(ARQ_ENV, 'utf8').split('\n')) {
     const t = linha.trim();
@@ -35,6 +34,14 @@ export function lerEnv() {
     if (i === -1) continue;
     env[t.slice(0, i).trim()] = t.slice(i + 1).trim().replace(/^["']|["']$/g, '');
   }
+  return env;
+}
+
+export function lerEnv() {
+  if (!existsSync(ARQ_ENV)) {
+    throw new Error('Falta o arquivo .env na raiz do projeto. Copie o .env.example e preencha ML_CLIENT_ID e ML_CLIENT_SECRET.');
+  }
+  const env = lerArquivoEnv();
   for (const chave of ['ML_CLIENT_ID', 'ML_CLIENT_SECRET']) {
     if (!env[chave]) throw new Error(`${chave} está vazio no .env.`);
   }

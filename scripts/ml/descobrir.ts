@@ -1,14 +1,14 @@
 // Descoberta de concorrentes que REALMENTE vendem.
 //
-// A busca de anúncios do ML é 403 (com e sem token) e a página não renderiza sob
-// automação. O caminho aberto é varrer o catálogo e filtrar pelos que têm vendedor
-// ativo, rankeando por VISITAS — que é o proxy de venda que a API entrega.
+// A busca de anúncios do ML é 403 na API (com e sem token). O caminho aberto é varrer o
+// catálogo e filtrar pelos que têm vendedor ativo. O ranking era por VISITAS; desde out/2026
+// a visita de concorrente dá 403, e aí ele cai para mais vendidos + total de perguntas.
 //
 //   npm run ml:descobrir -- MLB<categoria> "<termo generico>" "<termo especifico>"
 //   ... --paginas 4 --min-visitas 500 --salvar produtos/x/raw/descoberta.json
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
-import { ml, morrer, opc } from "./api.js";
+import { ml, morrer, opc, visitas30d, AVISO_VISITAS } from "./api.js";
 import { lerEnv } from "./auth.js";
 import { args, brl, pega } from "../cli.ts";
 
@@ -39,10 +39,15 @@ async function emLotes<T, R>(itens: T[], fn: (item: T) => Promise<R>): Promise<R
 try {
   const site = lerEnv().ML_SITE;
   const candidatos = new Map<string, string>();   // id -> nome
+  const maisVendidos = new Map<string, number>(); // id -> posição nos mais vendidos da categoria
 
   // 1. mais vendidos da categoria
   const hl = await opc(`/highlights/${site}/category/${categoria}`);
-  for (const c of hl?.content ?? []) if (c.type === "PRODUCT") candidatos.set(c.id, "");
+  for (const c of hl?.content ?? []) {
+    if (c.type !== "PRODUCT") continue;
+    candidatos.set(c.id, "");
+    maisVendidos.set(c.id, c.position);
+  }
   console.log(`\n[1] highlights: ${candidatos.size} produtos`);
 
   // 2. varredura do catálogo por termo, paginada
@@ -83,28 +88,52 @@ try {
   const vivos: any[] = avaliados.filter((v) => v !== null);
   console.log(`→ ${vivos.length} de ${candidatos.size} têm vendedor ativo.`);
 
-  // 5. rankeia por visitas — o proxy de venda que a API dá
-  console.log(`Medindo visitas de 30 dias…`);
-  await emLotes(vivos, async (v) => {
-    const [visitas, det] = await Promise.all([
-      Promise.all(v.itens.slice(0, 5).map((item: string) =>
-        opc(`/items/${item}/visits/time_window?last=30&unit=day`))),
-      v.nome ? null : opc(`/products/${v.id}`),
-    ]);
-    v.visitas30d = visitas.reduce((t: number, x: any) => t + (x?.total_visits ?? 0), 0);
-    if (!v.nome) v.nome = det?.name ?? v.id;
-  });
+  // 5. ranking. Visitas de 30 dias eram o proxy de venda, mas desde out/2026 o ML dá 403 para
+  // anúncio de outro vendedor. Testa em até 3 produtos antes de gastar centenas de chamadas: se
+  // bloqueou, ranqueia pelos mais vendidos da categoria (ranking de venda do próprio ML) e, fora
+  // deles, pelo total de perguntas — proxy mais fraco: é o acumulado da vida do anúncio, não 30 dias.
+  for (const v of vivos) v.mais_vendidos = maisVendidos.get(v.id) ?? null;
+  const amostra = await Promise.all(vivos.slice(0, 3).map((v) => visitas30d(v.itens[0])));
+  const porVisitas = !amostra.some((x) => x?.bloqueado);
+  let criterio: string;
+  if (porVisitas) {
+    criterio = "visitas de 30 dias";
+    console.log(`Medindo visitas de 30 dias…`);
+    await emLotes(vivos, async (v) => {
+      const visitas = await Promise.all(v.itens.slice(0, 5).map((item: string) => visitas30d(item)));
+      v.visitas30d = visitas.reduce((t: number, x: any) => t + (x?.total ?? 0), 0);
+      v.visitas_bloqueadas = visitas.filter((x: any) => x?.bloqueado).length;
+    });
+  } else {
+    criterio = "mais vendidos da categoria, depois total de perguntas";
+    console.log(`⚠ ${AVISO_VISITAS}`);
+    console.log(`Ranqueando por ${criterio}…`);
+    if (minVisitas) console.log(`  --min-visitas ${minVisitas} ignorado: sem visitas de concorrente não há como filtrar.`);
+    await emLotes(vivos, async (v) => {
+      const qs = await Promise.all(v.itens.slice(0, 5).map((item: string) => opc(`/questions/search?item=${item}&limit=1&api_version=4`)));
+      v.visitas30d = null;
+      v.perguntas = qs.reduce((t: number, q: any) => t + (q?.total ?? 0), 0);
+    });
+  }
+  await emLotes(vivos.filter((v) => !v.nome), async (v) => { v.nome = (await opc(`/products/${v.id}`))?.name ?? v.id; });
 
-  const ranking = vivos.filter((v) => v.visitas30d >= minVisitas).sort((a, b) => b.visitas30d - a.visitas30d);
+  const pos = (v: any) => v.mais_vendidos ?? Infinity;
+  const ranking = porVisitas
+    ? vivos.filter((v) => v.visitas30d >= minVisitas).sort((a, b) => b.visitas30d - a.visitas30d)
+    : [...vivos].sort((a, b) => pos(a) - pos(b) || b.perguntas - a.perguntas);
+  const coluna = porVisitas ? "Visitas/30d" : "Perguntas";
+  const valor = (v: any) => (porVisitas ? v.visitas30d : v.perguntas).toLocaleString("pt-BR");
 
-  console.log(`\n${ranking.length} concorrentes com vendedor ativo${minVisitas ? ` e ≥${minVisitas} visitas` : ""}:\n`);
-  console.log("| # | Produto | Vend. | Menor | Mediana | Visitas/30d | ID |");
-  console.log("|---|---|---|---|---|---|---|");
+  console.log(`\n${ranking.length} concorrentes com vendedor ativo${porVisitas && minVisitas ? ` e ≥${minVisitas} visitas` : ""} — ordem: ${criterio}:\n`);
+  console.log(`| # | Produto | Vend. | Menor | Mediana | Mais vendidos | ${coluna} | ID |`);
+  console.log("|---|---|---|---|---|---|---|---|");
   ranking.slice(0, 20).forEach((v, n) =>
-    console.log(`| ${n + 1} | ${String(v.nome).slice(0, 48).replace(/\|/g, "/")} | ${v.vendedores} | ${brl(v.menor)} | ${brl(v.mediana)} | ${v.visitas30d.toLocaleString("pt-BR")} | \`${v.id}\` |`));
+    console.log(`| ${n + 1} | ${String(v.nome).slice(0, 48).replace(/\|/g, "/")} | ${v.vendedores} | ${brl(v.menor)} | ${brl(v.mediana)} | ${v.mais_vendidos ? `#${v.mais_vendidos}` : "—"} | ${valor(v)} | \`${v.id}\` |`));
 
   console.log("\n→ Aprofundar: npm run ml:produto -- <id>   (ficha, vendedores e perguntas)");
-  console.log("⚠ Visitas é tráfego, não venda. O ML não expõe quantidade vendida para terceiros.");
+  console.log(porVisitas
+    ? "⚠ Visitas é tráfego, não venda. O ML não expõe quantidade vendida para terceiros."
+    : "⚠ Perguntas é proxy fraco de demanda (acumulado, favorece anúncio antigo). Vendidos de verdade só pela página (ml:pagina).");
 
   // Esta lista só enxerga quem passou por catálogo. Quem nunca entrou é invisível para a API
   // (testado e reprovado: /users/$ID/items/search de terceiro, _CategoryId_ na lista, busca por
@@ -118,7 +147,7 @@ try {
 
   if (destino) {
     mkdirSync(dirname(destino), { recursive: true });
-    writeFileSync(destino, JSON.stringify({ categoria, termos, ranking }, null, 2));
+    writeFileSync(destino, JSON.stringify({ categoria, termos, criterio, ranking }, null, 2));
     console.log(`\n✓ Salvo em ${destino}`);
   }
   console.log("");

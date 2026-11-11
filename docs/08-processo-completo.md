@@ -17,18 +17,25 @@ O operador entrega:
 - dois ou mais links de concorrentes que confirmou serem o mesmo produto.
 
 A ferramenta de pesquisa é usada manualmente pelo operador. O agente não automatiza Nubimetrics,
-Virtual Seller ou equivalente. Sem esses dados, continua pela API e avisa que o resultado semântico
-será mais fraco.
+Virtual Seller ou equivalente. Sem esses dados, continua e avisa que o resultado semântico será mais
+fraco.
+
+Para propor as top-3, o agente roda a sondagem (`ml:coletar --sondar`): sugestões do ML e 1ª página
+da busca pelo Chrome do projeto, cruzadas com a pesquisa do operador.
 
 > **Checkpoint 1:** confirmar as top-3 semânticas propostas pelo agente.
 
 ## Fase 1 — coleta
 
-A API fornece categoria, ficha, catálogo, vendedores, perguntas, visitas e fotos. Avaliações de
-concorrentes vêm da página, lida por código com a skill `leitor-de-sites`.
+A API fornece categoria, ficha, catálogo, vendedores, descrições, perguntas e fotos (visitas, só do seu
+anúncio desde out/2026). Busca por termo, sugestões, anúncio de outro vendedor e avaliações vêm do
+Chrome do projeto, lidos por código, em guia anônima e sem login.
+A ordem da descoberta de concorrentes está no [docs/02](02-etapa-A-coleta.md).
 
 O agente salva os dados crus em `produtos/<slug>/raw/` e consolida
-`produtos/<slug>/dossie.md`. Detalhes em [docs/02-etapa-A-coleta.md](02-etapa-A-coleta.md).
+`produtos/<slug>/dossie.md`. `ml:coletar --executar` faz o conjunto de leituras depois do
+checkpoint 1; gera um resumo factual, não o julgamento. Detalhes em
+[docs/02-etapa-A-coleta.md](02-etapa-A-coleta.md) e [docs/18](18-inteligencia-e-nicho.md).
 
 ## Fase 2 — oferta
 
@@ -57,6 +64,9 @@ operador.
 ## Catálogo
 
 O agente lista todos os candidatos com links. Similaridade textual não decide equivalência.
+Para várias categorias escolhidas pelo operador, comparar fichas por categoria e revisar ofertas
+separadas; a busca pode repetir candidatos entre filtros. O CLI atual **não vincula anúncio ao
+catálogo** — é uma pendência de integração, não parte já publicada.
 
 > **Checkpoint 3:** o operador escolhe o catálogo ou confirma que nenhum candidato é o mesmo
 > produto.
@@ -70,6 +80,12 @@ User Products, `family_name` vira o título e fica irreversível pela API.
 
 Somente após o OK, o CLI recebe `--publicar --confirmo`. A trava em `scripts/ml/api.js` continua
 ativa mesmo que o aplicativo tenha escopo de escrita.
+
+**Adaptação ao nicho:** o que o operador sabe do nicho fica em `nichos/<nicho>.md` (modelo em
+`nichos/EXEMPLO.md`) e o jeito dele de anunciar, em "Minhas preferências de anúncio" do `OPERACAO.md`;
+ambos locais. Hipóteses e regras aprendidas rodando ficam no arquivo do nicho. Hipótese não é verdade do
+produto; não substitui a ficha técnica nem os quatro checkpoints. Após publicar, `ml:posicao`
+registra a posição orgânica observada na primeira página e `ml:saude` lê os avisos da conta.
 
 ## Saídas
 

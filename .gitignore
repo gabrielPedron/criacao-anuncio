@@ -9,6 +9,9 @@
 # produtos/ guarda dossiês, imagens e perguntas REAIS de clientes (dado de terceiro).
 produtos/
 OPERACAO.md
+# Um arquivo por nicho de quem opera; só o modelo vai para o git.
+nichos/*
+!nichos/EXEMPLO.md
 
 node_modules/
 
@@ -20,3 +23,7 @@ scripts/publicar-repo.ts
 
 # Perfil separado do Chrome que o projeto dirige (ml:busca, ml:pagina, ml:sugestoes)
 .chrome-ml/
+
+# Configuração local dos agentes (de cada máquina)
+.claude/settings.local.json
+.codex/

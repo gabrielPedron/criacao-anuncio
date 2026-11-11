@@ -26,6 +26,7 @@
     "midia:gerar": "node scripts/midia/gerar-imagens.ts",
     "ml:descobrir": "node scripts/ml/descobrir.ts",
     "ml:catalogo": "node scripts/ml/catalogo.ts",
+    "ml:catalogo-status": "node scripts/ml/catalogo-status.ts",
     "ml:referencia": "node scripts/ml/referencia.ts",
     "ml:sugerir-catalogo": "node scripts/ml/sugerir-catalogo.ts",
     "ml:recriar": "node scripts/ml/recriar.ts",
@@ -35,6 +36,9 @@
     "ml:conferir": "node scripts/ml/conferir.ts",
     "ml:editar": "node scripts/ml/editar.ts",
     "ml:saude": "node scripts/ml/saude.ts",
+    "ml:coletar": "node scripts/ml/coletar.ts",
+    "ml:posicao": "node scripts/ml/posicao.ts",
+    "ml:proximo": "node scripts/ml/proximo.ts",
     "test": "node --test scripts/ml/*.test.ts"
   }
 }

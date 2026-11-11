@@ -8,7 +8,8 @@
 |---|---|---|
 | `/sites/MLB/search` | busca de anúncios por termo | `/products/search` (busca no catálogo) + `/highlights` |
 | `/items/$ID` de terceiros | ficha e título de um concorrente | `/products/$ID` + `/products/$ID/items` |
-| `/reviews/item/$ID` | avaliações de um concorrente | **Chrome** (skill `leitor-de-sites`) |
+| `/reviews/item/$ID` | avaliações de um concorrente | **Chrome do projeto** (`ml:pagina`) |
+| `/items/$ID/visits/*` e `/visits/items` **de terceiro** | visitas de 30 dias de um concorrente | mais vendidos (`/highlights`) + total de perguntas; vendidos pela página (`ml:pagina`). **Bloqueado desde out/2026** — apurado em 11/11/2026; o do anúncio próprio continua aberto |
 
 `/items/$ID` de terceiro dá 403 **com e sem token** — não é permissão do app, é política do ML. Não insista.
 
@@ -25,9 +26,8 @@
 | `/products/$CATALOG_ID/items` | **quem compete e por quanto** — preço, seller, frete, Full, loja oficial | `ml:produto` |
 | `/questions/search?item=$ITEM` | **perguntas e respostas** — as objeções reais | `ml:produto` |
 | `/products/search?site_id=MLB&q=` | **busca por palavra-chave** no catálogo | `ml:buscar` |
-| `/items/$ID/visits/time_window?last=30&unit=day` | **visitas reais em 30 dias**, série diária | `ml:demanda` |
-| `/visits/items?ids=` | visitas acumuladas do anúncio | `ml:demanda` |
-| `/items/$ID/description` | descrição (às vezes vazia: muita loja usa imagem) | — |
+| `/items/$ID/visits/time_window?last=30&unit=day` | **visitas reais em 30 dias**, série diária — **só do anúncio próprio** | `ml:demanda` |
+| `/items/$ID/description` | descrição, **inclusive de concorrente** (às vezes vazia: muita loja usa imagem; no catálogo os vendedores costumam ter o mesmo texto) | `ml:produto` |
 | `/users/$MEU_ID/items/search` | meus próprios anúncios | — |
 
 ## O caminho que funciona
@@ -40,7 +40,7 @@ nome do produto
        └─ ml:concorrentes → mais vendidos + faixa de preço
             ├─ ml:produto → ficha, vendedores, preços e PERGUNTAS
             ├─ ml:fotos   → baixa as fotos → análise visual por código
-            └─ ml:demanda → visitas em 30 dias de cada concorrente
+            └─ ml:demanda → visitas em 30 dias (só do seu anúncio desde out/2026)
 ```
 
 ## O que isso muda no processo
@@ -58,7 +58,9 @@ Além disso, muito produto de catálogo vem com **0 vendedores ativos** — por 
 
 ## No Chrome do projeto
 
-O que a API nega vem do Chrome normal, em guia anônima e com perfil separado, dirigido por código (`scripts/ml/chrome.ts`).
+O que a API nega vem do Chrome normal, em guia anônima e com perfil separado, dirigido por código (`scripts/ml/chrome.ts`),
+com pausa de leitura, teto diário, pausa de 6 h depois de bloqueio e cache de 12 h — ver
+[coleta/snippets-chrome.md](../coleta/snippets-chrome.md). É o único navegador que abre o ML no processo.
 Navegador headless (Playwright, o do Hermes, `web_extract`) é **bloqueado** pelo ML com a página
 "Hubo un error accediendo a esta pagina"; o Chrome com janela passa. Testado em 05 e 06/10/2026.
 
@@ -84,8 +86,11 @@ Snippets em [../coleta/snippets-chrome.md](../coleta/snippets-chrome.md).
 | Endpoint | O que dá | Comando |
 |---|---|---|
 | `GET /item/$ID/performance` | nota de qualidade do ML (0–100) e regras pendentes, por grupo | `ml:saude` |
+| `GET /items/$ID/catalog_listing_eligibility` | se o anúncio próprio tem produto de catálogo ligado e anúncio de catálogo: `CATALOG_PRODUCT_ID_NULL`, `ALREADY_OPTED_IN` (apurado em 07/10/2026; `LOOPING_ITEM` visto, significado ainda não apurado) | `ml:catalogo-status` |
 | `PUT /items/$ID` com `sale_terms` | garantia (`WARRANTY_TYPE` por nome, `WARRANTY_TIME` "3 meses") — **não é atributo** | `ml:editar --garantia` |
 | `PUT /items/$ID` com `attributes: [um só]` | acrescenta/troca só aquele atributo; os demais ficam (visto em 06/10/2026, e o `ml:editar` confere a cada vez) | `ml:editar --atributo` |
+
+Endpoints da conta fora do pipeline (vendas, reputação, Ads, promoções): [docs/19](19-raio-x-da-conta.md).
 
 ## Escrita
 

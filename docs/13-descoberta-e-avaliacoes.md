@@ -26,13 +26,16 @@ Quatro etapas encadeadas:
 3. **Expansão de família** (`parent_id` → `children_ids`) — é o que traz os **outros tamanhos**
 4. **Filtro por vendedor ativo** — ~10% dos produtos de catálogo têm alguém vendendo
 
-Depois rankeia por **visitas de 30 dias**.
+Depois rankeia por **visitas de 30 dias** — ou, como acontece desde out/2026 (visita de concorrente
+dá 403), pela **posição nos mais vendidos** da categoria e, fora deles, pelo **total de perguntas**.
+O script testa em 3 produtos antes e avisa qual critério usou.
 
 **Resultado no piloto:** de **5** concorrentes para **175 com vendedor ativo**.
 
 ### Sobre "mínimo de 100 vendas"
-O ML **não expõe `sold_quantity`** para item de terceiro. O substituto é **visitas**, que a API
-entrega por anúncio e por dia. Use `--min-visitas` no lugar do corte por vendas.
+O ML **não expõe `sold_quantity`** para item de terceiro. O substituto era **visitas**, que a API
+entregava por anúncio e por dia — até out/2026. Sem elas, `--min-visitas` é ignorado e o corte por
+vendas fica com o "+N vendidos" da página (`ml:pagina`).
 É tráfego, não venda — mas ordena o mercado igualmente bem e é dado real, não estimativa.
 
 ### Anúncio tradicional — solução parcial encontrada (30/08)

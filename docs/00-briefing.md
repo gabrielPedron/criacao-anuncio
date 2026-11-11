@@ -20,7 +20,8 @@ gerar título, ficha, descrição e fotos → validar → publicar.
 ## 3. Mapa de ferramentas (o que roda onde)
 - **Descoberta/estrutura:** **API do ML** (JSON confiável).
 - **Perguntas e fotos de concorrentes:** **API do ML**.
-- **Avaliações de concorrentes:** **Chrome**, lido por código com a skill `leitor-de-sites`.
+- **Avaliações, busca e anúncio de concorrentes:** **Chrome do projeto** (`ml:pagina`, `ml:busca`), em guia
+  anônima e sem login. Nenhum outro navegador abre o ML (revisto em 11/11/2026).
 - **Criação da oferta + API + publicação:** **Claude Code**.
 - **Imagens:** **API da OpenAI** (`gpt-image-2`, 1200×1200) via `npm run midia:gerar` — *revisão humana obrigatória* (§6, revisto em 28/08/2026).
 - **Semântica e top buscas:** qualquer ferramenta de pesquisa escolhida pelo operador, usada

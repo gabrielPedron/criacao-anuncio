@@ -37,11 +37,14 @@ Registrado em [06-mapa-da-api.md](06-mapa-da-api.md) para não ser tentado de no
 |---|---|
 | Termos da categoria | `ml:semantica` — tendências do próprio ML |
 | Termos que vendem | Títulos dos mais vendidos (`ml:concorrentes`) |
-| **Demanda real** | `ml:demanda` — visitas em 30 dias por anúncio |
+| **Demanda real** | ~~`ml:demanda` — visitas em 30 dias por anúncio~~ — só do seu anúncio desde out/2026. Para concorrente: posição nos mais vendidos, total de perguntas e "+N vendidos" na página (`ml:pagina`) |
 | Concorrência | Nº de vendedores por produto de catálogo |
 | Dor do comprador | Perguntas (API) e avaliações (Chrome) |
 
-As **visitas** são, em alguns aspectos, sinal melhor que volume de busca: é tráfego real no
+> **Desde outubro de 2026 o ML devolve 403 para visitas de anúncio de outro vendedor** (apurado em
+> 11/11/2026). O parágrafo abaixo vale como registro do que se perdeu.
+
+As **visitas** eram, em alguns aspectos, sinal melhor que volume de busca: é tráfego real no
 anúncio real, não intenção agregada. No teste, o líder tinha 99.111 visitas em 30 dias contra
 1.597 do segundo vendedor **no mesmo catálogo** — isso diz mais sobre a disputa do que
 qualquer volume de busca diria.

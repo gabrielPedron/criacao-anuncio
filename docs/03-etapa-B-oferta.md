@@ -13,6 +13,24 @@ arquivo que será validado pelo Mercado Livre.
 Preço não é derivado do dossiê. A mediana do mercado é apenas referência; o operador informa o
 preço a partir dos próprios custos.
 
+## Nicho e preferências do operador
+
+Antes de cada passo abaixo, ler o arquivo do nicho indicado na `entrada.md` (`nichos/<nicho>.md`) e a
+seção "Minhas preferências de anúncio" do `OPERACAO.md`:
+
+| Passo | Do nicho | Das preferências |
+|---|---|---|
+| Sondagem e top-3 (Etapa A) | vocabulário, sazonalidade | — |
+| Dossiê §5 (Etapa A) | dúvidas e objeções típicas a procurar | — |
+| Título | vocabulário, termos a evitar | estilo de título |
+| Prompts de imagem | quem compra, cenário de uso | estilo de foto |
+| Descrição | objeções, cuidados técnicos e normas | tom, tamanho, palavras proibidas |
+
+**Quem vence:** regra do método e dado técnico do produto vencem o nicho e as preferências. Em
+conflito, parar e perguntar. O que está no nicho é contexto: não vira afirmação sobre o produto sem
+fonte do próprio produto. No fim de cada anúncio, propor ao operador o que se aprendeu ("as perguntas
+mostraram X; guardo no nicho?") e só gravar em `nichos/<nicho>.md` com o OK.
+
 ## 1. Relatório de oferta
 
 Consolidar a dor de quem compra, objeções reais, acertos da concorrência e lacunas. Fechar com três
@@ -97,7 +115,11 @@ npm run ml:catalogo -- "produto com marca e tamanho" --categoria MLBxxxxx
 ```
 
 Entregar todos os links dos candidatos. O operador decide se algum é exatamente o mesmo produto,
-embalagem e versão.
+embalagem e versão. Se o operador tiver escolhido mais de uma categoria, rodar `ml:catalogo` com
+`--categoria MLB...` repetido; o filtro pode devolver a mesma lista nas duas consultas e isso não
+prova que cada candidato pertence à categoria consultada. O comando só lista candidatos:
+**`ml:publicar` ainda não vincula uma oferta a um produto de catálogo.** Não prometer participação
+no catálogo; registrar a decisão e tratar a integração como pendente (backlog 26).
 
 > **Checkpoint 3:** operador escolhe o catálogo ou confirma que nenhum candidato serve.
 
@@ -126,7 +148,10 @@ npm run ml:conferir -- produtos/<slug>
 
 Ela mostra o título como vai aparecer (com o acréscimo de cor e acabamento), a ficha comparada com a
 categoria e com os concorrentes, GTIN, garantia, as objeções do dossiê e o que ainda está PENDENTE
-no `entrada.md`. Com ✗, não vai para a revisão.
+no `entrada.md`. Em rodadas novas, preencher `evidencias.json` só para o que vira promessa: a fonte
+de cada dado técnico afirmado e, para cada objeção (pelo número, §5.1, §5.2…), o trecho literal da
+descrição que responde (modelo em `coleta/TEMPLATE-evidencias.json`; ver
+[docs/18](18-inteligencia-e-nicho.md)). Com ✗, não vai para a revisão.
 
 > **Checkpoint 4:** operador revisa título, preço, estoque, tipo, embalagem, garantia, ficha,
 > imagens e descrição e autoriza explicitamente a publicação.

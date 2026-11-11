@@ -1,13 +1,12 @@
 # Backlog
-*Atualizado em 06/10/2026 — primeiro produto conduzido pelo Hermes.*
-*Contagem honesta: começou a sessão com 7 abertos, fechamos 7 e eu criei 9 lendo o código —
-6 morreram no mesmo dia. Sobrou o que está abaixo.*
+*Atualizado em 11/11/2026 — visitas de concorrente bloqueadas e ritmo do Chrome do projeto (ver RESOLVIDOS).*
+*Itens abertos abaixo estão agrupados por execução, decisão pendente e limitação conhecida.*
 
 ---
 
 ## Como ler esta lista
 
-Três grupos, porque "9 itens abertos" não quer dizer 9 tarefas:
+Três grupos — a contagem atual é **10 para fazer (agrupados em 7 frentes na tabela), 5 parados de propósito e 1 limitação conhecida**:
 
 - **FAZER** — trabalho definido, dá para começar hoje.
 - **PARADO DE PROPÓSITO** — esperando uma decisão sua, ou mais pilotos para calibrar. Não é dívida.
@@ -19,58 +18,107 @@ produto a que pertence. Decidido em 07/09/2026.
 
 ---
 
-## FAZER  *(8)*
+## FAZER  *(10, em ordem de prioridade — reorganizado em 07/10/2026)*
 
-### 1. Testar o método num nicho distante do atual
-O repo público está no ar (github.com/gabrielPedron/criacao-anuncio) e o manual foi reescrito na
-ordem da aula gravada em 26/09. O setup guiado virou `npm run verificar` + o prompt de primeiro
-uso; a atualização do cliente, `npm run atualizar`. Falta rodar um produto de outro nicho de ponta
+| # | Item | Depende de | Estado |
+|---|---|---|---|
+| 1 | **19.** Posição depois de publicar | nada | linha de base medida em 07/10; repetir semanal |
+| 2 | **26.** Catálogo × categorias | OK do operador para qualquer escrita | leitura pronta (`ml:catalogo-status`); vínculo pendente |
+| 3 | **1 + 17 + 15 + 16.** Piloto em nicho distante | produto, categoria, top-3 e 2 links do operador | parado nos inputs |
+| 4 | **23.** Repositório público | push e decisão do operador | mecanismo pronto |
+| 5 | **20.** Fidelidade do rótulo nas imagens | OK de custo | não começado |
+| 6 | **22.** Prova social real | 30 dias de anúncio (a partir de 05/11) | aguardando data |
+| 7 | **27.** Trilha Shopee | decisão de começar | por último, por decisão de 07/10 |
+
+### 19. Acompanhar a posição depois de publicar — **prioridade 1**
+A metodologia (Parte II-B) manda medir a posição em pelo menos 5 palavras-chave, semanal para
+produto de pouco volume. `ml:posicao` grava o histórico em `produtos/<slug>/posicao.csv`, contando só
+orgânicos e separando patrocinado, card sem ID e fora da primeira página.
+
+**Feito em 07/10:** linha de base do anúncio do piloto de 06/10 em 6 termos tirados do dossiê
+(autocompletar do ML). Na primeira rodada real, a busca quebrou num termo porque o ML redirecionou a
+página depois do carregamento (`document.body` nulo); `ml:busca` agora espera o documento novo e,
+se o contexto cair, conta como tentativa vazia e tenta de novo em vez de derrubar a rodada.
+
+**Falta:** repetir na semana seguinte (mesmos termos), comparar com a hipótese registrada e só então
+conversar sobre ajuste — sem editar anúncio automaticamente. Primeira página só: fora dela não é
+"posição zero".
+
+### 26. Catálogo × múltiplas categorias — **prioridade 2**
+Apurado em 07/10: `GET /items/<id>/catalog_listing_eligibility` (estável em 3 leituras) responde,
+para anúncio próprio, `CATALOG_PRODUCT_ID_NULL` (sem produto de catálogo ligado) ou
+`ALREADY_OPTED_IN` (já tem anúncio de catálogo ligado). Virou **`ml:catalogo-status`** (só leitura,
+`--conta` para todos): mostra o par tradicional + catálogo de cada produto, a categoria de cada
+anúncio e acusa produto de catálogo vendido em mais de uma categoria. Na conta real, o painel já
+faz o vínculo em vários produtos — o pipeline é que nunca fez.
+
+A coleta já guarda um schema por categoria aprovada, `ml:conferir` valida cada oferta contra o
+schema da sua categoria e `ml:catalogo` aceita `--categoria` repetido (num teste real, dois filtros
+devolveram a **mesma lista**: o comando avisa e não trata isso como prova de nada).
+
+**Falta, nesta ordem:**
+1. apurar o status `LOOPING_ITEM`, que apareceu em dois anúncios ligados a produto mas sem anúncio
+   de catálogo — não agir sobre ele antes de saber o que significa (`COMPETING` já foi apurado em
+   19/10: é o próprio anúncio de catálogo competindo);
+2. o operador olhar os anúncios só orgânicos e dizer se algum tem catálogo equivalente (checkpoint 3);
+3. comando de vínculo **com trava** (prévia, `--confirmo`, conferência depois), apurando antes o
+   contrato de escrita do ML. `ml:publicar` hoje não manda `catalog_product_id`.
+
+### 1. Testar o método num nicho distante do atual — **prioridade 3**
+*Um piloto só fecha os itens 1, 17, 15 e 16 juntos.* Falta rodar um produto de outro nicho de ponta
 a ponta para ver o que no método ainda é específico de tinta/impermeabilizante.
 
-### 15. Chrome do projeto: medir em volume
-Os defeitos da revisão de 06/10 foram corrigidos (ver RESOLVIDOS). Continua aberto só o que pede uso:
+**Parado nos inputs do operador:** produto e categoria (o nome basta; o agente propõe o ID). Desde
+19/10 o `ml:coletar --sondar` propõe as top-3 sem precisar delas, e sem os 2 links ou sem pesquisa
+a coleta roda e avisa — mas o piloto deve trazer os dois, para medir o método inteiro.
+
+### 17. Etapa A num comando só — **vai junto com o piloto**
+`ml:coletar` em dois momentos (19/10): `--sondar` (sugestões + busca, antes do checkpoint 1) e
+`--executar` (schema e tendências por categoria, referências marcadas próprio/concorrente, fotos e,
+pelo Chrome ligado por padrão, sugestões, busca e páginas), com resumo factual que traz a 1ª página
+de cada termo. Falta rodar num produto novo de ponta a ponta; o esqueleto não é um dossiê julgado.
+
+### 15. Chrome do projeto: medir em volume — **vai junto com o piloto**
 - rodar um produto inteiro só com `ml:busca`/`ml:sugestoes`/`ml:pagina` e anotar se o ML bloqueia
-  em algum volume (até agora ~30 páginas, nenhum bloqueio);
-- `ml:pagina` lê só as avaliações que a página mostra (as ~5 primeiras). Abrir "ver todas" se o
-  dossiê precisar de mais;
-- os seletores são do layout de 10/2026 (`li.ui-search-layout__item`, `.poly-component__*`). Quando
-  o ML mudar, o comando agora falha com "nenhum anúncio lido" em vez de salvar vazio.
+  em algum volume (até agora ~40 páginas, nenhum bloqueio; um redirecionamento corrigido em 07/10);
+- desde 11/11 há teto de 80 páginas/dia e pausa de 6 h depois de barreira: medir se o teto aperta
+  num dia de vários produtos (`.chrome-ml/ritmo.json` guarda o contador);
+- `ml:pagina` lê só as avaliações que a página mostra (as ~5 primeiras);
+- os seletores são do layout de 10/2026. Quando o ML mudar, o comando falha com "nenhum anúncio
+  lido" em vez de salvar vazio.
 
-### 16. Descoberta mais barata com a busca — **destravado pelo item 15**
-`ml:descobrir` faz ~1.300 chamadas para achar concorrentes por catálogo e não enxerga quem nunca
-entrou em catálogo (item 14). A 1ª página de `ml:busca` traz tradicionais e catálogo, com id, preço
-e marcação de patrocinado, em 1 página por termo. Avaliar se `ml:busca` vira a porta de entrada e
-o `ml:descobrir` fica só para ampliar.
+### 16. Descoberta mais barata com a busca — **vai junto com o piloto**
+`ml:descobrir` faz ~1.300 chamadas e não enxerga quem nunca entrou em catálogo (item 14). A 1ª
+página de `ml:busca` traz tradicionais e catálogo, com id, preço e patrocinado. **Decidido em 19/10:**
+ordem fixa no docs/02 — links do operador → `ml:busca` → destaques (se catálogo) → `ml:descobrir` só
+se faltar concorrente. **Falta:** no piloto, rodar busca e descobrir uma vez no mesmo produto e
+registrar aqui a comparação.
 
-### 17. Etapa A num comando só — **eficiência**
-No piloto de 06/10 foram ~10 comandos soltos (`ml:referencia`, `ml:categoria`, `ml:semantica`,
-`ml:sugestoes`, `ml:busca`, `ml:pagina`, `ml:fotos`…) e o dossiê foi escrito do zero. Proposta:
-- `npm run ml:coletar -- produtos/<slug>` lê o `entrada.md` (links, categoria, termos) e roda tudo,
-  salvando em `raw/` com data;
-- o mesmo comando gera o **esqueleto do dossiê** com o que é mecânico: tabela de anúncios analisados,
-  cobertura da ficha, resultados por termo, sugestões de busca. O agente escreve só o julgamento.
-
-### 19. Acompanhar a posição depois de publicar — **resultado**
-A metodologia (Parte II-B) manda medir a posição em pelo menos 5 palavras-chave, semanal para
-produto de pouco volume. Com `ml:busca` isso fica barato: um `ml:posicao -- MLB… "termo1" …` que
-devolve a posição orgânica do anúncio (desconsiderando os patrocinados) em cada termo e grava o
-histórico em `produtos/<slug>/posicao.csv`. Primeiro alvo: o anúncio do piloto de 06/10.
-
-### 20. Fidelidade do rótulo nas imagens — **qualidade**
-O gpt-image-2 acerta o texto grande do rótulo e embaralha o miúdo (visível no zoom). Testar:
-(a) edição com máscara, gerando só o fundo e deixando o pote da foto base intacto; (b) capa com a
-foto real sobre fundo gerado. Medir custo e resultado antes de mudar o padrão.
-
-### 22. Prova social real depois das primeiras vendas — **qualidade**
-A foto 5 ficou sem prova social porque não havia avaliação real. Aos 30 dias: `ml:pagina` no
-próprio anúncio; se houver avaliação boa e útil, gerar a foto 5 com ela (só texto real).
-
-### 23. Repositório público dos mentorados — **falta o push e uma decisão**
-O mecanismo ficou pronto em 06/10 (ver RESOLVIDOS): versão com tag, novidades no `atualizar`,
-filtro de ids da conta, Chrome no `verificar`. Falta:
-- **o push** da v1 (`git push --follow-tags` em `../criacao-anuncio-publico`) — ação do operador;
+### 23. Repositório público dos mentorados — **prioridade 4, ação do operador**
+O mecanismo está pronto (versão com tag, novidades no `atualizar`, filtro de ids da conta).
+A v1 está no ar (`main` em `6aaf3f7`), mas **a tag `v1` não chegou ao remoto** (conferido em 11/11).
+**v2 escrita no `NOVIDADES.md` em 11/11** (revisão de 19/10 + visitas + ritmo do Chrome), ainda não
+publicada: contraria a cadência abaixo, porque o piloto não rodou. Falta:
+- **decidir** se a v2 sai antes do piloto ou espera por ele;
 - **decidir** se a trilha Hermes ("em teste") fica na v1 ou sai até o teste fechar;
-- **cadência:** publicar por lote validado num produto real, não a cada commit.
+- **cadência:** publicar por lote validado num produto real, não a cada commit. As melhorias de
+  07/10 e a revisão de 19/10 (branch `hermes-0710`) entram no lote só depois do piloto, com uma
+  seção nova no `NOVIDADES.md` escrita na hora de publicar.
+
+### 20. Fidelidade do rótulo nas imagens — **prioridade 5, gasta crédito**
+O gpt-image-2 acerta o texto grande do rótulo e embaralha o miúdo. Testar: (a) edição com máscara,
+gerando só o fundo e deixando o pote da foto base intacto; (b) capa com a foto real sobre fundo
+gerado. Medir custo e resultado antes de mudar o padrão. Cada teste pede OK de custo.
+
+### 22. Prova social real depois das primeiras vendas — **prioridade 6, a partir de 05/11**
+A foto 5 do piloto de 06/10 ficou sem prova social. Aos 30 dias: `ml:pagina` no próprio anúncio; se
+houver avaliação boa e útil, gerar a foto 5 com ela (só texto real).
+
+### 27. Trilha Shopee — **por último, por decisão do operador (07/10)**
+A metodologia externa tem seção própria de criação de anúncio na Shopee; este repo só implementa
+Mercado Livre. Quando abrir: reaproveitar ficha de entrada, evidências, aprendizado do nicho e fotos,
+mas com título/descrição/ficha/variações e validação próprios da Shopee, sem levar limites nem payload
+do ML. Primeiro piloto manual; API só depois de apurar autorização e contrato dos campos.
 
 ## PARADO DE PROPÓSITO  *(5)*
 
@@ -211,6 +259,28 @@ O contorno (você cola a URL) é a Fase 0, e já está no processo.
 ---
 
 ## RESOLVIDOS
+
+- ~~**Visitas de concorrente sumiam em silêncio**~~ → **feito em 11/11.** Desde out/2026 o ML dá 403
+  para visitas de anúncio de outro vendedor (o próprio continua aberto). `ml:demanda`, `ml:referencia`
+  e `ml:descobrir` mostravam "sem dado" ou 0 e o ranking da descoberta virava empate. Agora o bloqueio
+  aparece escrito; `ml:demanda` falha alto sem nada medido; `ml:descobrir` testa em 3 produtos e, se
+  bloqueado, ranqueia por mais vendidos e total de perguntas. `ml:produto` passou a trazer a descrição
+  dos concorrentes pela API (aberta; no catálogo o texto costuma ser o mesmo entre vendedores).
+- ~~**Navegador logado no processo**~~ → **feito em 11/11, decisão do operador.** O ML só é aberto pelo
+  Chrome do projeto (anônimo, sem login). Claude in Chrome, extensão, controle do computador e
+  navegador embutido saíram do CLAUDE.md/AGENTS.md e dos docs; o snippet manual de avaliações saiu.
+  Ritmo em `chrome.ts`: pausa de leitura, teto diário, pausa de 6 h após barreira, cache de 12 h.
+  Disfarce de automação, troca de IP e captcha ficam de fora de propósito. Aviso de risco no README.
+- ~~**Revisão do lote do Hermes de 07–08/10**~~ → **feito em 19/10**, em 8 commits no branch
+  `hermes-0710` (o lote original guardado intacto antes, em `1f8074c`). Coleta em dois momentos
+  (`--sondar` antes do checkpoint 1, `--executar` depois), que roda e avisa sem os 2 links ou sem
+  pesquisa, em vez de recusar; Chrome por padrão; ordem fixa da descoberta. Categoria pelo nome, com o
+  agente propondo o ID. `ml:referencia` marca link próprio × concorrente. `ml:proximo` pelos
+  checkpoints do CLAUDE.md, uma oferta por vez no multicategoria, sem chegar à revisão com PENDENTE.
+  Evidência só para promessa, objeção pelo número (§5.n). `nichos/<nicho>.md` local e "Minhas
+  preferências de anúncio" no `OPERACAO.md`. Campos de catálogo apurados no glossário (achou
+  `COMPETING`), `--conta` paginado. Briefing de monitoramento em Laravel saiu do repo; o raio-x da
+  conta virou docs/19 (lido, não apurado). 35 testes. (19/10)
 
 - ~~**Ficha completa antes de publicar (18)**~~ → **feito em 06/10.** `oferta.json` exige
   `garantia` (`fabrica`/`vendedor`/`sem` + prazo) e o `montarPayload` manda `sale_terms`

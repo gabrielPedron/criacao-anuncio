@@ -1,0 +1,24 @@
+{
+  "imagens": {
+    "aprovadas_em": null,
+    "arquivos": []
+  },
+  "catalogo": {
+    "decidido_em": null,
+    "escolha": null,
+    "link": null
+  },
+  "titulo": {
+    "aprovado_em": null,
+    "texto": null
+  },
+  "revisao_final": {
+    "revisado_em": null,
+    "observacoes": null
+  },
+  "publicacao": {
+    "item_id": null,
+    "publicado_em": null
+  },
+  "hipoteses_de_resultado": []
+}

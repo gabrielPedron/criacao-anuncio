@@ -29,7 +29,7 @@ segundo lê `AGENTS.md`, e ambos decidem qual script rodar, leem a saída e escr
 | **Preço, estoque, clássico/premium, dimensões e peso** | **você**, antes de publicar | não se adivinha, é regra travada |
 | Categoria do ML | **você** escolhe, eu não questiono | — |
 | `OPENAI_API_KEY` | `.env` | Fase 3 não gera imagem |
-| Avaliações dos concorrentes | Chrome, skill `leitor-de-sites` (API bloqueia 403) | perde-se o "porém" das 4★ |
+| Avaliações dos concorrentes | Chrome do projeto, `ml:pagina` (API bloqueia 403) | perde-se o "porém" das 4★ |
 
 Tudo o mais é derivado. **Preço nunca é calculado** — a mediana de mercado entra só como referência
 no dossiê.

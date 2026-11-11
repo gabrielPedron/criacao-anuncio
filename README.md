@@ -107,22 +107,31 @@ Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
 
 | Comando | O que faz |
 |---|---|
-| `npm run ml:referencia -- "<url>" "<url>"` | lê anúncios que você validou: ficha, preços, visitas, perguntas, fotos |
+| `npm run ml:referencia -- "<url>" "<url>"` | lê anúncios que você validou: ficha, preços, perguntas, fotos (visitas, só do seu) |
 | `npm run ml:categoria -- "<produto>"` | schema real de atributos da categoria — a base da ficha |
 | `npm run ml:semantica -- <MLB da categoria>` | termos em tendência na categoria, segundo o próprio ML |
-| `npm run ml:descobrir -- <MLB da categoria> "<termo>"` | varre o catálogo e rankeia concorrentes por visitas |
+| `npm run ml:descobrir -- <MLB da categoria> "<termo>"` | varre o catálogo e rankeia concorrentes (mais vendidos e perguntas; visitas quando o ML mostra) |
 | `npm run ml:concorrentes -- <MLB da categoria>` | mais vendidos da categoria e faixa de preço |
 | `npm run ml:buscar -- "<termo>"` | busca produtos de catálogo por termo |
-| `npm run ml:produto -- <MLB do produto>` | ficha, vendedores e **perguntas** de um produto de catálogo |
+| `npm run ml:produto -- <MLB do produto>` | ficha, vendedores, descrições e **perguntas** de um produto de catálogo |
 | `npm run ml:fotos -- <MLB do produto>` | baixa as fotos do concorrente para leitura visual |
-| `npm run ml:demanda -- <MLB>` | visitas em 30 dias — sinal de demanda real |
+| `npm run ml:demanda -- <MLB>` | visitas em 30 dias do **seu** anúncio (de concorrente, o ML bloqueia desde out/2026) |
 | `npm run ml:meus-anuncios` | retrato da sua conta: fichas, descrições e perguntas já respondidas |
 | `npm run ml:sugestoes -- "<termo>"` | sugestões de busca do ML (autocompletar), pelo Chrome |
 | `npm run ml:busca -- "<termo>"` | total de resultados e 1ª página da busca, patrocinados marcados, pelo Chrome |
 | `npm run ml:pagina -- "<url>"` | anúncio de outro vendedor: preço, vendidos, ficha, descrição e avaliações, pelo Chrome |
+| `npm run ml:coletar -- produtos/<slug>` | prévia; `--sondar "termo"` lê sugestões e busca para propor as top-3; `--executar` faz a coleta completa (API + Chrome; `--sem-chrome` só API) |
+| `npm run ml:proximo -- produtos/<slug>` | sugere a próxima ação pelos arquivos locais, sem aprovar nem publicar |
+| `npm run ml:posicao -- produtos/<slug> MLB123456789 "termo1" … "termo5"` | histórico orgânico da primeira página em `posicao.csv` |
 | `npm run ml:conferir -- produtos/<slug>` | conferência antes da revisão final: título final, ficha, GTIN, garantia, objeções, pendências |
 | `npm run ml:saude -- <MLB>` (ou `--conta`) | nota de qualidade do próprio ML e o que ele aponta como pendente |
 | `npm run ml:editar -- <MLB> --garantia "fabrica:3 meses"` | completa anúncio publicado (garantia, atributo, descrição); grava só com `--confirmo` |
+
+> **Leitura pelo navegador: por sua conta e risco.** `ml:busca`, `ml:sugestoes` e `ml:pagina` leem o
+> site do Mercado Livre com um Chrome dirigido por código (guia anônima, perfil separado, sem login,
+> ritmo de gente e teto diário). Isso não é um canal oferecido pelo ML, que declara adotar medidas
+> contra extração automatizada. Quem usa assume o risco; quem não quiser, roda a coleta com
+> `--sem-chrome`, só pela API. Detalhes em [coleta/snippets-chrome.md](coleta/snippets-chrome.md).
 
 **Imagens**
 
@@ -137,7 +146,8 @@ Os quatro 🛑 são humanos e não se automatizam. O roteiro completo está em
 
 | Comando | O que faz |
 |---|---|
-| `npm run ml:catalogo -- "<produto>" --categoria <MLB>` | lista **todos** os candidatos de catálogo, com link |
+| `npm run ml:catalogo -- "<produto>" --categoria <MLB>` (repetível) | lista candidatos por categoria solicitada, com link; pode repetir resultados e não vincula a oferta ao catálogo |
+| `npm run ml:catalogo-status -- MLB… \| --conta` | mapa da conta: anúncio, categoria, produto de catálogo ligado e elegibilidade — só leitura |
 | `npm run ml:sugerir-catalogo -- <MLB de um anúncio seu>` | sugere o produto ao catálogo do ML |
 | `... --status <MLB da sugestão>` | acompanha a curadoria |
 | `npm run ml:publicar -- produtos/<slug>` | monta e mostra o payload — **não envia nada** |

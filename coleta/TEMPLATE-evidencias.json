@@ -1,0 +1,16 @@
+[
+  {
+    "id": "dado-tecnico-1",
+    "afirmacao": "SUBSTITUIR: promessa que aparecerá na oferta (dado técnico ou resposta a objeção)",
+    "origem": {
+      "tipo": "operador",
+      "arquivo": "entrada.md",
+      "trecho": "SUBSTITUIR: texto literal encontrado no arquivo de origem"
+    },
+    "estado": "pendente",
+    "confirmado_pelo_operador": false,
+    "objecao": "5.1",
+    "resposta_descricao": "SUBSTITUIR: texto literal da descrição, só após confirmação",
+    "oferta": "SÓ NO MULTICATEGORIA: oferta-x.json cuja descrição traz a resposta; senão, apagar este campo"
+  }
+]

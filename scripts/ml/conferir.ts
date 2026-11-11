@@ -1,4 +1,4 @@
-// Conferência antes da revisão final (Parada 2): o que falta na oferta ANTES de publicar.
+// Conferência antes da revisão final (checkpoint 4): o que falta na oferta ANTES de publicar.
 // Nasceu de um piloto que subiu sem garantia e sem um atributo técnico e teve de ser editado
 // depois — e toda edição pode mexer no ranqueamento. Só lê arquivos locais; não chama a API.
 //
@@ -8,48 +8,19 @@
 // Lê: a oferta, raw/categoria.json (schema real), raw/referencias*.json (ficha dos concorrentes),
 // dossie.md §5 (objeções) e entrada.md (o que ainda está PENDENTE).
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { morrer } from "./api.js";
 import { args } from "../cli.ts";
 import { carregarOferta } from "./publicar.ts";
+import { esquemaDaCategoria, conferirEvidencias, rodadaNova as ehRodadaNova, ATRIBUTOS_IGNORADOS as IGNORAR, objecoesDoDossie, type Evidencia } from "./inteligencia.ts";
+import { categoriasDaEntrada, pendentesDaEntrada } from "./entrada.ts";
 
 const alvo = args.find((a) => !a.startsWith("--"));
 if (!alvo) morrer(new Error("Uso: npm run ml:conferir -- produtos/<slug> [ou o caminho do oferta-x.json]"));
 const pasta = alvo!.endsWith(".json") ? dirname(resolve(alvo!)) : resolve(alvo!);
 const lerJson = (arq: string) => JSON.parse(readFileSync(arq, "utf8"));
-
-// Calculado pelo ML ou do envio — não é "lacuna" da ficha.
-const IGNORAR = /^(SELLER_PACKAGE_|PACKAGE_|ITEM_CONDITION|PRODUCT_FEATURES|SYI_PYMES_ID)/;
-
-/** Linhas da tabela da seção 5 do dossiê (objeções), sem o cabeçalho. */
-export function objecoesDoDossie(md: string): string[] {
-  const secao = md.split(/^## /m).find((s) => /^5\./.test(s)) ?? "";
-  return secao.split("\n")
-    .filter((l) => l.startsWith("|") && !/^\|\s*-/.test(l) && !/Objeção \/ dor/i.test(l))
-    .map((l) => l.split("|")[1]?.trim())
-    .filter((t): t is string => !!t);
-}
-
-/**
- * O que ainda está PENDENTE no entrada.md. Linha de cabeçalho ("**Ainda PENDENTE:**") traz os itens
- * da lista logo abaixo; item riscado (~~) já foi resolvido; a frase de instrução do modelo não conta.
- */
-export function pendentesDaEntrada(md: string): string[] {
-  const linhas = md.split("\n");
-  const out: string[] = [];
-  for (let i = 0; i < linhas.length; i++) {
-    const l = linhas[i];
-    if (!/PENDENTE/.test(l) || /~~/.test(l) || /Campo vazio fica/.test(l)) continue;
-    if (/PENDENTE[^:]*:\**\s*$/.test(l.trim())) {
-      for (let j = i + 1; j < linhas.length && /^\s*-/.test(linhas[j]); j++) {
-        if (!/~~/.test(linhas[j])) out.push(linhas[j].replace(/^\s*-\s*/, "").trim());
-      }
-      continue;
-    }
-    out.push(l.replace(/^[\s>*|-]+/, "").trim());
-  }
-  return out;
-}
+const rodadaNova = ehRodadaNova(pasta);
+const arquivoDaOferta = alvo!.endsWith(".json") ? basename(alvo!) : "oferta.json";
 
 let erros = 0;
 const ok = (m: string) => console.log(`  ✓ ${m}`);
@@ -72,17 +43,33 @@ const final = [familia, temos.get("COLOR"), temos.get("FINISH")].filter(Boolean)
 console.log(`\nTítulo\n  família (${familia.length}/60): ${familia}\n  como vai aparecer (${final.length}): ${final}`);
 if (familia.length > 60) erro("família acima de 60 caracteres");
 
-// 3. Ficha: schema da categoria × o que preenchemos × o que os concorrentes preenchem
+// 3. Ficha: schema da categoria da OFERTA × o que preenchemos × concorrentes.
 console.log("\nFicha técnica");
-const arqCat = join(pasta, "raw", "categoria.json");
-if (!existsSync(arqCat)) aviso("sem raw/categoria.json — rode ml:categoria para comparar com o schema real");
-else {
-  const schema: any[] = lerJson(arqCat).atributos ?? [];
-  const relevantes = schema.filter((a) => !IGNORAR.test(a.id));
-  const preenchidos = relevantes.filter((a) => temos.has(a.id));
+const arqEntrada = join(pasta, "entrada.md");
+if (existsSync(arqEntrada)) {
+  try {
+    const aprovadas = categoriasDaEntrada(readFileSync(arqEntrada, "utf8"));
+    if (!aprovadas.includes(o.category_id)) erro(`categoria ${o.category_id} não consta entre as escolhidas pelo operador: ${aprovadas.join(", ")}`);
+    else ok(`categoria da oferta escolhida pelo operador: ${o.category_id}`);
+  } catch (e: any) {
+    if (rodadaNova) erro(`entrada.md: falta ${e.message}`);
+    else aviso("entrada antiga sem categoria MLB explícita: confirmar escolha do operador");
+  }
+}
+let schema: ReturnType<typeof esquemaDaCategoria> = null;
+try { schema = esquemaDaCategoria(pasta, o.category_id); }
+catch (e: any) { erro(`schema de categoria inválido: ${e.message}`); }
+if (!schema) {
+  if (rodadaNova) erro(`sem schema da categoria ${o.category_id} em raw/ — não usar o de outra categoria`);
+  else aviso(`sem schema da categoria ${o.category_id} em raw/ — rode ml:categoria para comparar`);
+} else {
+  console.log(`  fonte do schema: ${schema.arquivo}`);
+  const relevantes = schema.atributos.filter((a) => !IGNORAR.test(a.id));
+  const preenchido = (id: string) => typeof temos.get(id) === "string" && !!temos.get(id)?.trim();
+  const preenchidos = relevantes.filter((a) => preenchido(a.id));
   ok(`${preenchidos.length} de ${relevantes.length} atributos do schema preenchidos`);
-  for (const a of relevantes.filter((a) => a.tags?.required && !temos.has(a.id))) erro(`obrigatório vazio: ${a.id} (${a.name})`);
-  const vazios = relevantes.filter((a) => !temos.has(a.id) && !a.tags?.required);
+  for (const a of relevantes.filter((a) => a.tags?.required && !preenchido(a.id))) erro(`obrigatório vazio: ${a.id} (${a.name})`);
+  const vazios = relevantes.filter((a) => !preenchido(a.id) && !a.tags?.required);
   if (vazios.length) aviso(`vazios: ${vazios.map((a) => `${a.id} (${a.name})`).join(", ")}`);
 }
 const refs = existsSync(join(pasta, "raw")) ? readdirSync(join(pasta, "raw")).filter((f) => /^referencias.*\.json$/.test(f)) : [];
@@ -95,19 +82,45 @@ else if (o.sem_gtin_motivo) aviso(`sem GTIN — motivo: ${o.sem_gtin_motivo}`);
 else erro("sem GTIN e sem sem_gtin_motivo");
 
 // 4. Descrição × objeções do dossiê — o casamento é julgamento: o agente escreve, item a item,
-//    o trecho da descrição que responde cada objeção, e leva a lista para a Parada 2.
+//    o trecho da descrição que responde cada objeção, e leva a lista para o checkpoint 4.
 console.log("\nDescrição × objeções do dossiê");
 console.log(`  descrição com ${o.descricao?.length ?? 0} caracteres`);
 const arqDossie = join(pasta, "dossie.md");
+const objecoes = existsSync(arqDossie) ? objecoesDoDossie(readFileSync(arqDossie, "utf8")) : [];
 if (!existsSync(arqDossie)) aviso("sem dossie.md");
 else {
-  const obj = objecoesDoDossie(readFileSync(arqDossie, "utf8"));
-  if (!obj.length) aviso("a seção 5 do dossiê não tem objeções em tabela");
-  obj.forEach((t, i) => console.log(`  ${i + 1}. ${t.slice(0, 110)}\n     → trecho da descrição que responde: ______  (sem resposta = pedir o dado ao operador)`));
+  if (!objecoes.length) aviso("a seção 5 do dossiê não tem objeções em tabela");
+  objecoes.forEach((x) => console.log(`  §${x.num} ${x.texto.slice(0, 110)}\n     → trecho da descrição que responde: ______  (sem resposta = pedir o dado ao operador)`));
+}
+
+// Evidência só para promessa (dado técnico e resposta a objeção). Sem objeção no dossiê, é opcional.
+const arqEvidencias = join(pasta, "evidencias.json");
+if (!existsSync(arqEvidencias)) {
+  if (rodadaNova && objecoes.length) erro("sem evidencias.json: ligar cada objeção (§5.n) e cada dado técnico prometido a uma fonte");
+  else aviso("sem evidencias.json: revisar à mão os dados técnicos prometidos na descrição");
+} else {
+  try {
+    // Multicategoria: evidência marcada com outra oferta não se confere contra esta descrição.
+    const evidencias = (lerJson(arqEvidencias) as Evidencia[]);
+    if (!Array.isArray(evidencias) || !evidencias.length) erro("evidencias.json sem registros");
+    else {
+      for (const problema of conferirEvidencias(pasta, evidencias)) erro(problema);
+      const desta = evidencias.filter((e) => !e.oferta || e.oferta === arquivoDaOferta);
+      for (const e of desta) {
+        if (e.estado !== "confirmada") aviso(`${e.id}: dado não confirmado — não usar como promessa`);
+        if (e.resposta_descricao && !o.descricao?.includes(e.resposta_descricao)) erro(`${e.id}: resposta não aparece literalmente na descrição`);
+      }
+      for (const obj of objecoes) {
+        // Pelo número (§5.n); o texto exato fica aceito para evidências antigas.
+        const resposta = desta.find((e) => [obj.num, `§${obj.num}`, obj.texto].includes(e.objecao ?? "") && e.estado === "confirmada" && e.resposta_descricao && o.descricao?.includes(e.resposta_descricao));
+        if (!resposta) erro(`objeção §${obj.num} sem resposta fundamentada: ${obj.texto}`);
+        else ok(`objeção §${obj.num} respondida por ${resposta.id}: ${resposta.resposta_descricao}`);
+      }
+    }
+  } catch (e: any) { erro(`evidencias.json inválido: ${e.message}`); }
 }
 
 // 5. O que ainda está PENDENTE no entrada.md
-const arqEntrada = join(pasta, "entrada.md");
 if (existsSync(arqEntrada)) {
   const pend = pendentesDaEntrada(readFileSync(arqEntrada, "utf8"));
   console.log(`\nPendências no entrada.md: ${pend.length || "nenhuma"}`);
@@ -123,5 +136,5 @@ if (fotos) ok(`${fotos} fotos já no ML`);
 else if (locais.length && !faltam.length) ok(`${locais.length} fotos locais prontas para subir`);
 else erro(locais.length ? `fotos não encontradas: ${faltam.join(", ")}` : "nenhuma foto na oferta");
 
-console.log(erros ? `\n✗ ${erros} item(ns) impedem a revisão final.\n` : "\n✓ Pronto para a revisão final (Parada 2).\n");
+console.log(erros ? `\n✗ ${erros} item(ns) impedem a revisão final.\n` : "\n✓ Pronto para a revisão final (checkpoint 4).\n");
 process.exitCode = erros ? 1 : 0;

@@ -13,7 +13,7 @@ anúncio, e só publica depois do seu OK.
 | **2 ou mais links de concorrentes** que você confirmou serem o mesmo produto | a análise se baseia neles; nome parecido pode ser outra versão ou embalagem |
 | **Principais semânticas** (top buscas do mês) do Nubimetrics, Virtual Seller, Mercado Livre Tendências ou outra ferramenta | a API do ML não mostra volume de busca; sem isso o título sai mais fraco |
 | **Dados técnicos que a IA não descobre** | rendimento (m² da tinta), voltagem, amperagem, tamanho, composição… |
-| **Categoria** e estratégia (catálogo, orgânico ou ambos) | a escolha é sua |
+| **Categoria** (pelo nome, como aparece no ML) e estratégia (catálogo, orgânico ou ambos) | a escolha é sua; o agente mostra o código da categoria com o link para você confirmar |
 | **Preço, estoque, Clássico ou Premium** | decisão do seu negócio; a IA nunca calcula nem copia |
 | **Medidas e peso bruto da embalagem pronta para envio** | obrigatório no ML; a IA não adivinha pela foto |
 
@@ -29,7 +29,7 @@ fica pior. Isso foi medido: a pesquisa do operador rende mais que a descoberta a
 Abra uma **conversa nova** para cada produto, anexe a foto e mande algo assim:
 
 ```text
-Quero criar um anúncio para [produto]. Categoria: [nome ou MLB...]. Estratégia: [catálogo/orgânico/ambos].
+Quero criar um anúncio para [produto]. Categoria: [nome da categoria]. Estratégia: [catálogo/orgânico/ambos].
 
 Concorrentes que confirmei como o mesmo produto:
 [link 1]
@@ -49,10 +49,15 @@ Leia as instruções do projeto e conduza o processo. Não publique nada sem meu
 
 O que você ainda não tiver, deixe de fora: o agente pede na hora certa.
 
-## 2 — Confirmar as semânticas
+## 2 — Confirmar a categoria e as semânticas
 
-O agente cruza a sua pesquisa com o que encontra no Mercado Livre e propõe **as 3 semânticas
-principais**. Confirme ou corrija antes de ele aprofundar a pesquisa.
+Primeiro o agente mostra a categoria que achou pelo nome que você deu, com o código (MLB…) e o link.
+Confira se é a mesma que você escolheu.
+
+Depois ele faz uma **sondagem**: abre o Chrome do projeto, lê as sugestões de busca do Mercado Livre
+e a primeira página de resultados, cruza com a sua pesquisa e propõe **as 3 semânticas principais**.
+Confirme ou corrija antes de ele aprofundar a pesquisa. Se algum link que você mandou for da sua
+própria conta, ele avisa e pergunta antes de seguir.
 
 ## 3 — Revisar a oferta e o título
 

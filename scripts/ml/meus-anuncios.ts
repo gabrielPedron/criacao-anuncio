@@ -3,23 +3,10 @@
 //   npm run ml:meus-anuncios
 import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import { ml, morrer } from "./api.js";
+import { ml, morrer, paginar } from "./api.js";
 import { RAIZ, lerTokens } from "./auth.js";
 
 const DESTINO = resolve(RAIZ, "produtos/_catalogo/raw");
-
-/** Percorre um endpoint paginado até acabar. */
-async function paginar<T>(url: (offset: number) => string, extrai: (r: any) => T[], limite = 50): Promise<T[]> {
-  const tudo: T[] = [];
-  for (let offset = 0; ; offset += limite) {
-    const r = await ml(url(offset));
-    const lote = extrai(r);
-    tudo.push(...lote);
-    const total = r.paging?.total ?? r.total ?? 0;
-    if (lote.length === 0 || tudo.length >= total || offset > 2000) break;
-  }
-  return tudo;
-}
 
 const idsDeAnuncios = (userId: string) =>
   paginar<string>(
